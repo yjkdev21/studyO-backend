@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.batisexample.dao.IExDao">
+
+    <insert id="exInsert" parameterType="com.ex.tjspring.batisexample.dto.ExDto">
+        INSERT INTO EX_DTO (title, content)
+        VALUES (#{title}, #{content})
+    </insert>
+
+    <select id="exSelectAllPaged" resultType="com.ex.tjspring.batisexample.dto.ExDto">
+        SELECT id, title, content, reg_date as regDate
+        FROM (
+             SELECT
+                 ROWNUM rn,
+                 id,
+                 title,
+                 content,
+                 reg_date
+             FROM (
+                  SELECT id, title, content, reg_date
+                  FROM EX_DTO
+                  ORDER BY reg_date DESC, id DESC
+                  )
+             WHERE ROWNUM &lt;= #{offset} + #{pageSize}
+             )
+        WHERE rn &gt; #{offset}
+    </select>
+
+    <select id="exSelectId" resultType="com.ex.tjspring.batisexample.dto.ExDto">
+        SELECT id, title, content, reg_date as regDate
+        FROM EX_DTO
+        WHERE id = #{id}
+    </select>
+
+    <select id="exSelectTotalCount" resultType="int">
+        SELECT COUNT(*) FROM EX_DTO
+    </select>
+
+    <update id="exUpdate" parameterType="com.ex.tjspring.batisexample.dto.ExDto">
+        UPDATE EX_DTO
+        SET title = #{title}, content = #{content}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="exDelete" parameterType="java.lang.Long">
+        DELETE FROM EX_DTO
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
