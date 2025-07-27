@@ -87,10 +87,10 @@ jobs:
           # SSH 접속 후 실행할 스크립트
           script: |
             echo "Stopping and removing existing Docker containers..."
-            # 기존 'project' 이름의 컨테이너를 중지하고 삭제
-            # -q: ID만 출력, --filter "name=project": 이름이 'project'인 컨테이너 필터링
-            sudo docker stop $(sudo docker ps -q --filter "name=project") || true # 실행 중인 컨테이너가 없어도 에러나지 않도록 || true 추가
-            sudo docker rm $(sudo docker ps -aq --filter "name=project") || true # 모든 상태의 'project' 컨테이너 삭제
+            # 기존 'tjspring' 이름의 컨테이너를 중지하고 삭제
+            # -q: ID만 출력, --filter "name=tjspring": 이름이 'tjspring'인 컨테이너 필터링
+            sudo docker stop $(sudo docker ps -q --filter "name=tjspring") || true # 실행 중인 컨테이너가 없어도 에러나지 않도록 || true 추가
+            sudo docker rm $(sudo docker ps -aq --filter "name=tjspring") || true # 모든 상태의 'tjspring' 컨테이너 삭제
 
             echo "Pulling the latest Docker image from Docker Hub..."
             # Docker Hub에서 최신 이미지 Pull
@@ -98,12 +98,12 @@ jobs:
 
             echo "Running the new Docker container..."
             # 새 컨테이너 실행
-            # --name project: 컨테이너 이름 설정
+            # --name tjspring: 컨테이너 이름 설정
             # -d: 데몬 모드로 백그라운드 실행
             # -p 8081:8081: 호스트의 8081 포트를 컨테이너의 8081 포트에 매핑 (application.properties와 일치)
             # -e: 환경 변수 주입 (DB 접속 정보) - GitHub Secrets에서 가져옴
             sudo docker run -d \
-              --name project \
+              --name tjspring \
               -p 8081:8081 \
               -e DB_URL="${{ secrets.DB_URL }}" \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
@@ -113,7 +113,7 @@ jobs:
             echo "New container started. Checking logs..."
             # 컨테이너 시작 후 초기 로그 확인 (선택 사항)
             # sleep 5 # 컨테이너가 완전히 시작될 때까지 잠시 대기
-            # sudo docker logs project
+            # sudo docker logs tjspring
 
             echo "Cleaning up unused Docker images..."
             # 사용되지 않는 Docker 이미지 정리 (디스크 공간 확보)
