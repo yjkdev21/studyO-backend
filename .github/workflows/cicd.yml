@@ -21,7 +21,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      # 2. JDK 설정 - GitHub Actions 빌드 환경에서 사용할 JDK 설정
+      # 2. JDK 설정 - GitHub Actions 빌드 환경에서 사용할 JDK 설정 #
       # 프로젝트 빌드 시 필요한 Java 버전과 동일하게 설정하는 것이 좋음
       - name: Set up JDK 21
         uses: actions/setup-java@v3
