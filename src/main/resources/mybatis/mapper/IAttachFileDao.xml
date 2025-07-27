@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.common.dao.IAttachFileDao">
+
+    <insert id="insert" parameterType="com.ex.tjspring.common.dto.AttachFileDto">
+        INSERT INTO ATTACHMENTS (
+        post_id,
+        file_name,
+        stored_file_name,
+        file_size,
+        file_type,
+        reg_date
+        ) VALUES (
+                 #{postId},
+                 #{fileName},
+                 #{storedFileName},
+                 #{fileSize},
+                 #{fileType},
+                 #{regDate}
+                 )
+    </insert>
+
+    <select id="selectId" resultType="com.ex.tjspring.common.dto.AttachFileDto">
+        SELECT id, post_id as postId,
+                   file_name as fileName,
+                   stored_file_name as storedFileName,
+                   file_size as fileSize,
+                   file_type as fileType,
+                   reg_date as regDate
+        FROM ATTACHMENTS
+        WHERE id = #{id}
+    </select>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM ATTACHMENTS
+        WHERE id = #{id}
+    </delete>
+
+
+    <delete id="deleteByStoredFileName" parameterType="java.lang.String">
+        DELETE FROM ATTACHMENTS
+        WHERE stored_file_name = #{storedFileName}
+    </delete>
+
+    <!-- storedFileName으로 첨부파일 정보 조회 쿼리 추가 -->
+    <select id="selectByStoredFileName" resultType="com.ex.tjspring.common.dto.AttachFileDto">
+        SELECT
+            id,
+            post_id as postId,
+            file_name as fileName,
+            stored_file_name as storedFileName,
+            file_size as fileSize,
+            file_type as fileType,
+            reg_date as regDate
+        FROM ATTACHMENTS
+        WHERE stored_file_name = #{storedFileName}
+    </select>
+
+</mapper>
