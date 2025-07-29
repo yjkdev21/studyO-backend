@@ -2,10 +2,21 @@
 name: CI/CD using github actions & docker
 
 # event trigger
-# main 브랜치에 push가 되었을 때 실행
+# main 브랜치에 push가 되었을 때 실행 ( 자동배포 )
+# on:
+#   push:
+#     branches: ["main"]
+
+##########  수동 실행을 위한 workflow_dispatch 이벤트 추가  ##########
 on:
-  push:
-    branches: ["main"]
+  workflow_dispatch: # Actions 탭에서 'Run workflow' 버튼이 활성화됩니다.
+    inputs:
+      reason:
+        description: '배포 사유 (예: 기능 추가, 버그 수정 등)'
+        required: false
+        default: '수동 배포'
+
+########## 수동 설정 ##########
 
 # 워크플로우 실행 권한 설정
 permissions:

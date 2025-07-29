@@ -95,7 +95,7 @@ public class ExEditorController {
                 if (!file.isEmpty()) { // 파일이 비어있지 않은 경우에만 처리합니다.
                     // S3에 파일 업로드 및 저장된 파일명(S3 객체 키)을 받습니다.
                     String originalFileName = file.getOriginalFilename();
-                    String storedFileName = s3Service.upload(S3DirKey.ATTACHFILE.getDirKeyName(),file); // S3Service가 S3 객체 키를 반환합니다.
+                    String storedFileName = s3Service.upload(S3DirKey.ATTACHFILE,file); // S3Service가 S3 객체 키를 반환합니다.
 
                     // AttachFileDto를 생성하고 파일 메타데이터를 설정합니다.
                     AttachFileDto attachFileDto = new AttachFileDto();
@@ -171,7 +171,7 @@ public class ExEditorController {
             }
 
             // 2. S3에서 실제 파일 데이터를 다운로드합니다.
-            byte[] data = s3Service.downloadFile(S3DirKey.ATTACHFILE.getDirKeyName(),fileDto.getStoredFileName());
+            byte[] data = s3Service.downloadFile(S3DirKey.ATTACHFILE,fileDto.getStoredFileName());
             ByteArrayResource resource = new ByteArrayResource(data); // 바이트 배열을 리소스로 변환합니다.
 
             // 3. 파일명 인코딩 (한글 파일명 깨짐 방지)
@@ -302,7 +302,7 @@ public class ExEditorController {
                 for (String storedFileName : deletedFileNames) {
                     try {
                         // S3에서 파일 삭제
-                        s3Service.delete( S3DirKey.ATTACHFILE.getDirKeyName() ,storedFileName);
+                        s3Service.delete( S3DirKey.ATTACHFILE ,storedFileName);
                         // DB에서 파일 메타데이터 삭제
                         attachFileService.deleteByStoredFileName(storedFileName);
                         log.info("S3 및 DB에서 파일 삭제 완료: {}", storedFileName);
@@ -319,7 +319,7 @@ public class ExEditorController {
                 for (MultipartFile file : newAttachments) {
                     if (!file.isEmpty()) {
                         String originalFileName = file.getOriginalFilename();
-                        String storedFileName = s3Service.upload(S3DirKey.ATTACHFILE.getDirKeyName(),file); // S3에 업로드
+                        String storedFileName = s3Service.upload(S3DirKey.ATTACHFILE,file); // S3에 업로드
 
                         AttachFileDto attachFileDto = new AttachFileDto();
                         attachFileDto.setPostId(exEditorDtoEdit.getId()); // 수정하는 게시글 ID와 연결합니다.
@@ -372,7 +372,7 @@ public class ExEditorController {
                 for (AttachFileDto file : postToDelete.getAttachFile()) {
                     try {
                         // S3에서 파일 삭제
-                        s3Service.delete(S3DirKey.ATTACHFILE.getDirKeyName(),file.getStoredFileName());
+                        s3Service.delete(S3DirKey.ATTACHFILE,file.getStoredFileName());
                         // DB에서 첨부파일 메타데이터 삭제 (on delete cascade 외래 키 제약 조건에 의해 게시글 삭제 시 자동 삭제되지만, S3 삭제는 수동으로 처리합니다.)
                         // attachFileService.deleteByStoredFileName(file.getStoredFileName()); // FK cascade로 자동 삭제되므로 이 라인은 주석 처리합니다.
                         log.info("게시글 {}에 연결된 S3 파일 삭제 완료: {}", id, file.getStoredFileName());
