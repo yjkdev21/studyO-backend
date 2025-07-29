@@ -47,7 +47,7 @@ public class S3Service {
 
     /** MultipartFile 업로드 (이미지 등) */
     // 반환값을 S3 객체 키 (예: uploads/dirKey/unique-filename.jpg)로 변경
-    public String upload( String dirKey , MultipartFile file) throws IOException {
+    public String upload( S3DirKey dirKey , MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             log.warn("Uploaded file is empty.");
             return null;
@@ -60,7 +60,7 @@ public class S3Service {
         }
         String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
 
-        String key = dir + dirKey + "/" + uniqueFileName; // S3에 저장될 객체 키 ( upload/dirkey/391739f-aefe...jpg )
+        String key = dir + dirKey.getDirKeyName() + "/" + uniqueFileName; // S3에 저장될 객체 키 ( upload/dirkey/391739f-aefe...jpg )
 
         log.info("S3 Upload Details: bucket={}, region={}, key={}, contentType={}",
                 bucket, region, key, file.getContentType());
@@ -87,14 +87,14 @@ public class S3Service {
 
     /** 로컬 Path(File) 업로드 */
     // 반환값을 S3 객체 키로 변경
-    public String upload(String dirKey , Path path) throws IOException {
+    public String upload( S3DirKey dirKey , Path path) throws IOException {
         if (!Files.exists(path)) {
             log.warn("Local file does not exist: {}", path.toString());
             return null;
         }
 
         String uniqueFileName = UUID.randomUUID().toString() + "-" + path.getFileName().toString();
-        String key = dir + dirKey + "/" + uniqueFileName;
+        String key = dir + dirKey.getDirKeyName() + "/" + uniqueFileName;
 
         log.info("S3 Path Upload Details: bucket={}, region={}, key={}, contentType={}",
                 bucket, region, key, Files.probeContentType(path));
@@ -120,8 +120,8 @@ public class S3Service {
     }
 
     /** S3 객체 다운로드 */
-    public byte[] downloadFile(String dirKey , String storedFileName) throws IOException {
-        String key = dir + dirKey + "/" + storedFileName;
+    public byte[] downloadFile( S3DirKey dirKey , String storedFileName) throws IOException {
+        String key = dir + dirKey.getDirKeyName() + "/" + storedFileName;
         try {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket(bucket)
@@ -137,14 +137,14 @@ public class S3Service {
     }
 
     /** S3 객체 삭제 */
-    public void delete(String dirKey , String storedFileName) {
+    public void delete( S3DirKey dirKey , String storedFileName) {
 
         if (storedFileName == null || storedFileName.trim().isEmpty()) {
             log.warn("Attempted to delete with empty or null S3 key.");
             return;
         }
 
-        String key = dir + dirKey + "/" + storedFileName;
+        String key = dir + dirKey.getDirKeyName() + "/" + storedFileName;
 
         log.info("delete key = {}", key);
 
@@ -167,4 +167,12 @@ public class S3Service {
             throw e;
         }
     }
+
+    public String getFileFullPath(S3DirKey dirKey , String storedFileName) {
+        String s3Host = "https://upload-bucket-study.s3.ap-northeast-2.amazonaws.com/";
+        return s3Host + dir + dirKey.getDirKeyName() + "/" + storedFileName;
+    }
+
+
+
 }

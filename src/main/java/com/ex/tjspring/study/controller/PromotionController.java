@@ -156,7 +156,7 @@ public class PromotionController {
             }
 
             // 2. S3에서 실제 파일 데이터를 다운로드합니다.
-            byte[] data = s3Service.downloadFile(S3DirKey.ATTACHFILE.getDirKeyName(),fileDto.getStoredFileName());
+            byte[] data = s3Service.downloadFile(S3DirKey.ATTACHFILE,fileDto.getStoredFileName());
             ByteArrayResource resource = new ByteArrayResource(data); // 바이트 배열을 리소스로 변환합니다.
 
             // 3. 파일명 인코딩 (한글 파일명 깨짐 방지)
@@ -212,7 +212,7 @@ public class PromotionController {
             for (String storedFileName : deletedFileNames) {
                 try {
                     // S3에서 파일 삭제
-                    s3Service.delete( S3DirKey.ATTACHFILE.getDirKeyName() ,storedFileName);
+                    s3Service.delete( S3DirKey.ATTACHFILE ,storedFileName);
                     // DB에서 파일 메타데이터 삭제
                     attachFileService.deleteByStoredFileName(storedFileName);
                     log.info("S3 및 DB에서 파일 삭제 완료: {}", storedFileName);
@@ -232,7 +232,7 @@ public class PromotionController {
             for (AttachFileDto file : postToDelete.getAttachFile()) {
                 try {
                     // S3에서 파일 삭제
-                    s3Service.delete(S3DirKey.ATTACHFILE.getDirKeyName(),file.getStoredFileName());
+                    s3Service.delete(S3DirKey.ATTACHFILE,file.getStoredFileName());
                     log.info("게시글 {}에 연결된 S3 파일 삭제 완료: {}", postId, file.getStoredFileName());
                 } catch (Exception e) {
                     log.error("게시글 {}에 연결된 S3 파일 {} 삭제 실패: {}", postId, file.getStoredFileName(), e.getMessage(), e);
@@ -277,7 +277,10 @@ public class PromotionController {
             for (MultipartFile file : attachments) {
                 if (!file.isEmpty()) {
                     String originalFileName = file.getOriginalFilename();
-                    String storedFileName = s3Service.upload(S3DirKey.ATTACHFILE.getDirKeyName(), file);
+                    String storedFileName = s3Service.upload(S3DirKey.ATTACHFILE, file);
+
+                    // upload 한 file url...
+                    //String storedFileFullPath = s3Service.getFileFullPath(S3DirKey.ATTACHFILE, storedFileName);
 
                     AttachFileDto attachFileDto = new AttachFileDto();
                     attachFileDto.setPostId(postId);
