@@ -27,4 +27,12 @@
         SELECT * FROM users WHERE user_id = #{userId}
     </select>
 
+  <select id="findByEmail" resultType="com.ex.tjspring.user.model.User" parameterType="string">
+    SELECT * FROM users WHERE email = #{email}
+  </select>
+
+  <select id="findByNickname" resultType="com.ex.tjspring.user.model.User" parameterType="string">
+    SELECT * FROM users WHERE nickname = #{nickname}
+  </select>
+
 </mapper>
