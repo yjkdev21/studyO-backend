@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>새 게시글 작성</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    /* Quill 에디터 높이 조절 */
+    .ql-container {
+        min-height: 400px; /* 최소 높이 */
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900 antialiased">
+<div class="container mx-auto p-4 sm:p-6 lg:p-8">
+  <h1 class="text-4xl font-extrabold text-indigo-700 text-center mb-8 sm:mb-10">새 게시글 작성</h1>
+
+  <div class="bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto">
+    <!-- 파일 업로드를 위해 enctype="multipart/form-data" 속성 추가 -->
+    <form th:action="@{/editorexample/insert}" th:object="${exEditorDtoInsert}" method="post" enctype="multipart/form-data">
+      <div class="mb-6">
+        <label for="title" class="block text-gray-700 text-sm font-bold mb-2">제목</label>
+        <input type="text" id="title" name="title" th:field="*{title}"
+               class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
+               placeholder="게시글 제목을 입력하세요" required>
+        <!-- 제목 유효성 검증 오류 메시지 표시 (기존 유지) -->
+        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-red-500 text-xs italic mt-1">제목 오류 메시지</p>
+      </div>
+
+      <div class="mb-6">
+        <label for="content" class="block text-gray-700 text-sm font-bold mb-2">내용</label>
+        <!-- Quill 에디터 프래그먼트 포함 -->
+        <!-- Deprecated 경고 해결: ~{} 구문 사용 -->
+        <div th:replace="~{fragments/quill-editor :: quillEditor('editor-container', 'postContent', '')}"></div>
+        <!-- 내용 유효성 검증 오류 메시지 표시 (기존 유지) -->
+        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-red-500 text-xs italic mt-1">내용 오류 메시지</p>
+      </div>
+
+      <!-- 첨부파일 입력 -->
+      <div class="mb-6">
+        <label for="attachments" class="block text-gray-700 text-sm font-bold mb-2">첨부파일</label>
+        <input type="file" id="attachments" name="attachments" multiple
+               class="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-indigo-50 file:text-indigo-700
+                        hover:file:bg-indigo-100 transition duration-200"
+               aria-describedby="file_input_help">
+        <p class="mt-1 text-sm text-gray-500" id="file_input_help">PDF, DOC, JPG, PNG 등 (최대 10MB)</p>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <button type="submit"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full focus:outline-none focus:shadow-outline transition duration-300 shadow-md">
+          게시글 등록
+        </button>
+        <!-- "목록으로" 버튼의 링크를 /editorexample/list 로 변경 -->
+        <a th:href="@{/editorexample/list}"
+           class="inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-full focus:outline-none focus:shadow-outline transition duration-300 shadow-md">
+          목록으로
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script th:inline="javascript">
+  var message = [[${message}]];
+  if (message != null && message !== '') {
+      alert(message);
+  }
+</script>
+
+</body>
+</html>

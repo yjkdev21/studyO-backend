@@ -43,3 +43,34 @@ COMMIT;
 SELECT * FROM EX_DTO;
 
 
+DROP TABLE EX_DTO_EDITOR;
+CREATE TABLE EX_DTO_EDITOR (
+    id NUMBER(19, 0) PRIMARY KEY, -- Long 타입에 해당, 19자리 숫자 (Java의 Long 최대값 고려)
+    title VARCHAR2(255) NOT NULL, -- String 타입, 최대 255자, NULL 허용 안함
+    content CLOB,                 -- String 타입 (긴 텍스트), CLOB은 대용량 텍스트 저장에 적합
+    reg_date TIMESTAMP DEFAULT SYSTIMESTAMP -- LocalDateTime 타입에 해당, 날짜와 시간 정보 저장, 시스템 시각으로 자동 등록
+);
+
+-- 시퀀스 생성 (id 컬럼의 자동 증가를 위해)
+DROP SEQUENCE EX_DTO_EDITOR_SEQ;
+CREATE SEQUENCE EX_DTO_EDITOR_SEQ
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+-- 트리거 생성 (시퀀스를 사용하여 id 자동 증가)
+DROP TRIGGER EX_DTO_EDITOR_TRG;
+CREATE OR REPLACE TRIGGER EX_DTO_EDITOR_TRG
+BEFORE INSERT ON EX_DTO_EDITOR
+FOR EACH ROW
+BEGIN
+    IF :NEW.id IS NULL THEN
+        SELECT EX_DTO_EDITOR_SEQ.NEXTVAL INTO :NEW.id FROM DUAL;
+    END IF;
+END;
+/
+
+
+select * from ex_dto_editor;
+
