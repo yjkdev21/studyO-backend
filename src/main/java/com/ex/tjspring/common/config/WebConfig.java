@@ -16,9 +16,11 @@ public class WebConfig {
                 registry.addMapping("/api/**")
                         .allowedOrigins(
                                 "http://localhost:5173",
+                                "http://localhost:5174",
                                 "https://hyunsuplee.github.io",
                                 "http://www.studyo.kro.kr",
-                                "https://www.studyo.kro.kr"
+                                "https://www.studyo.kro.kr",
+                                "http://15.164.104.241:8081"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
