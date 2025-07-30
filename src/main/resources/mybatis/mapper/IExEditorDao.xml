@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.editorexample.dao.IExEditorDao">
+
+    <!-- ExEditorDto와 AttachFileDto를 매핑하기 위한 resultMap 정의 -->
+    <!-- type을 com.ex.tjspring.editorexample.dto.EditorViewDto로 변경 -->
+    <resultMap id="editorViewDtoResultMap" type="com.ex.tjspring.editorexample.dto.ExEditorViewDto">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="regDate" column="reg_date"/>
+
+        <!-- AttachFileDto 목록을 매핑하는 collection -->
+        <collection property="attachFile" ofType="com.ex.tjspring.common.dto.AttachFileDto">
+            <id property="id" column="attach_id"/> <!-- ATTACHMENTS 테이블의 id -->
+            <result property="postId" column="attach_post_id"/>
+            <result property="fileName" column="attach_file_name"/>
+            <result property="storedFileName" column="attach_stored_file_name"/>
+            <result property="fileSize" column="attach_file_size"/>
+            <result property="fileType" column="attach_file_type"/>
+            <result property="regDate" column="attach_reg_date"/>
+        </collection>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.ex.tjspring.editorexample.dto.ExEditorDto" keyProperty="id">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            SELECT EX_DTO_EDITOR_SEQ.CURRVAL FROM DUAL
+        </selectKey>
+        INSERT INTO EX_DTO_EDITOR (id, title, content, reg_date)
+        VALUES (EX_DTO_EDITOR_SEQ.NEXTVAL, #{title}, #{content}, SYSTIMESTAMP)
+    </insert>
+
+    <select id="selectAllPaged" resultType="com.ex.tjspring.editorexample.dto.ExEditorDto">
+        SELECT id, title, content, reg_date as regDate
+        FROM (
+             SELECT
+                 ROWNUM rn,
+                 id,
+                 title,
+                 content,
+                 reg_date
+             FROM (
+                  SELECT id, title, content, reg_date
+                  FROM EX_DTO_EDITOR
+                  ORDER BY reg_date DESC, id DESC
+                  )
+             WHERE ROWNUM &lt;= #{offset} + #{pageSize}
+             )
+        WHERE rn &gt; #{offset}
+    </select>
+
+    <!-- selectId 쿼리 수정: ATTACHMENTS 테이블 조인 및 resultMap 사용 -->
+    <!-- resultMap을 editorViewDtoResultMap으로 변경 -->
+    <select id="selectId" resultMap="editorViewDtoResultMap" parameterType="java.lang.Long">
+        SELECT
+            e.id,
+            e.title,
+            e.content,
+            e.reg_date,
+            a.id AS attach_id,
+            a.post_id AS attach_post_id,
+            a.file_name AS attach_file_name,
+            a.stored_file_name AS attach_stored_file_name,
+            a.file_size AS attach_file_size,
+            a.file_type AS attach_file_type,
+            a.reg_date AS attach_reg_date
+        FROM EX_DTO_EDITOR e
+             LEFT JOIN ATTACHMENTS a ON e.id = a.post_id
+        WHERE e.id = #{id}
+    </select>
+
+    <select id="selectTotalCount" resultType="int">
+        SELECT COUNT(*) FROM EX_DTO_EDITOR
+    </select>
+
+    <update id="update" parameterType="com.ex.tjspring.editorexample.dto.ExEditorDto">
+        UPDATE EX_DTO_EDITOR
+        SET title = #{title}, content = #{content}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM EX_DTO_EDITOR
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
