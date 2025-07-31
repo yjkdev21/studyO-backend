@@ -16,6 +16,7 @@ public class WebConfig {
                 registry.addMapping("/api/**")
                         .allowedOrigins(
                                 "http://localhost:5173",
+                                "http://localhost:5174",
                                 "https://hyunsuplee.github.io",
                                 "http://www.studyo.kro.kr",
                                 "https://www.studyo.kro.kr"
