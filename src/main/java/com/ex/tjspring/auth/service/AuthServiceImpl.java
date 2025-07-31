@@ -15,14 +15,33 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User login(String userId, String password) {
-        // 1. userId로 사용자 찾기
+        // userId로 사용자 찾기
         User user = userMapper.findByUserId(userId);
         if (user == null) {
             return null;
         }
-        // 2. BCrypt로 비밀번호 검증 - 평문과 해시 비교
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return null;
+        String storedPassword = user.getPassword();
+
+        // 1. BCrypt 해시 여부 판단
+        boolean isBcrypt = storedPassword != null
+                && storedPassword.startsWith("$2")
+                && storedPassword.length() == 60;
+
+        if (isBcrypt) {
+            // 해시된 경우: matches() 사용
+            if (!passwordEncoder.matches(password, storedPassword)) {
+                return null;
+            }
+        } else {
+            // 해시 안 된 경우: 평문 비교
+            if (!password.equals(storedPassword)) {
+                return null;
+            }
+
+            // 로그인 성공 시 -> 비밀번호를 BCrypt로 업데이트 (선택 사항)
+//            String encoded = passwordEncoder.encode(password);
+//            user.setPassword(encoded);
+//            userMapper.updatePassword(user);
         }
 
         return user;
