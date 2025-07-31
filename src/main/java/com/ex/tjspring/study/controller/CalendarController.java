@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController // 컨트롤러에서 리턴하는 값이 자동으로 JSON으로 변환되어 응답
+@RestController
 @RequestMapping("/api/study/calendar") // 공통 URL 경로 설정
 public class CalendarController {
 
@@ -34,9 +34,10 @@ public class CalendarController {
     // 일정 등록: 프론트에서 보낸 일정 데이터를 담아 DB에 저장
     // 예: POST/api/study/calendar
     @PostMapping
-    public void insetCalendar(@RequestBody CalendarDto dto) {
+    public CalendarDto insetCalendar(@RequestBody CalendarDto dto) {
         // 프론트에서 JSON 형태로 받은 dto를 DB에 저장
         calendarService.calendarInsert(dto);
+        return dto; // 생성된 ID를 포함해서 반환
     }
 
     // 수정

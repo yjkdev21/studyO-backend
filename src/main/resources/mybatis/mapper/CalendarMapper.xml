@@ -6,23 +6,50 @@
 
     <!--  전체 조회  -->
     <select id="getCalendarList" resultType="com.ex.tjspring.study.dto.CalendarDto">
-        SELECT *
+        SELECT
+            id,
+            study_id as studyId,
+            title,
+            content,
+            start_date as startDate,
+            end_date as endDate,
+            bg_color as bgColor,
+            text_color as textColor,
+            writer_id as writerId,
+            created_at as createdAt,
+            updated_at as updatedAt,
+            deleted_yn as deletedYn
         FROM calendar
-        WHERE study_id =#{studyId}
-            AND deleted_yn = 'N'
+        WHERE study_id = #{studyId}
+        AND deleted_yn = 'N'
         ORDER BY start_date ASC
     </select>
 
     <!--  상세 조회  -->
     <select id="getCalendarById" resultType="com.ex.tjspring.study.dto.CalendarDto">
-        SELECT *
+        SELECT
+            id,
+            study_id as studyId,
+            title,
+            content,
+            start_date as startDate,
+            end_date as endDate,
+            bg_color as bgColor,
+            text_color as textColor,
+            writer_id as writerId,
+            created_at as createdAt,
+            updated_at as updatedAt,
+            deleted_yn as deletedYn
         FROM calendar
         WHERE id = #{id}
             AND deleted_yn = 'N'
     </select>
 
     <!--  일정 등록  -->
-    <insert id="calendarInsert" parameterType="com.ex.tjspring.study.dto.CalendarDto">
+    <insert id="calendarInsert" parameterType="com.ex.tjspring.study.dto.CalendarDto" keyProperty="id">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            SELECT calendar_seq.CURRVAL FROM DUAL
+        </selectKey>
         INSERT INTO calendar(
             study_id, title, content, start_date, end_date,
             bg_color, text_color, writer_id, created_at, deleted_yn)
@@ -34,8 +61,11 @@
 
     <!--  수정  -->
     <update id="calendarUpdate" parameterType="com.ex.tjspring.study.dto.CalendarDto">
-        UPDATE Calendar
-        SET title = #{title}, content = #{content}
+        UPDATE calendar
+        SET
+            title = #{title},
+            content = #{content},
+            updated_at = SYSDATE
         WHERE id = #{id}
     </update>
 
