@@ -11,45 +11,40 @@ import java.util.List;
 @RequestMapping("/api/study/calendar") // 공통 URL 경로 설정
 public class CalendarController {
 
-    // CalendarServiceImpl을 스프링이 자동으로 주입(DI)
     @Autowired
     private CalendarServiceImpl calendarService;
 
     // 전체 조회
-    // 예: GET/api/study/calendar/study/1
-    @GetMapping("/study/{studyId}")
-    public List<CalendarDto> getCalendarList(@PathVariable Long studyId) {
-        // 서비스 계층에 studyId 전달하여 일정 목록 반환
-        return calendarService.getCalendarList(studyId);
+    @GetMapping("/study/{groupId}")
+    public List<CalendarDto> getCalendarList(@PathVariable Long groupId) {
+        return calendarService.getCalendarList(groupId);
     }
 
     // 상세 조회
-    // 예: GET/api/study/calendar/5
     @GetMapping("/{id}")
     public CalendarDto getCalendarById(@PathVariable Long id) {
-        // 서비스 계층에서 id로 일정 상세정보 가져오기
         return calendarService.getCalendarById(id);
     }
 
-    // 일정 등록: 프론트에서 보낸 일정 데이터를 담아 DB에 저장
-    // 예: POST/api/study/calendar
+    // 일정 등록
     @PostMapping
-    public CalendarDto insetCalendar(@RequestBody CalendarDto dto) {
-        // 프론트에서 JSON 형태로 받은 dto를 DB에 저장
-        calendarService.calendarInsert(dto);
-        return dto; // 생성된 ID를 포함해서 반환
+    public CalendarDto insertCalendar(@RequestBody CalendarDto dto,
+                                      @RequestHeader("X-USER-ID") Long userId) {
+        calendarService.calendarInsert(dto, userId);
+        return dto;
     }
 
     // 수정
-    // 예: PUT/api/study/calendar
     @PutMapping
-    public void updateCalendar(@RequestBody CalendarDto dto) {
-        calendarService.calendarUpdate(dto);
+    public void updateCalendar(@RequestBody CalendarDto dto,
+                               @RequestHeader("X-USER-ID") Long userId) {
+        calendarService.calendarUpdate(dto, userId);
     }
 
     // 삭제
     @DeleteMapping("/{id}")
-    public void  deleteCalendar(@PathVariable Long id) {
-        calendarService.calendarDelete(id);
+    public void  deleteCalendar(@PathVariable Long id,
+                                @RequestHeader("X-USER-ID") Long userId) {
+        calendarService.calendarDelete(id, userId);
     }
 }

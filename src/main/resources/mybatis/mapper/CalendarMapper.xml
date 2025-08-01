@@ -8,7 +8,7 @@
     <select id="getCalendarList" resultType="com.ex.tjspring.study.dto.CalendarDto">
         SELECT
             id,
-            study_id as studyId,
+            group_id as groupId,
             title,
             content,
             start_date as startDate,
@@ -20,7 +20,7 @@
             updated_at as updatedAt,
             deleted_yn as deletedYn
         FROM calendar
-        WHERE study_id = #{studyId}
+        WHERE group_id = #{groupId}
         AND deleted_yn = 'N'
         ORDER BY start_date ASC
     </select>
@@ -29,7 +29,7 @@
     <select id="getCalendarById" resultType="com.ex.tjspring.study.dto.CalendarDto">
         SELECT
             id,
-            study_id as studyId,
+            group_id as groupId,
             title,
             content,
             start_date as startDate,
@@ -51,10 +51,10 @@
             SELECT calendar_seq.CURRVAL FROM DUAL
         </selectKey>
         INSERT INTO calendar(
-            study_id, title, content, start_date, end_date,
+            group_id, title, content, start_date, end_date,
             bg_color, text_color, writer_id, created_at, deleted_yn)
         VALUES (
-            #{studyId},#{title}, #{content}, #{startDate}, #{endDate},
+            #{groupId},#{title}, #{content}, #{startDate}, #{endDate},
             #{bgColor}, #{textColor}, #{writerId}, sysdate, 'N'
         )
     </insert>
@@ -74,5 +74,15 @@
         DELETE FROM calendar
         WHERE id = #{id}
     </delete>
+
+    <!--  스터디장인지 확인  -->
+    <select id="countStudyAdmin" resultType="int">
+        SELECT COUNT(*)
+        FROM STUDY_MEMBERSHIP
+        WHERE user_id = #{userId}
+            AND GROUP_id = #{groupId}
+            AND MEMBER_ROLE = 'ADMIN'
+            AND MEMBERSHIP_STATUS = 'ACTIVE'
+    </select>
 
 </mapper>

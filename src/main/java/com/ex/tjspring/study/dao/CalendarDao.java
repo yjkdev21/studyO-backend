@@ -10,17 +10,22 @@ import java.util.List;
 @Mapper
 public interface CalendarDao {
     // 스터디 ID 기준 일정 전체 조회
-    List<CalendarDto> getCalendarList (@Param("studyId") Long studyId);
+    List<CalendarDto> getCalendarList (@Param("groupId") Long studyId);
 
     // 상세조회
     CalendarDto getCalendarById(@Param("id") Long id);
 
+    // 등록
     void calendarInsert(CalendarDto calendarDto);
 
+    // 수정
     void calendarUpdate(CalendarDto calendarDto);
 
-    // 논리삭제
+    // 삭제
     void calendarDelete(@Param("id") Long id);
+
+    // 스터디장인지 확인
+    int countStudyAdmin(@Param("userId") Long userId, @Param("groupId") Long studyId);
 
 
 

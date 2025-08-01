@@ -5,7 +5,7 @@ import java.util.Date;
 @Data
 public class CalendarDto {
     private Long id;
-    private Long studyId;
+    private Long groupId;
     private String title;
     private String content;
     private Date startDate;

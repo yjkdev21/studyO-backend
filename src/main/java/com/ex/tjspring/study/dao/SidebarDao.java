@@ -14,6 +14,6 @@ public interface SidebarDao {
      * SQL: SELECT id, category, group_name as name, contact
      *      FROM study_groups where id = #{studyId}
     **/
-    SidebarDto getStydyInfo(Long studyId);
+    SidebarDto getStudyInfo(Long studyId);
 
 }
