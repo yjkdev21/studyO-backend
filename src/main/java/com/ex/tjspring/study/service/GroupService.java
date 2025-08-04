@@ -18,10 +18,11 @@ public class GroupService {
     @Autowired
     private GroupDao dao;
 
+    // ========== 기존 메서드들 (그대로 유지) ==========
+
     public void insert(GroupDto groupDto) {
         log.info("그룹 생성 시작: {}", groupDto.getGroupName());
 
-        // 중복 체크
         if (existsByGroupName(groupDto.getGroupName())) {
             throw new IllegalArgumentException("이미 존재하는 그룹명입니다.");
         }
@@ -33,20 +34,16 @@ public class GroupService {
         return dao.selectGroupById(id);
     }
 
-    // 전체 그룹 조회
     public List<GroupDto> selectAllGroups() {
         log.info("전체 그룹 조회");
         return dao.selectAllGroups();
     }
 
-    // 그룹 수정
     public void update(GroupDto groupDto) {
         log.info("그룹 수정 시작 - ID: {}", groupDto.getGroupId());
 
-        // 존재하는 그룹인지 확인
         GroupDto existingGroup = selectGroupById(groupDto.getGroupId());
 
-        // 그룹명이 변경되었다면 중복 체크
         if (!existingGroup.getGroupName().equals(groupDto.getGroupName())
                 && existsByGroupName(groupDto.getGroupName())) {
             throw new IllegalArgumentException("이미 존재하는 그룹명입니다.");
@@ -56,7 +53,6 @@ public class GroupService {
         log.info("그룹 수정 완료 - ID: {}", groupDto.getGroupId());
     }
 
-    //그룹 삭제
     public void delete(Long id) {
         log.info("그룹 삭제 시작 - ID: {}", id);
 
@@ -66,11 +62,19 @@ public class GroupService {
         log.info("그룹 삭제 완료 - ID: {}", id);
     }
 
-
-//    // 그룹명 중복 확인
     public boolean existsByGroupName(String groupName) {
         return dao.existsByGroupName(groupName) > 0;
     }
 
+    // ========== 새로 추가되는 메서드들 ==========
 
+    public List<GroupDto> getStudyGroupsByUserId(Long userId) {
+        log.info("사용자 {}의 참여 그룹 조회", userId);
+        return dao.findByUserId(userId);
+    }
+
+    public List<GroupDto> getActiveStudyGroupsByUserId(Long userId) {
+        log.info("사용자 {}의 활성 그룹 조회", userId);
+        return dao.findActiveByUserId(userId);
+    }
 }

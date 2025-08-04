@@ -2,6 +2,7 @@ package com.ex.tjspring.study.dao;
 
 import com.ex.tjspring.study.dto.GroupDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,7 +19,10 @@ public interface GroupDao {
 
     GroupDto selectGroupById(Long id);
 
-    //그룹명 중복 확인
     int existsByGroupName(String groupName);
 
+    // 새로 추가되는 메서드들
+    List<GroupDto> findByUserId(@Param("userId") Long userId);
+
+    List<GroupDto> findActiveByUserId(@Param("userId") Long userId);
 }

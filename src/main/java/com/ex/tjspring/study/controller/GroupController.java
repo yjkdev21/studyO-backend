@@ -18,11 +18,13 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/study")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"}) // CORS 설정 추가
 public class GroupController {
 
     @Autowired
     private GroupService groupService;
 
+    // ========== 기존 코드들 (그대로 유지) ==========
 
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Map<String, Object>> createGroup(
@@ -32,12 +34,9 @@ public class GroupController {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // 썸네일 처리 예시
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
                 log.info("썸네일 파일 수신: {}", thumbnailFile.getOriginalFilename());
-
-                // 예시: 파일 저장 처리 후 DTO에 파일명 세팅
-                String filename = thumbnailFile.getOriginalFilename(); // 여기서는 그냥 파일명만
+                String filename = thumbnailFile.getOriginalFilename();
                 groupDto.setThumbnail(filename);
             }
 
@@ -122,7 +121,6 @@ public class GroupController {
             }
 
             groupDto.setGroupId(id);
-
             groupService.update(groupDto);
 
             response.put("success", true);
@@ -168,7 +166,6 @@ public class GroupController {
         }
     }
 
-    //이름 중복 확인
     @GetMapping("/check-name/{groupName}")
     public ResponseEntity<Map<String, Object>> checkGroupNameDuplicate(@PathVariable String groupName) {
         Map<String, Object> response = new HashMap<>();
@@ -191,5 +188,49 @@ public class GroupController {
         }
     }
 
+    // ========== 새로 추가되는 사용자 참여 그룹 조회 기능 ==========
 
+    // 특정 사용자가 참여한 모든 스터디 그룹 조회 (현재 + 과거)
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Map<String, Object>> getStudyGroupsByUserId(@PathVariable Long userId) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            List<GroupDto> groups = groupService.getStudyGroupsByUserId(userId);
+
+            response.put("success", true);
+            response.put("data", groups);
+            response.put("count", groups.size());
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("사용자 참여 그룹 조회 중 오류 발생: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("message", "참여 그룹 목록을 불러오는 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    // 특정 사용자가 현재 참여 중인 스터디 그룹만 조회
+    @GetMapping("/user/{userId}/active")
+    public ResponseEntity<Map<String, Object>> getActiveStudyGroupsByUserId(@PathVariable Long userId) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            log.info("사용자 {}의 활성 그룹 조회 요청", userId); // 로그 추가
+            List<GroupDto> groups = groupService.getActiveStudyGroupsByUserId(userId);
+            log.info("조회된 활성 그룹 수: {}", groups.size()); // 로그 추가
+
+            response.put("success", true);
+            response.put("data", groups);
+            response.put("count", groups.size());
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("사용자 활성 그룹 조회 중 오류 발생: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("message", "활성 그룹 목록을 불러오는 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
 }
