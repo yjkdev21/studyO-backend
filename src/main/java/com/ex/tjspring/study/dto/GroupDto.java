@@ -1,32 +1,28 @@
 package com.ex.tjspring.study.dto;
 
-import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class GroupDto {
-    private Long id;
+    private Long groupId;
     private String groupName;
-    private String nickName;
     private String category;
-    private Long maxMembers;
+    @Min(value = 1, message = "최대 인원은 최소 1명 이상이어야 합니다.")
+    private Integer maxMembers;
     private String studyMode;
     private String region;
     private String contact;
+    @Size(max = 255, message = "제목은 255자를 초과할 수 없습니다.")
     private String groupIntroduction;
-    private String thumbnailUrl;
     private Long groupOwnerId;
-    private String status;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime recruitEndDate;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime studyStartDate;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime studyEndDate;
-
     private LocalDateTime createdAt;
+    private String thumbnail;
+
 }

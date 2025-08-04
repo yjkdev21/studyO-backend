@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.study.dao.GroupDao">
+
+    <insert id="insert" parameterType="com.ex.tjspring.study.dto.GroupDto">
+        <selectKey keyProperty="groupId" resultType="long" order="BEFORE">
+            SELECT SEQ_STUDY_GROUPS_ID.NEXTVAL FROM DUAL
+        </selectKey>
+
+        INSERT INTO STUDY_GROUPS (
+        GROUP_ID, GROUP_NAME, CATEGORY, MAX_MEMBERS, STUDY_MODE, REGION,
+        CONTACT, GROUP_INTRODUCTION, THUMBNAIL, GROUP_OWNER_ID, CREATED_AT
+        ) VALUES (
+        #{groupId}, #{groupName}, #{category}, #{maxMembers}, #{studyMode}, #{region},
+        #{contact}, #{groupIntroduction}, #{thumbnail}, #{groupOwnerId}, SYSDATE
+        )
+    </insert>
+
+
+    <select id="selectAllGroups" resultType="com.ex.tjspring.study.dto.GroupDto">
+        SELECT GROUP_ID, GROUP_NAME, CATEGORY, MAX_MEMBERS, STUDY_MODE, REGION,
+        CONTACT, GROUP_INTRODUCTION, THUMBNAIL, GROUP_OWNER_ID, CREATED_AT
+        FROM STUDY_GROUPS
+    </select>
+
+    <select id="selectGroupById" parameterType="java.lang.Long" resultType="com.ex.tjspring.study.dto.GroupDto">
+        SELECT GROUP_ID, GROUP_NAME, CATEGORY, MAX_MEMBERS, STUDY_MODE, REGION,
+        CONTACT, GROUP_INTRODUCTION, THUMBNAIL,GROUP_OWNER_ID, CREATED_AT
+        FROM STUDY_GROUPS
+        WHERE GROUP_ID = #{id}
+    </select>
+
+    <update id="update" parameterType="com.ex.tjspring.study.dto.GroupDto">
+        UPDATE STUDY_GROUPS
+        SET GROUP_NAME = #{groupName}, MAX_MEMBERS = #{maxMembers},
+        CONTACT = #{contact}, GROUP_INTRODUCTION= #{groupIntroduction}, THUMBNAIL= #{thumbnail}
+        WHERE GROUP_ID = #{groupId}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM STUDY_GROUPS
+        WHERE GROUP_ID = #{id}
+    </delete>
+
+    <select id="existsByGroupName" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM STUDY_GROUPS WHERE GROUP_NAME = #{groupName}
+    </select>
+
+
+
+</mapper>
