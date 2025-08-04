@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.user.mapper.UserMapper">
+
+    <!-- ResultMap 정의 - 데이터베이스 컬럼과 Java 객체 필드 매핑 -->
+    <resultMap id="userResultMap" type="com.ex.tjspring.user.model.User">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="nickname" column="nickname"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="globalRole" column="global_role"/>
+        <result property="profileImage" column="profile_image"/>
+        <result property="introduction" column="introduction"/>
+    </resultMap>
+
+    <!--  insertUser - 사용자 생성  -->
+    <insert id="insertUser" parameterType="com.ex.tjspring.user.model.User" keyProperty="id" keyColumn="id">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            SELECT SEQ_USERS_ID.CURRVAL FROM dual
+        </selectKey>
+        INSERT INTO users
+        (user_id, password, email, nickname)
+        VALUES
+        (#{userId}, #{password}, #{email}, #{nickname})
+    </insert>
+
+    <!-- findByUserId - resultMap 사용 -->
+    <select id="findByUserId" parameterType="string" resultMap="userResultMap">
+        SELECT
+        id,
+        user_id,
+        password,
+        email,
+        nickname,
+        is_deleted,
+        created_at,
+        global_role,
+        profile_image,
+        introduction
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findByEmail" parameterType="string" resultMap="userResultMap">
+        SELECT * FROM users WHERE email = #{email}
+    </select>
+
+    <select id="findByNickname" parameterType="string" resultMap="userResultMap">
+        SELECT * FROM users WHERE nickname = #{nickname}
+    </select>
+
+</mapper>
