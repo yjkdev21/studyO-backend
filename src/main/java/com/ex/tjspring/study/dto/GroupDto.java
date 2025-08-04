@@ -25,4 +25,6 @@ public class GroupDto {
     private LocalDateTime createdAt;
     private String thumbnail;
 
+    // 추가된 필드: 사용자의 멤버십 상태
+    private String membershipStatus;
 }
