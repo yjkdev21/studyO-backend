@@ -4,20 +4,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
-// 비밀번호 ToString 방지 (보안용)
-@ToString(exclude = "password")
+@ToString(exclude = "password") // 비밀번호 ToString 방지
 public class User {
     private Long id;
     private String userId;
-    // 비밀번호 Json 출력 방지 (보안용)
+
     @JsonIgnore
     private String password;
+
     private String email;
     private String nickname;
-    private Date createdAt;
+    private Timestamp createdAt;   // Date -> Timestamp 로 변경 가능
+
     private String profileImage;
     private String introduction;
+
+    private String userLevel;      // 새로 추가된 컬럼
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ex.tjspring.mainsearch.mapper.SearchMapper">
+
+    <select id="findByFilters" parameterType="com.ex.tjspring.mainsearch.dto.SearchDto" resultType="com.ex.tjspring.mainsearch.model.SearchModel">
+        SELECT
+        sp.STUDY_POST_ID AS id,
+        sp.TITLE AS title,
+        sp.VIEW_COUNT AS viewCount,
+        sp.RECRUIT_STATUS AS recruitStatus,
+        sp.RECRUIT_END_DATE AS recruitEndDate,
+        sg.ID AS groupId,
+        sg.GROUP_NAME AS groupName,
+        sg.CATEGORY AS category,
+        sg.MAX_MEMBERS AS maxMembers,
+        sg.STUDY_MODE AS studyMode,
+        sg.REGION AS region
+        FROM STUDY_POST sp
+        JOIN STUDY_GROUPS sg ON sp.GROUP_ID = sg.ID
+        WHERE sp.IS_DELETED = 'N'
+        <if test="category != null and category != ''">
+            AND sg.CATEGORY = #{category}
+        </if>
+        <if test="mode != null and mode != ''">
+            AND sp.STUDY_METHOD = #{mode}
+        </if>
+        <if test="region != null and region != ''">
+            AND sg.REGION LIKE #{region} || '%'
+        </if>
+        <if test="minMembers != null">
+            AND sg.MAX_MEMBERS &gt;= #{minMembers}
+        </if>
+        <if test="maxMembers != null">
+            AND sg.MAX_MEMBERS &lt;= #{maxMembers}
+        </if>
+        <if test="search != null and search != ''">
+            AND (
+            LOWER(sp.TITLE) LIKE '%' || LOWER(#{search}) || '%'
+            OR LOWER(sp.CONTENT) LIKE '%' || LOWER(#{search}) || '%'
+            OR LOWER(sg.GROUP_NAME) LIKE '%' || LOWER(#{search}) || '%'
+            OR LOWER(sg.GROUP_INTRODUCTION) LIKE '%' || LOWER(#{search}) || '%'
+            )
+        </if>
+        <if test="recruitingOnly == null or recruitingOnly == 1">
+            AND sp.RECRUIT_STATUS IN ('RECRUITING', 'FULL')
+            AND (sp.RECRUIT_END_DATE IS NULL OR sp.RECRUIT_END_DATE &gt; SYSDATE)
+        </if>
+        ORDER BY sp.CREATED_AT DESC
+    </select>
+
+</mapper>

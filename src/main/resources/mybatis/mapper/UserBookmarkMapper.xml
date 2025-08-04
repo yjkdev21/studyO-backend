@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ex.tjspring.mainsearch.mapper.UserBookmarkMapper">
+
+    <select id="findStudyGroupsWithBookmarkAndViewCount" resultType="com.ex.tjspring.mainsearch.dto.BookmarkResponse">
+        SELECT
+        sp.GROUP_ID AS studyGroupId,
+        COUNT(ub.ID) AS bookmarkCount,
+        MAX(sp.VIEW_COUNT) AS viewCount
+        FROM STUDY_POST sp
+        LEFT JOIN USER_BOOKMARK ub
+        ON sp.GROUP_ID = ub.STUDY_GROUP_ID
+        AND ub.IS_DELETED = 'N'
+        WHERE sp.IS_DELETED = 'N'
+        GROUP BY sp.GROUP_ID
+        ORDER BY MAX(sp.CREATED_AT) DESC
+    </select>
+
+</mapper>
