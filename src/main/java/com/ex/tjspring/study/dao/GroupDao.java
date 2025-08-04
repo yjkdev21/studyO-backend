@@ -3,21 +3,22 @@ package com.ex.tjspring.study.dao;
 import com.ex.tjspring.study.dto.GroupDto;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Mapper
 public interface GroupDao {
-    void groupInsert(GroupDto groupDto);
 
-    ArrayList<GroupDto> groupSelectAll();
+    void insert(GroupDto groupDto);
 
-    GroupDto groupSelectById(Long id);
+    List<GroupDto> selectAllGroups();
 
-    GroupDto groupSelectByName(String groupName);
+    void update(GroupDto groupDto);
 
-    void groupDelete(Long id);
-    void groupUpdate(GroupDto groupDto);
+    void delete(Long id);
 
-    //이건 맞는지 모르겠는데 중복이름 확인용 메서드
-    boolean existsByGroupName(String groupName);
+    GroupDto selectGroupById(Long id);
+
+    //그룹명 중복 확인
+    int existsByGroupName(String groupName);
+
 }
