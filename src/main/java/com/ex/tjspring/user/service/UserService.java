@@ -11,5 +11,6 @@ public interface UserService {
 
     boolean isUserIdExists(String userId);
     boolean isNicknameExists(String nickname);
+	boolean isEmailExists(String email);
     String registerUser(UserRegisterRequest request);
 }

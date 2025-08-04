@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.Date;
+
 import java.sql.Timestamp;
 
 @Data
@@ -17,7 +19,11 @@ public class User {
 
     private String email;
     private String nickname;
-    private Timestamp createdAt;   // Date -> Timestamp 로 변경 가능
+
+
+    private String isDeleted;
+    private Date createdAt;
+    private String globalRole;
 
     private String profileImage;
     private String introduction;
