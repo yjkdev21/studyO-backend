@@ -31,14 +31,17 @@ public class CalendarController {
     public CalendarDto insertCalendar(@RequestBody CalendarDto dto,
                                       @RequestHeader("X-USER-ID") Long userId) {
         calendarService.calendarInsert(dto, userId);
-        return dto;
+        // 등록 후 실제 저장된 데이터 조회해서 반환
+        return calendarService.getCalendarById(dto.getId());
     }
 
     // 수정
     @PutMapping
-    public void updateCalendar(@RequestBody CalendarDto dto,
-                               @RequestHeader("X-USER-ID") Long userId) {
+    public CalendarDto updateCalendar(@RequestBody CalendarDto dto,
+                                      @RequestHeader("X-USER-ID") Long userId) {
         calendarService.calendarUpdate(dto, userId);
+        // 수정 후 실제 데이터 조회해서 반환
+        return calendarService.getCalendarById(dto.getId());
     }
 
     // 삭제

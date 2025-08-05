@@ -8,8 +8,8 @@ public class CalendarDto {
     private Long groupId;
     private String title;
     private String content;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private String bgColor;
     private String textColor;
     private Long writerId;

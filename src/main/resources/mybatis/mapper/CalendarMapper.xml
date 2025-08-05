@@ -46,15 +46,14 @@
     </select>
 
     <!--  일정 등록  -->
-    <insert id="calendarInsert" parameterType="com.ex.tjspring.study.dto.CalendarDto" keyProperty="id">
-        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
-            SELECT calendar_seq.CURRVAL FROM DUAL
-        </selectKey>
+    <insert id="calendarInsert" parameterType="com.ex.tjspring.study.dto.CalendarDto">
         INSERT INTO calendar(
             group_id, title, content, start_date, end_date,
             bg_color, text_color, writer_id, created_at, deleted_yn)
         VALUES (
-            #{groupId},#{title}, #{content}, #{startDate}, #{endDate},
+            #{groupId}, #{title}, #{content},
+            TO_DATE(#{startDate}, 'YYYY-MM-DD'),
+            TO_DATE(#{endDate}, 'YYYY-MM-DD'),
             #{bgColor}, #{textColor}, #{writerId}, sysdate, 'N'
         )
     </insert>
