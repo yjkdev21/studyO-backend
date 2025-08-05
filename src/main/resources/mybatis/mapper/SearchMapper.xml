@@ -1,54 +1,131 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.ex.tjspring.mainsearch.mapper.SearchMapper">
 
-    <select id="findByFilters" parameterType="com.ex.tjspring.mainsearch.dto.SearchDto" resultType="com.ex.tjspring.mainsearch.model.SearchModel">
+    <resultMap id="StudyGroupResultMap" type="com.ex.tjspring.mainsearch.model.StudyGroupModel">
+        <id property="groupId" column="group_id" />
+        <result property="groupName" column="group_name" />
+        <result property="category" column="category" />
+        <result property="maxMembers" column="max_members" />
+        <result property="studyMode" column="study_mode" />
+        <result property="region" column="region" />
+        <result property="contact" column="contact" />
+        <result property="groupIntroduction" column="group_introduction" />
+        <result property="groupOwnerId" column="group_owner_id" />
+        <result property="createdAt" column="created_at" />
+        <result property="thumbnail" column="thumbnail" />
+    </resultMap>
+
+    <select id="searchStudyGroups" parameterType="com.ex.tjspring.mainsearch.dto.SearchFilterRequest" resultMap="StudyGroupResultMap">
         SELECT
-        sp.STUDY_POST_ID AS id,
-        sp.TITLE AS title,
-        sp.VIEW_COUNT AS viewCount,
-        sp.RECRUIT_STATUS AS recruitStatus,
-        sp.RECRUIT_END_DATE AS recruitEndDate,
-        sg.ID AS groupId,
-        sg.GROUP_NAME AS groupName,
-        sg.CATEGORY AS category,
-        sg.MAX_MEMBERS AS maxMembers,
-        sg.STUDY_MODE AS studyMode,
-        sg.REGION AS region
-        FROM STUDY_POST sp
-        JOIN STUDY_GROUPS sg ON sp.GROUP_ID = sg.ID
-        WHERE sp.IS_DELETED = 'N'
+        group_id,
+        group_name,
+        category,
+        max_members,
+        study_mode,
+        region,
+        contact,
+        group_introduction,
+        group_owner_id,
+        created_at,
+        thumbnail
+        FROM study_groups
+        WHERE 1=1
         <if test="category != null and category != ''">
-            AND sg.CATEGORY = #{category}
+            AND category = #{category}
         </if>
-        <if test="mode != null and mode != ''">
-            AND sp.STUDY_METHOD = #{mode}
+        <if test="studyMode != null and studyMode != ''">
+            AND study_mode = #{studyMode}
         </if>
         <if test="region != null and region != ''">
-            AND sg.REGION LIKE #{region} || '%'
+            AND g.REGION LIKE '%' || #{region} || '%'
         </if>
         <if test="minMembers != null">
-            AND sg.MAX_MEMBERS &gt;= #{minMembers}
+            AND max_members &gt;= #{minMembers}
         </if>
         <if test="maxMembers != null">
-            AND sg.MAX_MEMBERS &lt;= #{maxMembers}
+            AND max_members &lt;= #{maxMembers}
+        </if>
+        <if test="search != null and search != ''">
+            AND (group_name LIKE '%' || #{search} || '%' OR group_introduction LIKE '%' || #{search} || '%')
+        </if>
+        <if test="recruitingOnly != null and recruitingOnly == 1">
+            AND EXISTS (
+            SELECT 1 FROM study_post sp
+            WHERE sp.group_id = study_groups.group_id
+            AND (sp.recruit_end_date IS NULL OR sp.recruit_end_date &gt; SYSDATE)
+            )
+        </if>
+    </select>
+
+    <select id="getBookmarkViewList" resultType="map">
+        SELECT
+        sp.GROUP_ID AS studyGroupId,
+        NVL(SUM(sp.VIEW_COUNT), 0) AS viewCount,
+        NVL(COUNT(ub.ID), 0) AS bookmarkCount
+        FROM study_post sp
+        LEFT JOIN user_bookmark ub ON sp.GROUP_ID = ub.GROUP_ID
+        GROUP BY sp.GROUP_ID
+    </select>
+
+
+
+    <select id="searchStudyPosts" parameterType="com.ex.tjspring.mainsearch.dto.SearchFilterRequest" resultType="com.ex.tjspring.mainsearch.model.StudyPostModel">
+        SELECT
+        p.STUDY_POST_ID as studyPostId,
+        p.TITLE as title,
+        p.CONTENT as content,
+        p.GROUP_ID as groupId,
+        p.AUTHOR_ID as authorId,
+        u.NICKNAME as authorName,  <!-- 작성자 닉네임 추가 -->
+        p.STUDY_MODE as studyMode,
+        p.CREATED_AT as createdAt,
+        p.RECRUIT_START_DATE as recruitStartDate,
+        p.RECRUIT_END_DATE as recruitEndDate,
+        p.UPDATED_AT as updatedAt,
+        p.VIEW_COUNT as viewCount,
+        p.HASH_TAG as hashTag,
+        g.GROUP_NAME as groupName,
+        g.CATEGORY as category,
+        g.MAX_MEMBERS as maxMembers,
+        g.REGION as region,
+        g.CONTACT as contact,
+        g.GROUP_INTRODUCTION as groupIntroduction,
+        g.GROUP_OWNER_ID as groupOwnerId,
+        g.CREATED_AT as groupCreatedAt,
+        g.THUMBNAIL as thumbnail
+        FROM STUDY_POST p
+        INNER JOIN STUDY_GROUPS g ON p.GROUP_ID = g.GROUP_ID
+        LEFT JOIN USERS u ON p.AUTHOR_ID = u.ID  <!-- 작성자 조인 -->
+        WHERE 1=1
+        <if test="category != null and category != ''">
+            AND g.CATEGORY = #{category}
+        </if>
+        <if test="studyMode != null and studyMode != ''">
+            AND p.STUDY_MODE = #{studyMode}
+        </if>
+        <if test="region != null and region != ''">
+            AND g.REGION LIKE '%' || #{region} || '%'
+        </if>
+        <if test="minMembers != null">
+            AND g.MAX_MEMBERS &gt;= #{minMembers}
+        </if>
+        <if test="maxMembers != null">
+            AND g.MAX_MEMBERS &lt;= #{maxMembers}
         </if>
         <if test="search != null and search != ''">
             AND (
-            LOWER(sp.TITLE) LIKE '%' || LOWER(#{search}) || '%'
-            OR LOWER(sp.CONTENT) LIKE '%' || LOWER(#{search}) || '%'
-            OR LOWER(sg.GROUP_NAME) LIKE '%' || LOWER(#{search}) || '%'
-            OR LOWER(sg.GROUP_INTRODUCTION) LIKE '%' || LOWER(#{search}) || '%'
+            LOWER(p.TITLE) LIKE '%' || LOWER(#{search}) || '%'
+            OR LOWER(p.CONTENT) LIKE '%' || LOWER(#{search}) || '%'
             )
         </if>
-        <if test="recruitingOnly == null or recruitingOnly == 1">
-            AND sp.RECRUIT_STATUS IN ('RECRUITING', 'FULL')
-            AND (sp.RECRUIT_END_DATE IS NULL OR sp.RECRUIT_END_DATE &gt; SYSDATE)
+        <if test="recruitingOnly != null and recruitingOnly == 1">
+            AND (p.RECRUIT_END_DATE IS NULL OR p.RECRUIT_END_DATE &gt;= SYSDATE)
         </if>
-        ORDER BY sp.CREATED_AT DESC
+        ORDER BY p.CREATED_AT DESC
     </select>
+
+
 
 </mapper>
