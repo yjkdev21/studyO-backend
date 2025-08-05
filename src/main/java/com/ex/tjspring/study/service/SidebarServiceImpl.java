@@ -10,8 +10,8 @@ public class SidebarServiceImpl {
     @Autowired
     private SidebarDao sidebarDao;
 
-    public SidebarDto getStudyInfo(Long studyId) {
-        return sidebarDao.getStudyInfo(studyId);
+    public SidebarDto getStudyInfo(Long groupId) {
+        return sidebarDao.getStudyInfo(groupId);
     }
 
 }

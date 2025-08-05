@@ -10,7 +10,7 @@
             category,
             contact
         FROM study_groups
-        WHERE id = #{studyId}
+        WHERE id = #{groupId}
 
     </select>
 </mapper>

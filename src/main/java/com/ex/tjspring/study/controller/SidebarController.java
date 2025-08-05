@@ -14,8 +14,8 @@ public class SidebarController {
     @Autowired
     private SidebarServiceImpl sidebarService;
 
-    @GetMapping("/study/{studyId}")
-    public SidebarDto getStudyInfo(@PathVariable Long studyId) {
-        return sidebarService.getStudyInfo(studyId);
+    @GetMapping("/study/{groupId}")
+    public SidebarDto getStudyInfo(@PathVariable Long groupId) {
+        return sidebarService.getStudyInfo(groupId);
     }
 }
