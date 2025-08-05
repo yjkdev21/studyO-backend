@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.mainsearch.mapper.SearchMapper">
+
+    <resultMap id="StudyGroupResultMap" type="com.ex.tjspring.mainsearch.model.StudyGroupModel">
+        <id property="groupId" column="group_id" />
+        <result property="groupName" column="group_name" />
+        <result property="category" column="category" />
+        <result property="maxMembers" column="max_members" />
+        <result property="studyMode" column="study_mode" />
+        <result property="region" column="region" />
+        <result property="contact" column="contact" />
+        <result property="groupIntroduction" column="group_introduction" />
+        <result property="groupOwnerId" column="group_owner_id" />
+        <result property="createdAt" column="created_at" />
+        <result property="thumbnail" column="thumbnail" />
+    </resultMap>
+
+    <select id="searchStudyGroups" parameterType="com.ex.tjspring.mainsearch.dto.SearchFilterRequest" resultMap="StudyGroupResultMap">
+        SELECT
+        group_id,
+        group_name,
+        category,
+        max_members,
+        study_mode,
+        region,
+        contact,
+        group_introduction,
+        group_owner_id,
+        created_at,
+        thumbnail
+        FROM study_groups
+        WHERE 1=1
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+        <if test="studyMode != null and studyMode != ''">
+            AND study_mode = #{studyMode}
+        </if>
+        <if test="region != null and region != ''">
+            AND g.REGION LIKE '%' || #{region} || '%'
+        </if>
+        <if test="minMembers != null">
+            AND max_members &gt;= #{minMembers}
+        </if>
+        <if test="maxMembers != null">
+            AND max_members &lt;= #{maxMembers}
+        </if>
+        <if test="search != null and search != ''">
+            AND (group_name LIKE '%' || #{search} || '%' OR group_introduction LIKE '%' || #{search} || '%')
+        </if>
+        <if test="recruitingOnly != null and recruitingOnly == 1">
+            AND EXISTS (
+            SELECT 1 FROM study_post sp
+            WHERE sp.group_id = study_groups.group_id
+            AND (sp.recruit_end_date IS NULL OR sp.recruit_end_date &gt; SYSDATE)
+            )
+        </if>
+    </select>
+
+    <select id="getBookmarkViewList" resultType="map">
+        SELECT
+        sp.GROUP_ID AS studyGroupId,
+        NVL(SUM(sp.VIEW_COUNT), 0) AS viewCount,
+        NVL(COUNT(ub.ID), 0) AS bookmarkCount
+        FROM study_post sp
+        LEFT JOIN user_bookmark ub ON sp.GROUP_ID = ub.GROUP_ID
+        GROUP BY sp.GROUP_ID
+    </select>
+
+
+
+    <select id="searchStudyPosts" parameterType="com.ex.tjspring.mainsearch.dto.SearchFilterRequest" resultType="com.ex.tjspring.mainsearch.model.StudyPostModel">
+        SELECT
+        p.STUDY_POST_ID as studyPostId,
+        p.TITLE as title,
+        p.CONTENT as content,
+        p.GROUP_ID as groupId,
+        p.AUTHOR_ID as authorId,
+        u.NICKNAME as authorName,  <!-- 작성자 닉네임 추가 -->
+        p.STUDY_MODE as studyMode,
+        p.CREATED_AT as createdAt,
+        p.RECRUIT_START_DATE as recruitStartDate,
+        p.RECRUIT_END_DATE as recruitEndDate,
+        p.UPDATED_AT as updatedAt,
+        p.VIEW_COUNT as viewCount,
+        p.HASH_TAG as hashTag,
+        g.GROUP_NAME as groupName,
+        g.CATEGORY as category,
+        g.MAX_MEMBERS as maxMembers,
+        g.REGION as region,
+        g.CONTACT as contact,
+        g.GROUP_INTRODUCTION as groupIntroduction,
+        g.GROUP_OWNER_ID as groupOwnerId,
+        g.CREATED_AT as groupCreatedAt,
+        g.THUMBNAIL as thumbnail
+        FROM STUDY_POST p
+        INNER JOIN STUDY_GROUPS g ON p.GROUP_ID = g.GROUP_ID
+        LEFT JOIN USERS u ON p.AUTHOR_ID = u.ID  <!-- 작성자 조인 -->
+        WHERE 1=1
+        <if test="category != null and category != ''">
+            AND g.CATEGORY = #{category}
+        </if>
+        <if test="studyMode != null and studyMode != ''">
+            AND p.STUDY_MODE = #{studyMode}
+        </if>
+        <if test="region != null and region != ''">
+            AND g.REGION LIKE '%' || #{region} || '%'
+        </if>
+        <if test="minMembers != null">
+            AND g.MAX_MEMBERS &gt;= #{minMembers}
+        </if>
+        <if test="maxMembers != null">
+            AND g.MAX_MEMBERS &lt;= #{maxMembers}
+        </if>
+        <if test="search != null and search != ''">
+            AND (
+            LOWER(p.TITLE) LIKE '%' || LOWER(#{search}) || '%'
+            OR LOWER(p.CONTENT) LIKE '%' || LOWER(#{search}) || '%'
+            )
+        </if>
+        <if test="recruitingOnly != null and recruitingOnly == 1">
+            AND (p.RECRUIT_END_DATE IS NULL OR p.RECRUIT_END_DATE &gt;= SYSDATE)
+        </if>
+        ORDER BY p.CREATED_AT DESC
+    </select>
+
+
+
+</mapper>
