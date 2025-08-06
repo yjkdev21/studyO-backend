@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.study.dao.CalendarDao">
+
+    <!--  전체 조회  -->
+    <select id="getCalendarList" resultType="com.ex.tjspring.study.dto.CalendarDto">
+        SELECT
+            id,
+            group_id as groupId,
+            title,
+            content,
+            start_date as startDate,
+            end_date as endDate,
+            bg_color as bgColor,
+            text_color as textColor,
+            writer_id as writerId,
+            created_at as createdAt,
+            updated_at as updatedAt,
+            deleted_yn as deletedYn
+        FROM calendar
+        WHERE group_id = #{groupId}
+        AND deleted_yn = 'N'
+        ORDER BY start_date ASC
+    </select>
+
+    <!--  상세 조회  -->
+    <select id="getCalendarById" resultType="com.ex.tjspring.study.dto.CalendarDto">
+        SELECT
+            id,
+            group_id as groupId,
+            title,
+            content,
+            start_date as startDate,
+            end_date as endDate,
+            bg_color as bgColor,
+            text_color as textColor,
+            writer_id as writerId,
+            created_at as createdAt,
+            updated_at as updatedAt,
+            deleted_yn as deletedYn
+        FROM calendar
+        WHERE id = #{id}
+            AND deleted_yn = 'N'
+    </select>
+
+    <!--  일정 등록  -->
+    <insert id="calendarInsert" parameterType="com.ex.tjspring.study.dto.CalendarDto">
+        INSERT INTO calendar(
+            group_id, title, content, start_date, end_date,
+            bg_color, text_color, writer_id, created_at, deleted_yn)
+        VALUES (
+            #{groupId}, #{title}, #{content},
+            TO_DATE(#{startDate}, 'YYYY-MM-DD'),
+            TO_DATE(#{endDate}, 'YYYY-MM-DD'),
+            #{bgColor}, #{textColor}, #{writerId}, sysdate, 'N'
+        )
+    </insert>
+
+    <!--  수정  -->
+    <update id="calendarUpdate" parameterType="com.ex.tjspring.study.dto.CalendarDto">
+        UPDATE calendar
+        SET
+            title = #{title},
+            content = #{content},
+            updated_at = SYSDATE
+        WHERE id = #{id}
+    </update>
+
+    <!--  삭제  -->
+    <delete id="calendarDelete" parameterType="java.lang.Long">
+        DELETE FROM calendar
+        WHERE id = #{id}
+    </delete>
+
+    <!--  스터디장인지 확인  -->
+    <select id="countStudyAdmin" resultType="int">
+        SELECT COUNT(*)
+        FROM STUDY_MEMBERSHIP
+        WHERE user_id = #{userId}
+            AND GROUP_id = #{groupId}
+            AND MEMBER_ROLE = 'ADMIN'
+            AND MEMBERSHIP_STATUS = 'ACTIVE'
+    </select>
+
+</mapper>

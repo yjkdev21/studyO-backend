@@ -13,4 +13,6 @@ public class UserRegisterRequest {
     private String globalRole;    // "USER"
     private String profileImage;  // ""
     private String introduction;  // ""
+
+    private String userLevel;     // 예: "normal" (새로 추가된 필드)
 }
