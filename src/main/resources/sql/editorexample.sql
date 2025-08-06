@@ -60,3 +60,41 @@ BEGIN
     END IF;
 END;
 /
+
+
+
+-- ATTACHMENTS 테이블 생성 쿼리 (Oracle)
+-- 이 테이블은 EX_DTO_EDITOR 테이블의 게시글에 첨부된 파일의 메타데이터를 저장합니다.
+
+CREATE TABLE STUDY_POST_ATTACHMENTS (
+    id NUMBER(19, 0) PRIMARY KEY, -- 첨부파일 고유 ID
+    post_id NUMBER(19, 0) NOT NULL, -- 참조하는 게시글의 ID (EX_DTO_EDITOR 테이블의 id)
+    file_name VARCHAR2(255) NOT NULL, -- 원본 파일명 (예: document.pdf, image.jpg)
+    stored_file_name VARCHAR2(255) NOT NULL, -- 서버에 저장된 UUID 파일명 (예: a1b2c3d4-e5f6-7890-1234-567890abcdef.jpg)
+    file_size NUMBER(19, 0), -- 파일 크기 (바이트)
+    file_type VARCHAR2(100), -- 파일 MIME 타입 (예: application/pdf, image/jpeg)
+    reg_date TIMESTAMP DEFAULT SYSTIMESTAMP, -- 첨부파일 등록일
+
+    -- STUDY_POST 테이블의 id 컬럼을 참조하는 외래 키 제약 조건
+    CONSTRAINT fk_study_post
+        FOREIGN KEY (post_id)
+        REFERENCES STUDY_POST(study_post_id) ON DELETE CASCADE -- 게시글 삭제 시 첨부파일도 자동 삭제
+);
+
+-- ATTACHMENTS 테이블의 id 컬럼 자동 증가를 위한 시퀀스 생성
+CREATE SEQUENCE STUDY_POST_ATTACHMENTS_SEQ
+  START WITH 1
+  INCREMENT BY 1
+  CACHE 20
+  NOCYCLE;
+
+-- ATTACHMENTS 테이블의 id 자동 증가를 위한 트리거 생성
+CREATE OR REPLACE TRIGGER STUDY_POST_ATTACHMENTS_TRG
+BEFORE INSERT ON STUDY_POST_ATTACHMENTS
+FOR EACH ROW
+BEGIN
+    IF :NEW.id IS NULL THEN
+        SELECT STUDY_POST_ATTACHMENTS_SEQ.NEXTVAL INTO :NEW.id FROM DUAL;
+    END IF;
+END;
+/
