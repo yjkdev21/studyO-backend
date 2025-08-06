@@ -61,14 +61,13 @@ public class BookmarkController {
             bookmarkService.addBookmark(bookmark);
             return ResponseEntity.ok(Map.of("success", true));
         } catch (Exception e) {
-            logger.error("북마크 추가 중 오류 발생", e);
+            logger.error("북마크 추가 중 오류 발생", e);  // 예외와 스택트레이스 로그 출력
             return ResponseEntity.status(500).body(Map.of(
                     "success", false,
                     "message", e.getMessage()
             ));
         }
     }
-
 
 
     @DeleteMapping("/{userId}/{groupId}")
