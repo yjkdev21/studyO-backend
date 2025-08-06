@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper  namespace="com.ex.tjspring.study.dao.StudyBoardDao">
+
+    <!--  전체 목록 조회  -->
+    <select id="selectAllByGroupId" parameterType="long" resultMap="StudyBoardWithWriterResultMap">
+        SELECT
+            sb.ID,
+            sb.GROUP_ID,
+            sb.USER_ID AS writerId,
+            sb.DASHBOARD_POST_TITLE,
+            sb.DASHBOARD_POST_TEXT,
+            sb.CREATED_AT,
+            sb.UPDATED_AT,
+            sb.IS_NOTICE,
+            sb.VIEW_COUNT,
+            sm.NICKNAME AS writerNickname,
+            u.PROFILE_IMAGE AS writerProfileImage
+        FROM STUDY_BOARD sb
+        JOIN STUDY_MEMBERSHIP sm
+            ON sb.USER_ID = sm.USER_ID AND sb.GROUP_ID = sm.GROUP_ID
+        JOIN USERS u
+            ON sb.USER_ID = u.ID
+        WHERE sb.GROUP_ID = #{groupId}
+            AND sb.IS_DELETED = 'N'
+            AND sm.MEMBERSHIP_STATUS = 'ACTIVE'
+        ORDER BY sb.CREATED_AT DESC
+    </select>
+
+    <resultMap id="StudyBoardWithWriterResultMap" type="com.ex.tjspring.study.dto.StudyBoardDto">
+        <id property="id" column="ID"/>
+        <result property="groupId" column="GROUP_ID"/>
+        <result property="writerId" column="writerId"/>
+        <result property="dashboardPostTitle" column="DASHBOARD_POST_TITLE"/>
+        <result property="dashboardPostText" column="DASHBOARD_POST_TEXT"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="isNotice" column="IS_NOTICE"/>
+        <result property="viewCount" column="VIEW_COUNT"/>
+        <result property="writerNickname" column="writerNickname"/>
+        <result property="writerProfileImage" column="writerProfileImage"/>
+    </resultMap>
+
+    <!--  공지만 조회  -->
+    <select id="selectNoticeByGroupId" resultType="com.ex.tjspring.study.dto.StudyBoardDto">
+        SELECT *
+        FROM STUDY_BOARD
+        WHERE GROUP_ID = #{groupId}
+            AND IS_NOTICE = 'Y'
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <!--  일반글 조회  -->
+    <select id="selectNormalByGroupId" resultType="com.ex.tjspring.study.dto.StudyBoardDto">
+        SELECT *
+        FROM STUDY_BOARD
+        WHERE GROUP_ID = #{groupId}
+        AND IS_NOTICE = 'N'
+        ORDER BY CREATED_AT DESC
+    </select>
+
+
+    <!--  상세 조회  -->
+    <select id="selectPostById" resultType="com.ex.tjspring.study.dto.StudyBoardDto">
+        SELECT *
+        FROM STUDY_BOARD
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 글 등록 -->
+    <insert id="insertPost" parameterType="com.ex.tjspring.study.dto.StudyBoardDto">
+        INSERT INTO STUDY_BOARD (
+            id, user_id, group_id,
+            dashboard_post_title, dashboard_post_text,
+            is_notice, created_at, updated_at
+        )
+        VALUES (
+            SEQ_STUDY_BOARD_ID.NEXTVAL,
+            #{userId}, #{groupId},
+            #{dashboardPostTitle}, #{dashboardPostText},
+            #{isNotice}, SYSDATE, SYSDATE
+        )
+    </insert>
+
+    <!--  수정  -->
+    <update id="updatePost" parameterType="com.ex.tjspring.study.dto.StudyBoardDto">
+        UPDATE STUDY_BOARD
+        SET
+            dashboard_post_title = #{dashboardPostTitle},
+            dashboard_post_text = #{dashboardPostText},
+            is_notice = #{isNotice},
+            updated_at = SYSDATE
+        WHERE id = #{id}
+            AND user_id = #{userId}
+    </update>
+
+
+    <!--  삭제(본인 것만)  -->
+    <delete id="deletePost">
+        DELETE FROM STUDY_BOARD
+        WHERE id = #{id}
+            AND user_id = #{userId}
+    </delete>
+
+</mapper>

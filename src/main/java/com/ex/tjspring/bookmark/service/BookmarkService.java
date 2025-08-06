@@ -2,6 +2,7 @@ package com.ex.tjspring.bookmark.service;
 
 import com.ex.tjspring.bookmark.dto.Bookmark;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 북마크 서비스 계층 인터페이스
@@ -15,4 +16,8 @@ public interface BookmarkService {
      * @return 북마크 목록 (스터디 정보 포함)
      */
     List<Bookmark> getBookmarksByUserId(Long userId);
+    void addBookmark(Bookmark bookmark);
+    void deleteBookmark(Long userId, Long groupId);
+    List<Map<String, Object>> getBookmarkCounts();
+
 }
