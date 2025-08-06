@@ -35,5 +35,21 @@
         WHERE b.user_id = #{userId}             -- 매개변수 userId와 바인딩됨
         ORDER BY b.created_at DESC              -- 최신순 정렬
     </select>
+    <insert id="insertBookmark" parameterType="com.ex.tjspring.bookmark.dto.Bookmark">
+        INSERT INTO C##TJSPRING.user_bookmark (user_id, group_id, created_at)
+        VALUES (#{userId}, #{groupId}, SYSDATE)
+    </insert>
+
+    <delete id="deleteBookmark">
+        DELETE FROM C##TJSPRING.user_bookmark
+        WHERE user_id = #{userId} AND group_id = #{groupId}
+    </delete>
+
+    <select id="getBookmarkCounts" resultType="map">
+        SELECT group_id AS groupId, COUNT(*) AS bookmarkCount
+        FROM C##TJSPRING.user_bookmark
+        GROUP BY group_id
+    </select>
+
 
 </mapper>

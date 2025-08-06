@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 북마크 서비스 구현 클래스
@@ -27,4 +28,22 @@ public class BookmarkServiceImpl implements BookmarkService {
         // Mapper를 통해 DB에서 해당 사용자의 북마크 목록 조회
         return bookmarkMapper.findByUserId(userId);
     }
+    @Override
+    public void addBookmark(Bookmark bookmark) {
+        if (bookmark.getGroupId() == null) {
+            bookmark.setGroupId(0L); // 예시, 실제 DB가 허용하는 기본값으로
+        }
+        bookmarkMapper.insertBookmark(bookmark);
+    }
+
+
+    @Override
+    public void deleteBookmark(Long userId, Long groupId) {
+        bookmarkMapper.deleteBookmark(userId, groupId);
+    }
+    @Override
+    public List<Map<String, Object>> getBookmarkCounts() {
+        return bookmarkMapper.getBookmarkCounts();
+    }
+
 }
