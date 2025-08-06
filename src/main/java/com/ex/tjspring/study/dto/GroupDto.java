@@ -34,6 +34,5 @@ public class GroupDto {
 
     private String memberRole;
 
-    // 추가된 필드: 사용자의 멤버십 상태
-    private String membershipStatus;
+
 }
