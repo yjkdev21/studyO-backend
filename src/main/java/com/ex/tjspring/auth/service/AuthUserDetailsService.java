@@ -21,7 +21,11 @@ public class AuthUserDetailsService implements UserDetailsService {
 
 		if (user == null) {
 			throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username);
+		}
 
+		// 탈퇴한 회원 로그인 방지
+		if ("Y".equals(user.getIsDeleted())) {
+			throw new UsernameNotFoundException("탈퇴한 사용자입니다: " + username);
 		}
 
 		// 사용자 권한 설정 - GLOBAL_ROLE 컬럼 값 사용

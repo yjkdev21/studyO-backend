@@ -23,5 +23,5 @@ public interface UserMapper {
     // 사용자 정보 업데이트
     void updateUser(User user);
     // 사용자 탈퇴 처리
-    void updateIsDeleted(Long id, String isDeleted);
+    void updateIsDeleted(Long id);
 }
