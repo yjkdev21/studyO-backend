@@ -27,6 +27,22 @@
         (#{userId}, #{password}, #{email}, #{nickname})
     </insert>
 
+    <select id="findById" parameterType="long" resultMap="userResultMap">
+        SELECT
+        id,
+        user_id,
+        password,
+        email,
+        nickname,
+        is_deleted,
+        created_at,
+        global_role,
+        profile_image,
+        introduction
+        FROM users
+        WHERE id = #{id}
+    </select>
+
     <!-- findByUserId - resultMap 사용 -->
     <select id="findByUserId" parameterType="string" resultMap="userResultMap">
         SELECT
@@ -51,5 +67,17 @@
     <select id="findByNickname" parameterType="string" resultMap="userResultMap">
         SELECT * FROM users WHERE nickname = #{nickname}
     </select>
+
+    <update id="updateUser" parameterType="com.ex.tjspring.user.model.User">
+        UPDATE users
+        SET
+        nickname = #{nickname},
+        introduction = #{introduction},
+        profile_image = #{profileImage, jdbcType=VARCHAR}
+        <if test="password != null and password != ''">
+            , password = #{password}
+        </if>
+        WHERE id = #{id}
+    </update>
 
 </mapper>

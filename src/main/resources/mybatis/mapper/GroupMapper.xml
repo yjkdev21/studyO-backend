@@ -20,12 +20,12 @@
     </resultMap>
 
     <!-- 파일명으로 이미지 데이터 조회 -->
-<!--    <select id="selectImageByFilename" parameterType="String" resultType="byte[]">-->
-<!--        SELECT image_data-->
-<!--        FROM study_groups-->
-<!--        WHERE thumbnail = #{filename}-->
-<!--        AND image_data IS NOT NULL-->
-<!--    </select>-->
+    <!--    <select id="selectImageByFilename" parameterType="String" resultType="byte[]">-->
+    <!--        SELECT image_data-->
+    <!--        FROM study_groups-->
+    <!--        WHERE thumbnail = #{filename}-->
+    <!--        AND image_data IS NOT NULL-->
+    <!--    </select>-->
 
     <!-- User 테이블에서 닉네임 조회 -->
     <select id="selectUserNickname" parameterType="java.lang.Long" resultType="String">

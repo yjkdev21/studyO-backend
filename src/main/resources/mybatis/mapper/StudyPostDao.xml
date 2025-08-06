@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.study.dao.IStudyPostDao">
+
+    <resultMap id="PostViewDtoResultMap" type="com.ex.tjspring.study.dto.StudyPostViewDto">
+
+        <id property="studyPostId" column="study_post_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="groupId" column="group_id"/>
+        <result property="authorId" column="author_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="recruitStartDate" column="recruit_start_date"/>
+        <result property="recruitEndDate" column="recruit_end_date"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="hashTag" column="hash_tag"/>
+        <result property="profileImage" column="profile_image"/>
+
+        <!-- AttachFileDto 목록을 매핑하는 collection -->
+        <collection property="attachFile" ofType="com.ex.tjspring.common.dto.AttachFileDto">
+            <id property="id" column="attach_id"/> <!-- ATTACHMENTS 테이블의 id -->
+            <result property="postId" column="attach_post_id"/>
+            <result property="fileName" column="attach_file_name"/>
+            <result property="storedFileName" column="attach_stored_file_name"/>
+            <result property="fileSize" column="attach_file_size"/>
+            <result property="fileType" column="attach_file_type"/>
+            <result property="regDate" column="attach_reg_date"/>
+        </collection>
+    </resultMap>
+
+
+    <resultMap id="GroupNickDtoMap" type="com.ex.tjspring.study.dto.GroupNickDto">
+        <id property="groupId" column="GROUP_ID"/>
+        <result property="groupName" column="GROUP_NAME"/>
+        <result property="category" column="CATEGORY"/>
+        <result property="maxMembers" column="MAX_MEMBERS"/>
+        <result property="studyMode" column="STUDY_MODE"/>
+        <result property="region" column="REGION"/>
+        <result property="contact" column="CONTACT"/>
+        <result property="groupIntroduction" column="GROUP_INTRODUCTION"/>
+        <result property="groupOwnerId" column="GROUP_OWNER_ID"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="thumbnail" column="THUMBNAIL"/>
+        <result property="membershipStatus" column="MEMBERSHIP_STATUS"/>
+    </resultMap>
+
+
+    <!-- 유저 아이디로 스터디 그룹 리스트 정보가져오기 -->
+    <select id="selectGroupsFindByUserId" resultMap="GroupNickDtoMap">
+        SELECT s.group_id,
+                   s.group_name,
+                   s.category,
+                   s.max_members,
+                   s.study_mode,
+                   s.region,
+                   s.contact,
+                   s.group_introduction,
+                   s.group_owner_id,
+                   s.created_at,
+                   s.thumbnail,
+                   m.nickname
+        FROM STUDY_GROUPS s JOIN STUDY_MEMBERSHIP m ON s.group_owner_id = m.user_id
+        WHERE s.group_owner_id = #{userId}
+    </select>
+
+    <!-- 그룹 아이디로 스터디 그룹 정보가져오기 -->
+    <select id="selectGroupsFindByGroupId" resultMap="GroupNickDtoMap">
+        SELECT s.group_id,
+                   s.group_name,
+                   s.category,
+                   s.max_members,
+                   s.study_mode,
+                   s.region,
+                   s.contact,
+                   s.group_introduction,
+                   s.group_owner_id,
+                   s.created_at,
+                   s.thumbnail,
+                   m.nickname
+        FROM STUDY_GROUPS s JOIN STUDY_MEMBERSHIP m ON s.group_owner_id = m.user_id
+        WHERE s.group_id = #{groupId}
+    </select>
+
+    <select id="existsPostByGroupId" parameterType="java.lang.Long" resultType="int">
+        SELECT COUNT(*) FROM STUDY_POST WHERE group_id = #{groupId}
+    </select>
+
+    <!-- 홍보글 가져오기 -->
+    <select id="selectPostFindByGroupId" resultMap="PostViewDtoResultMap" parameterType="java.lang.Long">
+        SELECT
+            e.study_post_id,
+            e.title,
+            e.content,
+            e.group_id,
+            e.author_id,
+            e.created_at,
+            e.recruit_start_date,
+            e.recruit_end_date,
+            e.updated_at,
+            e.view_count,
+            e.hash_tag,
+            a.id AS attach_id,
+            a.post_id AS attach_post_id,
+            a.file_name AS attach_file_name,
+            a.stored_file_name AS attach_stored_file_name,
+            a.file_size AS attach_file_size,
+            a.file_type AS attach_file_type,
+            a.reg_date AS attach_reg_date,
+            u.profile_image
+        FROM STUDY_POST e
+             LEFT JOIN ATTACHMENTS a ON e.study_post_id = a.post_id
+             LEFT JOIN USERS u ON e.author_id = u.id  WHERE e.group_id = #{groupId}
+    </select>
+
+
+    <!-- 홍보글 등록 -->
+    <insert id="insertPost" parameterType="com.ex.tjspring.study.dto.StudyPostDto" keyProperty="id">
+        <selectKey keyProperty="study_post_id" resultType="java.lang.Long" order="AFTER">
+            SELECT STUDY_POST_SEQ.CURRVAL FROM DUAL
+        </selectKey>
+        INSERT INTO STUDY_POST (study_post_id, title, content, group_id , author_id , created_at , recruit_start_date , recruit_end_date , updated_at , view_count , hash_tag )
+        VALUES (STUDY_POST_SEQ.NEXTVAL, #{title}, #{content}, #{groupId} ,#{authorId} , SYSTIMESTAMP , #{recruitStartDate} ,  #{recruitEndDate} , SYSTIMESTAMP , 0 , #{hashTag} )
+    </insert>
+
+    <!-- 홍보글 수정 -->
+    <update id="updatePost" parameterType="com.ex.tjspring.study.dto.StudyPostDto">
+        UPDATE STUDY_POST
+        SET title = #{title}, content = #{content} , recruit_start_date = #{recruitStartDate} , recruit_end_date = #{recruitEndDate} , hash_tag = #{hashTag} , updated_at = SYSTIMESTAMP
+        WHERE study_post_id = #{id}
+    </update>
+
+    <delete id="deletePost" parameterType="java.lang.Long">
+        DELETE FROM STUDY_POST
+        WHERE study_post_id = #{id}
+    </delete>
+
+
+</mapper>
