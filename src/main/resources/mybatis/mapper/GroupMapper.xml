@@ -2,6 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ex.tjspring.study.dao.GroupDao">
 
+    <!-- ResultMap 정의 -->
+    <resultMap id="GroupDtoResultMap" type="com.ex.tjspring.study.dto.GroupDto">
+        <id property="groupId" column="GROUP_ID"/>
+        <result property="groupName" column="GROUP_NAME"/>
+        <result property="category" column="CATEGORY"/>
+        <result property="maxMembers" column="MAX_MEMBERS"/>
+        <result property="studyMode" column="STUDY_MODE"/>
+        <result property="region" column="REGION"/>
+        <result property="contact" column="CONTACT"/>
+        <result property="groupIntroduction" column="GROUP_INTRODUCTION"/>
+        <result property="groupOwnerId" column="GROUP_OWNER_ID"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="thumbnail" column="THUMBNAIL"/>
+        <result property="membershipStatus" column="MEMBERSHIP_STATUS"/>
+        <result property="nickname" column="NICKNAME"/>
+    </resultMap>
+
+    <!-- 파일명으로 이미지 데이터 조회 -->
+<!--    <select id="selectImageByFilename" parameterType="String" resultType="byte[]">-->
+<!--        SELECT image_data-->
+<!--        FROM study_groups-->
+<!--        WHERE thumbnail = #{filename}-->
+<!--        AND image_data IS NOT NULL-->
+<!--    </select>-->
+
+    <!-- User 테이블에서 닉네임 조회 -->
+    <select id="selectUserNickname" parameterType="java.lang.Long" resultType="String">
+        SELECT NICKNAME
+        FROM USERS
+        WHERE ID = #{userId}
+    </select>
+
     <insert id="insert" parameterType="com.ex.tjspring.study.dto.GroupDto">
         <selectKey keyProperty="groupId" resultType="long" order="BEFORE">
             SELECT SEQ_STUDY_GROUPS_ID.NEXTVAL FROM DUAL
@@ -12,29 +44,78 @@
         CONTACT, GROUP_INTRODUCTION, THUMBNAIL, GROUP_OWNER_ID, CREATED_AT
         ) VALUES (
         #{groupId}, #{groupName}, #{category}, #{maxMembers}, #{studyMode}, #{region},
-        #{contact}, #{groupIntroduction}, #{thumbnail}, #{groupOwnerId}, SYSDATE
+        #{contact}, #{groupIntroduction}, #{thumbnail, jdbcType=VARCHAR}, #{groupOwnerId}, SYSDATE
         )
     </insert>
 
+    <insert id="insertMembership" parameterType="com.ex.tjspring.study.dto.GroupDto">
+        INSERT INTO STUDY_MEMBERSHIP (
+        GROUP_ID, USER_ID, NICKNAME, MEMBERSHIP_STATUS, MEMBER_ROLE, JOINED_AT
+        ) VALUES (
+        #{groupId}, #{groupOwnerId}, #{nickname}, 'ACTIVE', #{memberRole}, SYSDATE
+        )
+    </insert>
 
-    <select id="selectAllGroups" resultType="com.ex.tjspring.study.dto.GroupDto">
-        SELECT GROUP_ID, GROUP_NAME, CATEGORY, MAX_MEMBERS, STUDY_MODE, REGION,
-        CONTACT, GROUP_INTRODUCTION, THUMBNAIL, GROUP_OWNER_ID, CREATED_AT
+    <select id="selectAllGroups" resultMap="GroupDtoResultMap">
+        SELECT
+        GROUP_ID,
+        GROUP_NAME,
+        CATEGORY,
+        MAX_MEMBERS,
+        STUDY_MODE,
+        REGION,
+        CONTACT,
+        GROUP_INTRODUCTION,
+        THUMBNAIL,
+        GROUP_OWNER_ID,
+        CREATED_AT,
+        NULL as MEMBERSHIP_STATUS,
+        NULL as NICKNAME
         FROM STUDY_GROUPS
+        ORDER BY CREATED_AT DESC
     </select>
 
-    <select id="selectGroupById" parameterType="java.lang.Long" resultType="com.ex.tjspring.study.dto.GroupDto">
-        SELECT GROUP_ID, GROUP_NAME, CATEGORY, MAX_MEMBERS, STUDY_MODE, REGION,
-        CONTACT, GROUP_INTRODUCTION, THUMBNAIL,GROUP_OWNER_ID, CREATED_AT
-        FROM STUDY_GROUPS
-        WHERE GROUP_ID = #{id}
+    <select id="selectGroupById" parameterType="java.lang.Long" resultMap="GroupDtoResultMap">
+        SELECT
+        sg.GROUP_ID,
+        sg.GROUP_NAME,
+        sg.CATEGORY,
+        sg.MAX_MEMBERS,
+        sg.STUDY_MODE,
+        sg.REGION,
+        sg.CONTACT,
+        sg.GROUP_INTRODUCTION,
+        sg.THUMBNAIL,
+        sg.GROUP_OWNER_ID,
+        sg.CREATED_AT,
+        sm.MEMBERSHIP_STATUS,
+        sm.NICKNAME
+        FROM STUDY_GROUPS sg
+        LEFT JOIN STUDY_MEMBERSHIP sm
+        ON sg.GROUP_ID = sm.GROUP_ID
+        AND sm.USER_ID = sg.GROUP_OWNER_ID
+        WHERE sg.GROUP_ID = #{id}
     </select>
+
 
     <update id="update" parameterType="com.ex.tjspring.study.dto.GroupDto">
         UPDATE STUDY_GROUPS
-        SET GROUP_NAME = #{groupName}, MAX_MEMBERS = #{maxMembers},
-        CONTACT = #{contact}, GROUP_INTRODUCTION= #{groupIntroduction}, THUMBNAIL= #{thumbnail}
+        SET GROUP_NAME = #{groupName},
+        MAX_MEMBERS = #{maxMembers},
+        CONTACT = #{contact},
+        GROUP_INTRODUCTION = #{groupIntroduction}
+        <if test="thumbnail != null and thumbnail != ''">
+            , THUMBNAIL = #{thumbnail}
+        </if>
         WHERE GROUP_ID = #{groupId}
+    </update>
+
+    <update id="updateNickname" parameterType="com.ex.tjspring.study.dto.GroupDto">
+        UPDATE STUDY_MEMBERSHIP
+        SET NICKNAME = #{nickname}
+        WHERE GROUP_ID = #{groupId}
+        AND USER_ID = #{groupOwnerId}
+        AND MEMBERSHIP_STATUS = 'ACTIVE'
     </update>
 
     <delete id="delete" parameterType="java.lang.Long">
@@ -46,6 +127,49 @@
         SELECT COUNT(*) FROM STUDY_GROUPS WHERE GROUP_NAME = #{groupName}
     </select>
 
+    <!-- 사용자가 참여한 모든 스터디 그룹 조회 -->
+    <select id="findByUserId" parameterType="java.lang.Long" resultMap="GroupDtoResultMap">
+        SELECT
+        sg.GROUP_ID,
+        sg.GROUP_NAME,
+        sg.CATEGORY,
+        sg.MAX_MEMBERS,
+        sg.STUDY_MODE,
+        sg.REGION,
+        sg.CONTACT,
+        sg.GROUP_INTRODUCTION,
+        sg.THUMBNAIL,
+        sg.GROUP_OWNER_ID,
+        sg.CREATED_AT,
+        sm.MEMBERSHIP_STATUS,
+        sm.NICKNAME
+        FROM STUDY_GROUPS sg
+        INNER JOIN STUDY_MEMBERSHIP sm ON sg.GROUP_ID = sm.GROUP_ID
+        WHERE sm.USER_ID = #{userId}
+        ORDER BY sg.CREATED_AT DESC
+    </select>
 
+    <!-- 사용자가 현재 활성 참여 중인 스터디 그룹만 조회 -->
+    <select id="findActiveByUserId" parameterType="java.lang.Long" resultMap="GroupDtoResultMap">
+        SELECT
+        sg.GROUP_ID,
+        sg.GROUP_NAME,
+        sg.CATEGORY,
+        sg.MAX_MEMBERS,
+        sg.STUDY_MODE,
+        sg.REGION,
+        sg.CONTACT,
+        sg.GROUP_INTRODUCTION,
+        sg.THUMBNAIL,
+        sg.GROUP_OWNER_ID,
+        sg.CREATED_AT,
+        sm.MEMBERSHIP_STATUS,
+        sm.NICKNAME
+        FROM STUDY_GROUPS sg
+        INNER JOIN STUDY_MEMBERSHIP sm ON sg.GROUP_ID = sm.GROUP_ID
+        WHERE sm.USER_ID = #{userId}
+        AND sm.MEMBERSHIP_STATUS = 'ACTIVE'
+        ORDER BY sg.CREATED_AT DESC
+    </select>
 
 </mapper>
