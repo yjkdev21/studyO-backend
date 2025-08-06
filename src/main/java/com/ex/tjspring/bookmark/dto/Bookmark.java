@@ -1,6 +1,7 @@
 package com.ex.tjspring.bookmark.dto;
 
 import lombok.Getter;  // Getter 메소드 자동 생성
+import lombok.NoArgsConstructor;
 import lombok.Setter;  // Setter 메소드 자동 생성
 import lombok.ToString;  // toString 메소드 자동 생성
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;  // 날짜와 시간을 다루는 Java 8+ 클래
 @Getter    // 모든 필드에 대해 getXxx() 메소드 자동 생성
 @Setter    // 모든 필드에 대해 setXxx() 메소드 자동 생성
 @ToString  // toString() 메소드 자동 생성 (디버깅 시 객체 내용 확인 용이)
+@NoArgsConstructor
 public class Bookmark {
 
     // ========================================

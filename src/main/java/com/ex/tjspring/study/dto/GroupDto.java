@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 @ToString
 public class GroupDto {
     private Long groupId;
+    @Size(max =6, message = "6글자 이내로 입력해주세요.")
     private String groupName;
+    @Size(max =6, message = "6글자 이내로 입력해주세요.")
+    private String nickname;
     private String category;
     @Min(value = 1, message = "최대 인원은 최소 1명 이상이어야 합니다.")
     private Integer maxMembers;
@@ -24,7 +27,12 @@ public class GroupDto {
     private Long groupOwnerId;
     private LocalDateTime createdAt;
     private String thumbnail;
+    private byte[] imageData;
 
     // 추가된 필드: 사용자의 멤버십 상태
     private String membershipStatus;
+
+    private String memberRole;
+
+
 }

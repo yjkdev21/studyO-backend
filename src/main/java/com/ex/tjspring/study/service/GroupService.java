@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -18,7 +17,11 @@ public class GroupService {
     @Autowired
     private GroupDao dao;
 
-    // ========== 기존 메서드들 (그대로 유지) ==========
+    public String getUserNickname(Long userId) {
+        log.info("사용자 {}의 닉네임 조회", userId);
+        return dao.selectUserNickname(userId);
+    }
+
 
     public void insert(GroupDto groupDto) {
         log.info("그룹 생성 시작: {}", groupDto.getGroupName());
@@ -28,6 +31,24 @@ public class GroupService {
         }
 
         dao.insert(groupDto);
+    }
+
+    public void insertWithMembership(GroupDto groupDto) {
+        log.info("그룹 생성 및 멤버십 등록 시작: {}", groupDto.getGroupName());
+
+        if (existsByGroupName(groupDto.getGroupName())) {
+            throw new IllegalArgumentException("이미 존재하는 그룹명입니다.");
+        }
+
+        // 1. 스터디 그룹 생성
+        dao.insert(groupDto);
+        log.info("그룹 생성 완료 - ID: {}", groupDto.getGroupId());
+
+        // 2. 그룹 생성자를 멤버십에 자동 추가
+        groupDto.setMemberRole("ADMIN");//admin으로 지정
+        dao.insertMembership(groupDto);
+        log.info("그룹 생성자 멤버십 등록 완료 - 그룹ID: {}, 사용자ID: {}, 닉네임: {}",
+                groupDto.getGroupId(), groupDto.getGroupOwnerId(), groupDto.getNickname());
     }
 
     public GroupDto selectGroupById(Long id) {
@@ -44,13 +65,26 @@ public class GroupService {
 
         GroupDto existingGroup = selectGroupById(groupDto.getGroupId());
 
+        if (existingGroup == null) {
+            throw new IllegalArgumentException("존재하지 않는 그룹입니다.");
+        }
+
+        // 그룹명이 변경된 경우에만 중복 검사
         if (!existingGroup.getGroupName().equals(groupDto.getGroupName())
                 && existsByGroupName(groupDto.getGroupName())) {
             throw new IllegalArgumentException("이미 존재하는 그룹명입니다.");
         }
 
+        // 1. 그룹 정보 업데이트
         dao.update(groupDto);
-        log.info("그룹 수정 완료 - ID: {}", groupDto.getGroupId());
+        log.info("그룹 정보 수정 완료 - ID: {}", groupDto.getGroupId());
+
+        // 2. 닉네임이 있는 경우 멤버십 테이블의 닉네임도 업데이트
+        if (groupDto.getNickname() != null && !groupDto.getNickname().trim().isEmpty()) {
+            dao.updateNickname(groupDto);
+            log.info("멤버십 닉네임 수정 완료 - 그룹ID: {}, 사용자ID: {}, 새 닉네임: {}",
+                    groupDto.getGroupId(), groupDto.getGroupOwnerId(), groupDto.getNickname());
+        }
     }
 
     public void delete(Long id) {

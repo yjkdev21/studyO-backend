@@ -4,9 +4,11 @@ import com.ex.tjspring.user.dto.UserRegisterRequest;
 import com.ex.tjspring.user.mapper.UserMapper;
 import com.ex.tjspring.user.model.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -79,5 +81,47 @@ public class UserServiceImpl implements UserService {
 		} else {
 			return "fail";
 		}
+	}
+
+	// 아이디 찾기
+	@Override
+	public String findUserIdByEmail(String email) {
+		User user = userMapper.findByEmail(email);
+		if (user != null && "N".equals(user.getIsDeleted())) {
+			return user.getUserId();
+		}
+		return null;
+	}
+
+	// 비밀번호 찾기
+	@Override
+	public boolean resetPassword(String userId, String email, String newPassword) {
+		User user = userMapper.findByUserId(userId);
+
+		// 사용자가 존재하고 이메일이 일치, 탈퇴하지 않은 경우
+		if(user != null && email.equals(user.getEmail()) && "N".equals(user.getIsDeleted())) {
+			String hashedPassword = passwordEncoder.encode(newPassword);
+			user.setPassword(hashedPassword);
+			userMapper.updateUser(user);
+
+			log.info("비밀번호 변경 완료: userId={}", userId);
+
+			return true;
+		}
+		return false;
+	}
+
+	// 회원 탈퇴
+	@Override
+	public boolean deleteUser(String userId) {
+		User user = userMapper.findByUserId(userId);
+
+		//	회원이 존재하지 않거나 이미 탈퇴한 경우
+		if (user == null || "Y".equals(user.getIsDeleted())){
+			return false;
+		}
+
+		userMapper.updateIsDeleted(user.getId());
+		return true;
 	}
 }

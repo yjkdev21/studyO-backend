@@ -74,6 +74,18 @@ public class AuthController {
 
 		} catch (AuthenticationException e) {
 			log.warn("로그인 실패 : 잘못된 인증 정보 - userId={}", loginRequest.getUserId());
+
+			// 탈퇴한 사용자인지 확인
+			User user = userService.findByUserId(loginRequest.getUserId());
+			if (user != null && "Y".equals(user.getIsDeleted())) {
+				return ResponseEntity
+						.status(HttpStatus.UNAUTHORIZED)
+						.body(Map.of(
+								"success", false,
+								"message", "탈퇴한 사용자입니다."
+						));
+			}
+
 			return ResponseEntity
 					.status(HttpStatus.UNAUTHORIZED)
 					.body(Map.of(
@@ -183,6 +195,92 @@ public class AuthController {
 							"success", false,
 							"isLoggedIn", false,
 							"message", "상태 확인 중 오류가 발생했습니다."
+					));
+		}
+	}
+
+	// 아이디 찾기
+	@PostMapping("/find-id")
+	public ResponseEntity<?> findAccountId(@RequestBody Map<String, String> request) {
+		try {
+			String email = request.get("email");
+
+			if (email == null || email.trim().isEmpty()) {
+				return ResponseEntity.badRequest()
+						.body(Map.of(
+								"success", false,
+								"message", "이메일을 입력해주세요"
+						));
+			}
+
+			String userId = userService.findUserIdByEmail(email);
+			if (userId != null) {
+				return ResponseEntity.ok(Map.of(
+						"success", true,
+						"message", "아이디를 찾았습니다.",
+						"userId", userId
+				));
+			} else {
+				return ResponseEntity.ok(Map.of(
+						"success", false,
+						"message", "해당 이메일로 가입된 계정이 없습니다."
+				));
+			}
+		} catch (Exception e) {
+			log.error("아이디 찾기 중 오류 발생", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Map.of(
+							"success", false,
+							"message", "아이디 찾기 중 오류가 발생했습니다."
+					));
+		}
+	}
+
+	// 비밀번호 찾기 - 비밀번호 변경
+	@PostMapping("/find-password")
+	public ResponseEntity<?> findAccountPassword(@RequestBody Map<String, String> request) {
+		try {
+			String userId = request.get("userId");
+			String email = request.get("email");
+			String newPassword = request.get("newPassword");
+
+			if (userId == null || email == null || newPassword == null ||
+					userId.trim().isEmpty() || email.trim().isEmpty() || newPassword.trim().isEmpty()) {
+				return ResponseEntity.badRequest()
+						.body(Map.of(
+								"success", false,
+								"message", "모든 필드를 입력해주세요"
+						));
+			}
+
+			// 비밀번호 길이 체크
+			if (newPassword.length() < 8) {
+				return ResponseEntity.badRequest()
+						.body(Map.of(
+								"success", false,
+								"message", "비밀번호는 최소 8자 이상이어야 합니다."
+						));
+			}
+
+			boolean isReset = userService.resetPassword(userId, email, newPassword);
+
+			if (isReset) {
+				return ResponseEntity.ok(Map.of(
+						"success", true,
+						"message", "비밀번호가 성공적으로 변경되었습니다."
+				));
+			} else {
+				return ResponseEntity.ok(Map.of(
+						"success", false,
+						"message", "아이디와 이메일 정보가 일치하지 않습니다."
+				));
+			}
+		} catch (Exception e) {
+			log.error("비밀번호 변경 중 오류 발생", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Map.of(
+							"success", false,
+							"message", "비밀번호 변경 중 오류가 발생했습니다."
 					));
 		}
 	}

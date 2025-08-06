@@ -27,37 +27,14 @@
         (#{userId}, #{password}, #{email}, #{nickname})
     </insert>
 
+    <!-- findById - uid(PK 값)로 사용자 찾기 -->
     <select id="findById" parameterType="long" resultMap="userResultMap">
-        SELECT
-        id,
-        user_id,
-        password,
-        email,
-        nickname,
-        is_deleted,
-        created_at,
-        global_role,
-        profile_image,
-        introduction
-        FROM users
-        WHERE id = #{id}
+        SELECT * FROM users WHERE id = #{id}
     </select>
 
-    <!-- findByUserId - resultMap 사용 -->
+    <!-- findByUserId - 로그인 ID로 사용자 찾기 - resultMap 사용 -->
     <select id="findByUserId" parameterType="string" resultMap="userResultMap">
-        SELECT
-        id,
-        user_id,
-        password,
-        email,
-        nickname,
-        is_deleted,
-        created_at,
-        global_role,
-        profile_image,
-        introduction
-        FROM users
-        WHERE user_id = #{userId}
+        SELECT * FROM users WHERE user_id = #{userId}
     </select>
 
     <select id="findByEmail" parameterType="string" resultMap="userResultMap">
@@ -80,4 +57,10 @@
         WHERE id = #{id}
     </update>
 
+    <!--  회원 탈퇴  -->
+    <update id="updateIsDeleted">
+        UPDATE users
+        SET is_deleted = 'Y'
+        WHERE id = #{id}
+    </update>
 </mapper>
