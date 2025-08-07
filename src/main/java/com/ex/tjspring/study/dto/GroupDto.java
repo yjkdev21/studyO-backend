@@ -32,5 +32,4 @@ public class GroupDto {
     private String membershipStatus;
 
     private String memberRole;
-
 }

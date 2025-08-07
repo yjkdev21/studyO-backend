@@ -17,7 +17,6 @@ public class GroupService {
     @Autowired
     private GroupDao dao;
 
-
     public String getUserNickname(Long userId) {
         log.info("사용자 {}의 닉네임 조회", userId);
         return dao.selectUserNickname(userId);

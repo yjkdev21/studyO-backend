@@ -75,6 +75,7 @@ public class SecurityConfig {
 						auth
 								// 인증 없이 접근 가능 (비회원)
 								.requestMatchers(
+										"/api/auth/check",
 										"/api/auth/login",
 										"/api/user/register",
 										"/api/user/check-id",
@@ -83,7 +84,6 @@ public class SecurityConfig {
 
 								// 로그인된 사용자만 접근 가능
 								.requestMatchers(
-										"/api/auth/check",
 										"/api/auth/logout",
 										"/api/user/**"
 								).authenticated()

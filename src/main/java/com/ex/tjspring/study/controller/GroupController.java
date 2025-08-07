@@ -65,15 +65,17 @@ public class GroupController {
         String storedFileName = null;
 
         try {
+            if ("온라인".equals(groupDto.getStudyMode())) {
+                groupDto.setRegion(null);
+            }
+
+            // S3 업로드 로직으로 변경
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
                 storedFileName = s3Service.upload(S3DirKey.STUDYGROUPIMG, thumbnailFile);
             }
 
+            // DB에는 S3에 저장된 파일명만 저장
             groupDto.setThumbnail(storedFileName);
-
-            if ("온라인".equals(groupDto.getStudyMode())) {
-                groupDto.setRegion(null);
-            }
 
             groupService.insertWithMembership(groupDto);
 
@@ -236,8 +238,6 @@ public class GroupController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
-
-
     // ========== 사용자 참여 그룹 조회 기능 ==========
 
     @GetMapping("/user/{userId}")
