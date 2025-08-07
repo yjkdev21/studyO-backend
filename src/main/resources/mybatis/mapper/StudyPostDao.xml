@@ -113,14 +113,41 @@
              LEFT JOIN USERS u ON e.author_id = u.id  WHERE e.group_id = #{groupId}
     </select>
 
+    <!-- 홍보글 postId로 가져오기 -->
+    <select id="selectPostFindByPostId" resultMap="PostViewDtoResultMap" parameterType="java.lang.Long">
+        SELECT
+            e.study_post_id,
+            e.title,
+            e.content,
+            e.group_id,
+            e.author_id,
+            e.created_at,
+            e.recruit_start_date,
+            e.recruit_end_date,
+            e.updated_at,
+            e.view_count,
+            e.hash_tag,
+            a.id AS attach_id,
+            a.post_id AS attach_post_id,
+            a.file_name AS attach_file_name,
+            a.stored_file_name AS attach_stored_file_name,
+            a.file_size AS attach_file_size,
+            a.file_type AS attach_file_type,
+            a.reg_date AS attach_reg_date,
+            u.profile_image
+        FROM STUDY_POST e
+             LEFT JOIN ATTACHMENTS a ON e.study_post_id = a.post_id
+             LEFT JOIN USERS u ON e.author_id = u.id  WHERE e.study_post_id = #{postId}
+    </select>
+
 
     <!-- 홍보글 등록 -->
     <insert id="insertPost" parameterType="com.ex.tjspring.study.dto.StudyPostDto" keyProperty="id">
-        <selectKey keyProperty="study_post_id" resultType="java.lang.Long" order="AFTER">
-            SELECT STUDY_POST_SEQ.CURRVAL FROM DUAL
+        <selectKey keyProperty="studyPostId" resultType="java.lang.Long" order="AFTER">
+            SELECT SEQ_STUDY_POST_ID.CURRVAL FROM DUAL
         </selectKey>
         INSERT INTO STUDY_POST (study_post_id, title, content, group_id , author_id , created_at , recruit_start_date , recruit_end_date , updated_at , view_count , hash_tag )
-        VALUES (STUDY_POST_SEQ.NEXTVAL, #{title}, #{content}, #{groupId} ,#{authorId} , SYSTIMESTAMP , #{recruitStartDate} ,  #{recruitEndDate} , SYSTIMESTAMP , 0 , #{hashTag} )
+        VALUES (SEQ_STUDY_POST_ID.NEXTVAL, #{title}, #{content}, #{groupId} ,#{authorId} , SYSTIMESTAMP , #{recruitStartDate} ,  #{recruitEndDate} , SYSTIMESTAMP , 0 , #{hashTag} )
     </insert>
 
     <!-- 홍보글 수정 -->

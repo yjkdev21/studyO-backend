@@ -27,12 +27,9 @@ public class GroupDto {
     private Long groupOwnerId;
     private LocalDateTime createdAt;
     private String thumbnail;
-    private byte[] imageData;
 
     // 추가된 필드: 사용자의 멤버십 상태
     private String membershipStatus;
 
     private String memberRole;
-
-
 }
