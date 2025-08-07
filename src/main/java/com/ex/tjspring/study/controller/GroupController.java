@@ -1,5 +1,7 @@
 package com.ex.tjspring.study.controller;
 
+import com.ex.tjspring.common.service.S3DirKey;
+import com.ex.tjspring.common.service.S3Service;
 import com.ex.tjspring.study.dto.GroupDto;
 import com.ex.tjspring.study.service.GroupService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,16 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestPart;
 
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -30,6 +25,9 @@ public class GroupController {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private S3Service s3Service;
 
     // ========== 새로 추가: 사용자 닉네임 조회 ==========
     @GetMapping("/user/{userId}/nickname")
@@ -64,32 +62,23 @@ public class GroupController {
             @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnailFile
     ) {
         Map<String, Object> response = new HashMap<>();
+        String storedFileName = null;
 
         try {
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
-                String originalFilename = thumbnailFile.getOriginalFilename();
-                String fileName = UUID.randomUUID() + "_" + originalFilename;
+                storedFileName = s3Service.upload(S3DirKey.STUDYGROUPIMG, thumbnailFile);
+            }
 
-                // 파일 데이터를 byte[]로 변환
-                byte[] imageData = thumbnailFile.getBytes();
+            groupDto.setThumbnail(storedFileName);
 
-                log.info("파일 업로드: {} -> {} ({}bytes)", originalFilename, fileName, imageData.length);
-
-                // GroupDto에 파일명과 이미지 데이터 설정
-                groupDto.setThumbnail(fileName);
-                groupDto.setImageData(imageData); // GroupDto에 imageData 필드 추가 필요
-
-            } else {
-                log.info("썸네일 파일이 없음, 기본 이미지 사용");
-                groupDto.setThumbnail(null); // null로 설정하여 기본 이미지 사용
-                groupDto.setImageData(null);
+            if ("온라인".equals(groupDto.getStudyMode())) {
+                groupDto.setRegion(null);
             }
 
             groupService.insertWithMembership(groupDto);
 
             response.put("success", true);
             response.put("message", "스터디 그룹이 성공적으로 등록되었습니다.");
-            response.put("thumbnailFileName", groupDto.getThumbnail());
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -100,23 +89,27 @@ public class GroupController {
         }
     }
 
+    // ========== getAllGroups 메소드 수정: 썸네일 경로를 fullpath로 변경 ==========
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllGroups() {
         Map<String, Object> response = new HashMap<>();
-
         try {
             List<GroupDto> groups = groupService.selectAllGroups();
 
-            // 디버깅용 로그
             for (GroupDto group : groups) {
-                log.debug("그룹 {}: 썸네일 = {}", group.getGroupName(), group.getThumbnail());
+                String thumbnailFileName = group.getThumbnail();
+                if (thumbnailFileName != null && !thumbnailFileName.isEmpty()) {
+                    String fullPath = s3Service.getFileFullPath(S3DirKey.STUDYGROUPIMG, thumbnailFileName);
+                    group.setThumbnail(fullPath);
+                } else {
+                    group.setThumbnail("/images/default-thumbnail.png");
+                }
             }
 
             response.put("success", true);
             response.put("data", groups);
             response.put("count", groups.size());
             return ResponseEntity.ok(response);
-
         } catch (Exception e) {
             log.error("스터디 그룹 목록 조회 중 오류 발생: {}", e.getMessage(), e);
             response.put("success", false);
@@ -124,6 +117,8 @@ public class GroupController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getGroup(@PathVariable Long id) {
@@ -188,22 +183,27 @@ public class GroupController {
         }
     }
 
+
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> delete(
+            @PathVariable Long id,
+            @RequestParam Long userId  // 삭제 요청자의 userId도 필요함
+    ) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            groupService.delete(id);
+            groupService.deleteGroupIfOwnerAndNoMembers(id, userId);
 
             response.put("success", true);
             response.put("message", "스터디 그룹이 성공적으로 삭제되었습니다.");
             return ResponseEntity.ok(response);
 
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             log.warn("스터디 그룹 삭제 실패: {}", e.getMessage());
             response.put("success", false);
             response.put("message", e.getMessage());
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(response);
 
         } catch (Exception e) {
             log.error("스터디 그룹 삭제 중 오류 발생: {}", e.getMessage(), e);
@@ -212,6 +212,8 @@ public class GroupController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
+
+
 
     @GetMapping("/check-name/{groupName}")
     public ResponseEntity<Map<String, Object>> checkGroupNameDuplicate(@PathVariable String groupName) {
@@ -234,47 +236,6 @@ public class GroupController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
-
-//    @GetMapping("/image/{filename}")
-//    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
-//        byte[] imageData = groupDao.selectImageByFilename(filename);
-//
-//        if (imageData == null || imageData.length == 0) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        String contentType = getContentType(filename);
-//        ByteArrayResource resource = new ByteArrayResource(imageData);
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType(contentType))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
-//                .body(resource);
-//    }
-//
-//    private String getContentType(String filename) {
-//        if (filename == null || !filename.contains(".")) {
-//            return "image/default-thumbnail.png";
-//        }
-//
-//        String extension = filename.toLowerCase().substring(filename.lastIndexOf(".") + 1);
-//
-//        switch (extension) {
-//            case "jpg":
-//            case "jpeg":
-//                return "image/jpeg";
-//            case "png":
-//                return "image/png";
-//            case "gif":
-//                return "image/gif";
-//            case "webp":
-//                return "image/webp";
-//            default:
-//                return "image/jpeg";
-//        }
-//    }
-
-
 
 
     // ========== 사용자 참여 그룹 조회 기능 ==========
