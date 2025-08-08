@@ -20,4 +20,6 @@ public interface UserService {
     boolean resetPassword(String userId, String email, String newPassword);
     // 회원 탈퇴 메서드
     boolean deleteUser(String userId);
+
+    boolean verifyPassword(String userId, String rawPassword);
 }

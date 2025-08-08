@@ -91,4 +91,42 @@ public class UserController {
 					));
 		}
 	}
+
+    @PostMapping("/verify-password")
+    public ResponseEntity<?> verifyPassword(@RequestBody Map<String, String> request) {
+        try {
+            String userId = request.get("userId");
+            String password = request.get("password");
+
+            if (userId == null || password == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message", "사용자 ID와 비밀번호를 입력해주세요."
+                        ));
+            }
+
+            boolean isValid = userService.verifyPassword(userId, password);
+
+            if (isValid) {
+                return ResponseEntity.ok(Map.of(
+                        "success", true,
+                        "message", "비밀번호가 확인되었습니다."
+                ));
+            } else {
+                return ResponseEntity.ok(Map.of(
+                        "success", false,
+                        "message", "비밀번호가 일치하지 않습니다."
+                ));
+            }
+
+        } catch (Exception e) {
+            log.error("비밀번호 확인 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "success", false,
+                            "message", "비밀번호 확인 중 오류가 발생했습니다."
+                    ));
+        }
+    }
 }
