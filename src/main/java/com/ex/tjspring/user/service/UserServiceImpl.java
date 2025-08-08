@@ -124,4 +124,16 @@ public class UserServiceImpl implements UserService {
 		userMapper.updateIsDeleted(user.getId());
 		return true;
 	}
+
+    @Override
+    public boolean verifyPassword(String userId, String rawPassword) {
+        User user = userMapper.findByUserId(userId);
+
+        if (user == null || "Y".equals(user.getIsDeleted())) {
+            return false;
+        }
+
+        // BCrypt로 암호화된 비밀번호와 평문 비밀번호 비교
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
 }
