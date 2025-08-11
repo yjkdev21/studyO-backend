@@ -33,7 +33,8 @@ public class GroupService {
         dao.insert(groupDto);
     }
 
-    public void insertWithMembership(GroupDto groupDto) {
+    @Transactional
+    public Long insertWithMembership(GroupDto groupDto) {
         log.info("그룹 생성 및 멤버십 등록 시작: {}", groupDto.getGroupName());
 
         if (existsByGroupName(groupDto.getGroupName())) {
@@ -45,11 +46,15 @@ public class GroupService {
         log.info("그룹 생성 완료 - ID: {}", groupDto.getGroupId());
 
         // 2. 그룹 생성자를 멤버십에 자동 추가
-        groupDto.setMemberRole("ADMIN");//admin으로 지정
+        groupDto.setMemberRole("ADMIN"); // admin으로 지정
         dao.insertMembership(groupDto);
         log.info("그룹 생성자 멤버십 등록 완료 - 그룹ID: {}, 사용자ID: {}, 닉네임: {}",
                 groupDto.getGroupId(), groupDto.getGroupOwnerId(), groupDto.getNickname());
+
+        // 생성된 그룹 ID 반환
+        return groupDto.getGroupId();
     }
+
 
     public GroupDto selectGroupById(Long id) {
         return dao.selectGroupById(id);
