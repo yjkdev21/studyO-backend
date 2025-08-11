@@ -86,12 +86,11 @@
         sm.NICKNAME
         FROM STUDY_GROUPS sg
         LEFT JOIN STUDY_MEMBERSHIP sm
-        ON sm.USER_ID = sg.GROUP_OWNER_ID
-        AND sm.GROUP_ID = sg.GROUP_ID
+        ON sg.GROUP_OWNER_ID = sm.USER_ID
+        AND sg.GROUP_ID = sm.GROUP_ID
         WHERE sg.GROUP_ID = #{id}
     </select>
-
-
+    
 
     <update id="update" parameterType="com.ex.tjspring.study.dto.GroupDto">
         UPDATE STUDY_GROUPS
