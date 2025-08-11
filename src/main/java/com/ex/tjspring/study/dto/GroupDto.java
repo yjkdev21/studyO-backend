@@ -31,7 +31,8 @@ public class GroupDto {
 
     // 추가된 필드: 사용자의 멤버십 상태
     private String membershipStatus;
-
     private String memberRole;
 
+    // 그룹장의 닉네임 (STUDY_MEMBERSHIP 테이블에서 조회)
+    private String ownerNickname;
 }

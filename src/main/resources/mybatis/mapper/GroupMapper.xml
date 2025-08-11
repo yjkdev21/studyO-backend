@@ -17,15 +17,10 @@
         <result property="thumbnail" column="THUMBNAIL"/>
         <result property="membershipStatus" column="MEMBERSHIP_STATUS"/>
         <result property="nickname" column="NICKNAME"/>
+        <result property="memberRole" column="MEMBER_ROLE"/>
+        <!-- 그룹장 닉네임 추가 -->
+        <result property="ownerNickname" column="OWNER_NICKNAME"/>
     </resultMap>
-
-    <!-- 파일명으로 이미지 데이터 조회 -->
-<!--    <select id="selectImageByFilename" parameterType="String" resultType="byte[]">-->
-<!--        SELECT image_data-->
-<!--        FROM study_groups-->
-<!--        WHERE thumbnail = #{filename}-->
-<!--        AND image_data IS NOT NULL-->
-<!--    </select>-->
 
     <!-- User 테이블에서 닉네임 조회 -->
     <select id="selectUserNickname" parameterType="java.lang.Long" resultType="String">
@@ -56,25 +51,33 @@
         )
     </insert>
 
+    <!-- 전체 그룹 조회 - 그룹장 닉네임 포함 -->
     <select id="selectAllGroups" resultMap="GroupDtoResultMap">
         SELECT
-        GROUP_ID,
-        GROUP_NAME,
-        CATEGORY,
-        MAX_MEMBERS,
-        STUDY_MODE,
-        REGION,
-        CONTACT,
-        GROUP_INTRODUCTION,
-        THUMBNAIL,
-        GROUP_OWNER_ID,
-        CREATED_AT,
+        sg.GROUP_ID,
+        sg.GROUP_NAME,
+        sg.CATEGORY,
+        sg.MAX_MEMBERS,
+        sg.STUDY_MODE,
+        sg.REGION,
+        sg.CONTACT,
+        sg.GROUP_INTRODUCTION,
+        sg.THUMBNAIL,
+        sg.GROUP_OWNER_ID,
+        sg.CREATED_AT,
         NULL as MEMBERSHIP_STATUS,
-        NULL as NICKNAME
-        FROM STUDY_GROUPS
-        ORDER BY CREATED_AT DESC
+        NULL as NICKNAME,
+        NULL as MEMBER_ROLE,
+        owner_sm.NICKNAME as OWNER_NICKNAME
+        FROM STUDY_GROUPS sg
+        LEFT JOIN STUDY_MEMBERSHIP owner_sm
+        ON sg.GROUP_ID = owner_sm.GROUP_ID
+        AND sg.GROUP_OWNER_ID = owner_sm.USER_ID
+        AND owner_sm.MEMBERSHIP_STATUS = 'ACTIVE'
+        ORDER BY sg.CREATED_AT DESC
     </select>
 
+    <!-- 특정 그룹 조회 - 그룹장 닉네임 포함 -->
     <select id="selectGroupById" parameterType="java.lang.Long" resultMap="GroupDtoResultMap">
         SELECT
         sg.GROUP_ID,
@@ -89,14 +92,19 @@
         sg.GROUP_OWNER_ID,
         sg.CREATED_AT,
         sm.MEMBERSHIP_STATUS,
-        sm.NICKNAME
+        sm.NICKNAME,
+        sm.MEMBER_ROLE,
+        owner_sm.NICKNAME as OWNER_NICKNAME
         FROM STUDY_GROUPS sg
         LEFT JOIN STUDY_MEMBERSHIP sm
         ON sg.GROUP_ID = sm.GROUP_ID
         AND sm.USER_ID = sg.GROUP_OWNER_ID
+        LEFT JOIN STUDY_MEMBERSHIP owner_sm
+        ON sg.GROUP_ID = owner_sm.GROUP_ID
+        AND sg.GROUP_OWNER_ID = owner_sm.USER_ID
+        AND owner_sm.MEMBERSHIP_STATUS = 'ACTIVE'
         WHERE sg.GROUP_ID = #{id}
     </select>
-
 
     <update id="update" parameterType="com.ex.tjspring.study.dto.GroupDto">
         UPDATE STUDY_GROUPS
@@ -127,7 +135,7 @@
         SELECT COUNT(*) FROM STUDY_GROUPS WHERE GROUP_NAME = #{groupName}
     </select>
 
-    <!-- 사용자가 참여한 모든 스터디 그룹 조회 -->
+    <!-- 사용자가 참여한 모든 스터디 그룹 조회 - 그룹장 닉네임 포함 -->
     <select id="findByUserId" parameterType="java.lang.Long" resultMap="GroupDtoResultMap">
         SELECT
         sg.GROUP_ID,
@@ -142,14 +150,20 @@
         sg.GROUP_OWNER_ID,
         sg.CREATED_AT,
         sm.MEMBERSHIP_STATUS,
-        sm.NICKNAME
+        sm.NICKNAME,
+        sm.MEMBER_ROLE,
+        owner_sm.NICKNAME as OWNER_NICKNAME
         FROM STUDY_GROUPS sg
         INNER JOIN STUDY_MEMBERSHIP sm ON sg.GROUP_ID = sm.GROUP_ID
+        LEFT JOIN STUDY_MEMBERSHIP owner_sm
+        ON sg.GROUP_ID = owner_sm.GROUP_ID
+        AND sg.GROUP_OWNER_ID = owner_sm.USER_ID
+        AND owner_sm.MEMBERSHIP_STATUS = 'ACTIVE'
         WHERE sm.USER_ID = #{userId}
         ORDER BY sg.CREATED_AT DESC
     </select>
 
-    <!-- 사용자가 현재 활성 참여 중인 스터디 그룹만 조회 -->
+    <!-- 사용자가 현재 활성 참여 중인 스터디 그룹만 조회 - 그룹장 닉네임 포함 -->
     <select id="findActiveByUserId" parameterType="java.lang.Long" resultMap="GroupDtoResultMap">
         SELECT
         sg.GROUP_ID,
@@ -164,9 +178,15 @@
         sg.GROUP_OWNER_ID,
         sg.CREATED_AT,
         sm.MEMBERSHIP_STATUS,
-        sm.NICKNAME
+        sm.NICKNAME,
+        sm.MEMBER_ROLE,
+        owner_sm.NICKNAME as OWNER_NICKNAME
         FROM STUDY_GROUPS sg
         INNER JOIN STUDY_MEMBERSHIP sm ON sg.GROUP_ID = sm.GROUP_ID
+        LEFT JOIN STUDY_MEMBERSHIP owner_sm
+        ON sg.GROUP_ID = owner_sm.GROUP_ID
+        AND sg.GROUP_OWNER_ID = owner_sm.USER_ID
+        AND owner_sm.MEMBERSHIP_STATUS = 'ACTIVE'
         WHERE sm.USER_ID = #{userId}
         AND sm.MEMBERSHIP_STATUS = 'ACTIVE'
         ORDER BY sg.CREATED_AT DESC
