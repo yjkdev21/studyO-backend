@@ -133,8 +133,6 @@ public class GroupController {
     }
 
 
-
-
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> update(
             @PathVariable Long id,
@@ -218,18 +216,7 @@ public class GroupController {
         }
     }
 
-    @PostMapping("/test-s3")
-    public ResponseEntity<?> testS3Upload(@RequestPart("file") MultipartFile file) {
-        try {
-            log.info("=== S3 테스트 시작 ===");
-            String result = s3Service.upload(S3DirKey.STUDYGROUPIMG, file);
-            log.info("=== S3 테스트 성공: {} ===", result);
-            return ResponseEntity.ok("업로드 성공: " + result);
-        } catch (Exception e) {
-            log.error("=== S3 테스트 실패 ===", e);
-            return ResponseEntity.internalServerError().body("업로드 실패: " + e.getMessage());
-        }
-    }
+
 
 
     // ========== 사용자 참여 그룹 조회 기능 ==========

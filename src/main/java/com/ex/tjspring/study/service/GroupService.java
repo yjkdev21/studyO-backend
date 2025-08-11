@@ -116,4 +116,7 @@ public class GroupService {
         log.info("사용자 {}의 활성 그룹 조회", userId);
         return dao.findActiveByUserId(userId);
     }
+
+
+
 }
