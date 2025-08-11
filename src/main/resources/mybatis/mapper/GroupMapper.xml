@@ -19,7 +19,6 @@
         <result property="nickname" column="NICKNAME"/>
     </resultMap>
 
-
     <!-- User 테이블에서 닉네임 조회 -->
     <select id="selectUserNickname" parameterType="java.lang.Long" resultType="String">
         SELECT NICKNAME
@@ -36,10 +35,8 @@
         GROUP_ID, GROUP_NAME, CATEGORY, MAX_MEMBERS, STUDY_MODE, REGION,
         CONTACT, GROUP_INTRODUCTION, THUMBNAIL, GROUP_OWNER_ID, CREATED_AT
         ) VALUES (
-        #{groupId}, #{groupName}, #{category}, #{maxMembers}, #{studyMode}, #{region,jdbcType=VARCHAR},
-        #{contact}, #{groupIntroduction},
-        #{thumbnail, jdbcType=VARCHAR},
-        #{groupOwnerId}, SYSDATE
+        #{groupId}, #{groupName}, #{category}, #{maxMembers}, #{studyMode}, #{region},
+        #{contact}, #{groupIntroduction}, #{thumbnail, jdbcType=VARCHAR}, #{groupOwnerId}, SYSDATE
         )
     </insert>
 
@@ -83,14 +80,14 @@
         sg.THUMBNAIL,
         sg.GROUP_OWNER_ID,
         sg.CREATED_AT,
+        sm.MEMBERSHIP_STATUS,
         sm.NICKNAME
         FROM STUDY_GROUPS sg
         LEFT JOIN STUDY_MEMBERSHIP sm
-        ON sg.GROUP_OWNER_ID = sm.USER_ID
-        AND sg.GROUP_ID = sm.GROUP_ID
+        ON sg.GROUP_ID = sm.GROUP_ID
+        AND sm.USER_ID = sg.GROUP_OWNER_ID
         WHERE sg.GROUP_ID = #{id}
     </select>
-    
 
     <update id="update" parameterType="com.ex.tjspring.study.dto.GroupDto">
         UPDATE STUDY_GROUPS
@@ -99,7 +96,7 @@
         CONTACT = #{contact},
         GROUP_INTRODUCTION = #{groupIntroduction}
         <if test="thumbnail != null and thumbnail != ''">
-            , THUMBNAIL = #{thumbnail, jdbcType=VARCHAR}
+            , THUMBNAIL = #{thumbnail}
         </if>
         WHERE GROUP_ID = #{groupId}
     </update>
@@ -112,24 +109,10 @@
         AND MEMBERSHIP_STATUS = 'ACTIVE'
     </update>
 
-
-    <!-- 그룹 멤버 수 조회 -->
-    <select id="countMembersByGroupId" parameterType="long" resultType="int">
-        SELECT COUNT(*) FROM STUDY_MEMBERSHIP WHERE GROUP_ID = #{groupId}
-    </select>
-
-
-    <!--  스터디 그룹 삭제  -->
     <delete id="delete" parameterType="java.lang.Long">
         DELETE FROM STUDY_GROUPS
         WHERE GROUP_ID = #{id}
     </delete>
-
-    <!-- 그룹 멤버십 전체 삭제 -->
-    <delete id="deleteMembershipsByGroupId" parameterType="long">
-        DELETE FROM STUDY_MEMBERSHIP WHERE GROUP_ID = #{groupId}
-    </delete>
-
 
     <select id="existsByGroupName" parameterType="String" resultType="int">
         SELECT COUNT(*) FROM STUDY_GROUPS WHERE GROUP_NAME = #{groupName}

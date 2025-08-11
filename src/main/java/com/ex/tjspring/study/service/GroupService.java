@@ -96,28 +96,6 @@ public class GroupService {
         log.info("그룹 삭제 완료 - ID: {}", id);
     }
 
-    public void deleteGroupIfOwnerAndNoMembers(Long groupId, Long userId) {
-        GroupDto group = dao.selectGroupById(groupId);
-
-        if (group == null) {
-            throw new IllegalArgumentException("그룹이 존재하지 않습니다.");
-        }
-
-        if (!group.getGroupOwnerId().equals(userId)) {
-            throw new IllegalStateException("방장만 스터디 그룹을 삭제할 수 있습니다.");
-        }
-
-        int memberCount = dao.countMembersByGroupId(groupId);  // 이 메서드를 GroupDao에 만들어야 함
-        if (memberCount > 1) {
-            throw new IllegalStateException("다른 멤버가 존재하여 삭제할 수 없습니다.");
-        }
-
-        // 그룹과 멤버십 삭제는 GroupDao에 있는 메서드 사용
-        dao.delete(groupId);
-        dao.deleteMembershipsByGroupId(groupId);  // 멤버십 전체 삭제 메서드도 만들어야 함
-    }
-
-
     public boolean existsByGroupName(String groupName) {
         return dao.existsByGroupName(groupName) > 0;
     }

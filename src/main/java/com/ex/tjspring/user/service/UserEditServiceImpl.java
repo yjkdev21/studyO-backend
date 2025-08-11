@@ -17,17 +17,20 @@ public class UserEditServiceImpl implements UserEditService {
     @Override
     public boolean updateUserInfo(UserUpdateRequest dto) {
         try {
-            // 기존 사용자 조회
             User existingUser = userMapper.findById(dto.getId());
             if (existingUser == null) {
                 return false;
             }
 
-            // 기존 사용자 객체를 그대로 사용하고 변경할 필드만 업데이트
             existingUser.setNickname(dto.getNickname());
             existingUser.setIntroduction(dto.getIntroduction());
-            existingUser.setProfileImage(dto.getProfileImage());
 
+            // profileImage가 비어있거나 null이면 기존값 유지
+            if (dto.getProfileImage() != null && !dto.getProfileImage().trim().isEmpty()) {
+                existingUser.setProfileImage(dto.getProfileImage());
+            }
+
+            // password도 마찬가지
             if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
             }

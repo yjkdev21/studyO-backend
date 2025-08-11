@@ -1,12 +1,13 @@
 package com.ex.tjspring.editorexample.dto;
 
-import com.ex.tjspring.common.dto.AttachFileDto;
-import com.ex.tjspring.study.dto.StudyPostDto;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull; // @NotNull 임포트
 import jakarta.validation.constraints.Size;
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat; // 이 임포트가 중요합니다!
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -18,8 +19,12 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class StudyPostUpdateDto {
-    @NotNull(message = "게시글 ID는 필수입니다.")
+
+    @NotNull(message = "게시글 ID는 필수입니다.") // 수정 시 ID는 반드시 존재해야 함
     private Long studyPostId;
+
+    @NotNull(message = "User ID는 필수입니다.")
+    private Long authorId;
 
     @NotBlank(message = "제목을 입력해주세요.")
     @Size(max = 255, message = "제목은 255자를 초과할 수 없습니다.")
@@ -28,32 +33,23 @@ public class StudyPostUpdateDto {
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
-    @NotNull(message = "User ID는 필수입니다.")
-    private Long authorId;
-
     @NotNull(message = "모집 시작일을 입력해주세요.")
-    @DateTimeFormat(pattern = "yyyy.MM.dd") // <-- 이 어노테이션 추가
     private LocalDateTime recruitStartDate;
 
     @NotNull(message = "모집 종료일을 입력해주세요.")
-    @DateTimeFormat(pattern = "yyyy.MM.dd") // <-- 이 어노테이션 추가
     private LocalDateTime recruitEndDate;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private int viewCount;
 
     @NotBlank(message = "해쉬태그 내용을 입력해주세요. 예) #자격증#공인중개사")
     private String hashTag;
 
-    private List<String> deletedStoredFileNames;
-    private List<MultipartFile> newAttachments;
+    // 새로 추가될 첨부파일 목록
+    private List<MultipartFile> newAttachments; // edit.html의 name="newAttachments"와 일치
 
-    public StudyPostDto toStudyPostDto() {
-        StudyPostDto dto = new StudyPostDto();
-        dto.setStudyPostId(this.studyPostId);
-        dto.setTitle(this.title);
-        dto.setContent(this.content);
-        dto.setAuthorId(this.authorId);
-        dto.setRecruitStartDate(this.recruitStartDate);
-        dto.setRecruitEndDate(this.recruitEndDate);
-        dto.setHashTag(this.hashTag);
-        return dto;
-    }
+    // 삭제될 기존 첨부파일의 storedFileName 목록
+    // JavaScript 에서 hidden input 으로 전송되는 deletedStoredFileNames와 일치
+    private List<String> deletedStoredFileNames;
 }

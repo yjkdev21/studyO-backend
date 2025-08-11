@@ -21,8 +21,6 @@ public interface IStudyPostDao {
 
     StudyPostViewDto selectPostFindByGroupId(Long groudId);
 
-    StudyPostViewDto selectPostFindByPostId(Long postId);
-
     Long insertPost(StudyPostDto dto);
 
     void updatePost(StudyPostDto dto);

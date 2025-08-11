@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat; // 이 임포트가 중요합니다!
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -33,11 +32,9 @@ public class StudyPostInsertDto {
     private String content;
 
     @NotNull(message = "모집 시작일을 입력해주세요.")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private LocalDateTime recruitStartDate;
 
     @NotNull(message = "모집 종료일을 입력해주세요.")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private LocalDateTime recruitEndDate;
 
     private LocalDateTime updatedAt;
@@ -48,5 +45,5 @@ public class StudyPostInsertDto {
     private String hashTag;
 
     private LocalDateTime createdAt;
-    private List<MultipartFile> attachments;
+    private List<MultipartFile> attachments; // insert.html의 name="attachments"와 일치
 }
