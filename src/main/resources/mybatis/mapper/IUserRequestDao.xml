@@ -72,21 +72,71 @@
         VALUES (#{userId}, #{studyPostId}, SYSTIMESTAMP , #{applicationStatus} ,  #{applicationMessage} , null , null , null )
     </insert>
 
-    <!-- 스터디 GROUP_ID로 신청 리스트 가져오기 ( 추후: 가입승인시 트리거 USER_REQUEST 데이터 삭제 )-->
+    <!-- 스터디 GROUP_ID로 신청 리스트 가져오기 - PENDING 만 가져오기 O -->
     <select id="selectUserRequestFindByGroupId" resultMap="UserRequestDtoMap">
-        SELECT r.id,
-                   r.user_id,
-                   r.study_post_id,
-                   r.requested_at,
-                   r.application_status,
-                   r.application_message,
-                   r.processed_at,
-                   r.processed_by,
-                   r.rejection_reason,
-                   p.group_id
-        FROM USER_REQUEST r JOIN STUDY_POST p ON r.study_post_id = p.study_post_id
+        SELECT
+            r.id,
+            r.user_id,
+            r.study_post_id,
+            r.requested_at,
+            r.application_status,
+            r.application_message,
+            r.processed_at,
+            r.processed_by,
+            r.rejection_reason,
+            p.group_id,
+            u.nickname,
+            u.profile_image
+        FROM USER_REQUEST r
+        JOIN STUDY_POST p ON r.study_post_id = p.study_post_id
+        JOIN USERS u ON r.user_id = u.id
         WHERE p.group_id = #{groupId}
+        AND r.application_status = 'PENDING'
     </select>
+
+    <!-- ID로 특정 가입요청 조회 O -->
+    <select id="selectUserRequestById" parameterType="java.lang.Long" resultMap="UserRequestDtoMap">
+        SELECT r.id,
+        r.user_id,
+        r.study_post_id,
+        r.requested_at,
+        r.application_status,
+        r.application_message,
+        r.processed_at,
+        r.processed_by,
+        r.rejection_reason,
+        p.group_id,
+        u.nickname,
+        u.profile_image
+        FROM USER_REQUEST r
+        JOIN STUDY_POST p ON r.study_post_id = p.study_post_id
+        JOIN USERS u ON r.user_id = u.id
+        WHERE r.id = #{id}
+    </select>
+
+    <!-- 가입요청 승인/거절 처리 O -->
+    <update id="processUserRequest" parameterType="map">
+        UPDATE USER_REQUEST r
+        SET
+        r.application_status = #{status},
+        r.processed_at = SYSDATE,
+        r.processed_by = (
+        SELECT sg.group_owner_id
+        FROM STUDY_POST sp
+        JOIN STUDY_GROUPS sg ON sp.group_id = sg.group_id
+        WHERE sp.study_post_id = r.study_post_id
+        AND ROWNUM = 1
+        )
+        WHERE r.id = #{requestId}
+    </update>
+
+
+
+
+
+
+
+
 
     <!-- 스터디 홍보글 포스트 ID 로 가입신청한 갯수 -->
     <select id="existsUserRequestByPostId" parameterType="java.lang.Long" resultType="int">
@@ -97,7 +147,7 @@
     <select id="existsUserRequestByGroupId" parameterType="java.lang.Long" resultType="int">
         SELECT COUNT(r.user_request_id)
         FROM USER_REQUEST r
-             JOIN STUDY_POST p ON r.study_post_id = p.study_post_id
+        JOIN STUDY_POST p ON r.study_post_id = p.study_post_id
         WHERE p.group_id = #{groupId}
     </select>
 
@@ -114,6 +164,5 @@
         DELETE FROM USER_REQUEST
         WHERE id = #{id}
     </delete>
-
 
 </mapper>
