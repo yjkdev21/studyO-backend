@@ -126,6 +126,82 @@
         ORDER BY p.CREATED_AT DESC
     </select>
 
+    <!-- 인기 스터디 조회 (북마크 많은 순) - 오라클 11g용 -->
+    <select id="selectPopularStudies" resultType="com.ex.tjspring.mainsearch.model.StudyPostModel">
+        SELECT * FROM (
+        SELECT
+        p.STUDY_POST_ID as studyPostId,
+        p.TITLE as title,
+        p.CONTENT as content,
+        p.GROUP_ID as groupId,
+        p.AUTHOR_ID as authorId,
+        u.NICKNAME as authorName,
+        p.STUDY_MODE as studyMode,
+        p.CREATED_AT as createdAt,
+        p.RECRUIT_START_DATE as recruitStartDate,
+        p.RECRUIT_END_DATE as recruitEndDate,
+        p.UPDATED_AT as updatedAt,
+        p.VIEW_COUNT as viewCount,
+        p.HASH_TAG as hashTag,
+        g.GROUP_NAME as groupName,
+        g.CATEGORY as category,
+        g.MAX_MEMBERS as maxMembers,
+        g.REGION as region,
+        g.CONTACT as contact,
+        g.GROUP_INTRODUCTION as groupIntroduction,
+        g.GROUP_OWNER_ID as groupOwnerId,
+        g.CREATED_AT as groupCreatedAt,
+        g.THUMBNAIL as thumbnail,
+        NVL(bc.bookmarkCount, 0) as bookmarkCount
+        FROM STUDY_POST p
+        INNER JOIN STUDY_GROUPS g ON p.GROUP_ID = g.GROUP_ID
+        LEFT JOIN USERS u ON p.AUTHOR_ID = u.ID
+        LEFT JOIN (
+        SELECT GROUP_ID, COUNT(*) as bookmarkCount
+        FROM user_bookmark
+        GROUP BY GROUP_ID
+        ) bc ON p.GROUP_ID = bc.GROUP_ID
+        WHERE (p.RECRUIT_END_DATE IS NULL OR p.RECRUIT_END_DATE > SYSDATE)
+        ORDER BY NVL(bc.bookmarkCount, 0) DESC, p.CREATED_AT DESC
+        )
+        WHERE ROWNUM <![CDATA[<=]]> 3
+    </select>
 
+    <!-- 마감임박 스터디 조회 (마감일 3일 전) - 오라클 11g용 -->
+    <select id="selectUrgentStudies" resultType="com.ex.tjspring.mainsearch.model.StudyPostModel">
+        SELECT * FROM (
+        SELECT
+        p.STUDY_POST_ID as studyPostId,
+        p.TITLE as title,
+        p.CONTENT as content,
+        p.GROUP_ID as groupId,
+        p.AUTHOR_ID as authorId,
+        u.NICKNAME as authorName,
+        p.STUDY_MODE as studyMode,
+        p.CREATED_AT as createdAt,
+        p.RECRUIT_START_DATE as recruitStartDate,
+        p.RECRUIT_END_DATE as recruitEndDate,
+        p.UPDATED_AT as updatedAt,
+        p.VIEW_COUNT as viewCount,
+        p.HASH_TAG as hashTag,
+        g.GROUP_NAME as groupName,
+        g.CATEGORY as category,
+        g.MAX_MEMBERS as maxMembers,
+        g.REGION as region,
+        g.CONTACT as contact,
+        g.GROUP_INTRODUCTION as groupIntroduction,
+        g.GROUP_OWNER_ID as groupOwnerId,
+        g.CREATED_AT as groupCreatedAt,
+        g.THUMBNAIL as thumbnail
+        FROM STUDY_POST p
+        INNER JOIN STUDY_GROUPS g ON p.GROUP_ID = g.GROUP_ID
+        LEFT JOIN USERS u ON p.AUTHOR_ID = u.ID
+        WHERE p.RECRUIT_END_DATE IS NOT NULL
+        AND p.RECRUIT_END_DATE > SYSDATE
+        AND p.RECRUIT_END_DATE <![CDATA[<=]]> SYSDATE + 15
+        ORDER BY p.RECRUIT_END_DATE ASC
+        )
+        WHERE ROWNUM <![CDATA[<=]]> 3
+    </select>
 
 </mapper>

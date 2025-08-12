@@ -30,4 +30,15 @@ public class SearchController {
     public List<Map<String, Object>> getBookmarkViewList() {
         return searchService.getBookmarkViewList();
     }
+    // 🔥 새로 추가: 인기 스터디 API (북마크 많은 순)
+    @GetMapping("/popularStudies")
+    public List<StudyPostModel> getPopularStudies() {
+        return searchService.getPopularStudies();
+    }
+
+    // 🔥 새로 추가: 마감임박 스터디 API (마감일 3일 전)
+    @GetMapping("/urgentStudies")
+    public List<StudyPostModel> getUrgentStudies() {
+        return searchService.getUrgentStudies();
+    }
 }

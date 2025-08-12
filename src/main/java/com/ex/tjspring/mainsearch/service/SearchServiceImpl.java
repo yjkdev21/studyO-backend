@@ -33,4 +33,22 @@ public class SearchServiceImpl implements SearchService {
     public List<Map<String, Object>> getBookmarkViewList() {
         return searchMapper.getBookmarkViewList();
     }
+
+    // 🔥 새로 추가: 인기 스터디 구현
+    @Override
+    public List<StudyPostModel> getPopularStudies() {
+        System.out.println("getPopularStudies 호출");
+        List<StudyPostModel> result = searchMapper.selectPopularStudies();
+        System.out.println("인기 스터디 결과 건수: " + result.size());
+        return result;
+    }
+
+    // 🔥 새로 추가: 마감임박 스터디 구현
+    @Override
+    public List<StudyPostModel> getUrgentStudies() {
+        System.out.println("getUrgentStudies 호출");
+        List<StudyPostModel> result = searchMapper.selectUrgentStudies();
+        System.out.println("마감임박 스터디 결과 건수: " + result.size());
+        return result;
+    }
 }
