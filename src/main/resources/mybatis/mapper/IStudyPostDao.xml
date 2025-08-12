@@ -3,7 +3,6 @@
 <mapper namespace="com.ex.tjspring.study.dao.IStudyPostDao">
 
     <resultMap id="PostViewDtoResultMap" type="com.ex.tjspring.study.dto.StudyPostViewDto">
-
         <id property="studyPostId" column="study_post_id"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
@@ -17,9 +16,8 @@
         <result property="hashTag" column="hash_tag"/>
         <result property="profileImage" column="profile_image"/>
 
-        <!-- AttachFileDto 목록을 매핑하는 collection -->
         <collection property="attachFile" ofType="com.ex.tjspring.common.dto.AttachFileDto">
-            <id property="id" column="attach_id"/> <!-- ATTACHMENTS 테이블의 id -->
+            <id property="id" column="attach_id"/>
             <result property="postId" column="attach_post_id"/>
             <result property="fileName" column="attach_file_name"/>
             <result property="storedFileName" column="attach_stored_file_name"/>
@@ -28,7 +26,6 @@
             <result property="regDate" column="attach_reg_date"/>
         </collection>
     </resultMap>
-
 
     <resultMap id="GroupNickDtoMap" type="com.ex.tjspring.study.dto.GroupNickDto">
         <id property="groupId" column="GROUP_ID"/>
@@ -45,8 +42,6 @@
         <result property="membershipStatus" column="MEMBERSHIP_STATUS"/>
     </resultMap>
 
-
-    <!-- 유저 아이디로 스터디 그룹 리스트 정보가져오기 -->
     <select id="selectGroupsFindByUserId" resultMap="GroupNickDtoMap">
         SELECT s.group_id,
                    s.group_name,
@@ -64,7 +59,6 @@
         WHERE s.group_owner_id = #{userId}
     </select>
 
-    <!-- 그룹 아이디로 스터디 그룹 정보가져오기 -->
     <select id="selectGroupsFindByGroupId" resultMap="GroupNickDtoMap">
         SELECT s.group_id,
                    s.group_name,
@@ -86,7 +80,6 @@
         SELECT COUNT(*) FROM STUDY_POST WHERE group_id = #{groupId}
     </select>
 
-    <!-- 홍보글 가져오기 -->
     <select id="selectPostFindByGroupId" resultMap="PostViewDtoResultMap" parameterType="java.lang.Long">
         SELECT
             e.study_post_id,
@@ -113,27 +106,22 @@
              LEFT JOIN USERS u ON e.author_id = u.id  WHERE e.group_id = #{groupId}
     </select>
 
-
-    <!-- 홍보글 등록 -->
-    <insert id="insertPost" parameterType="com.ex.tjspring.study.dto.StudyPostDto" keyProperty="id">
-        <selectKey keyProperty="study_post_id" resultType="java.lang.Long" order="AFTER">
-            SELECT STUDY_POST_SEQ.CURRVAL FROM DUAL
+    <insert id="insertPost" parameterType="com.ex.tjspring.study.dto.StudyPostDto">
+        <selectKey keyProperty="studyPostId" resultType="java.lang.Long" order="BEFORE">
+            SELECT SEQ_STUDY_POST_ID.NEXTVAL FROM DUAL
         </selectKey>
         INSERT INTO STUDY_POST (study_post_id, title, content, group_id , author_id , created_at , recruit_start_date , recruit_end_date , updated_at , view_count , hash_tag )
-        VALUES (STUDY_POST_SEQ.NEXTVAL, #{title}, #{content}, #{groupId} ,#{authorId} , SYSTIMESTAMP , #{recruitStartDate} ,  #{recruitEndDate} , SYSTIMESTAMP , 0 , #{hashTag} )
+        VALUES (#{studyPostId}, #{title}, #{content}, #{groupId} ,#{authorId} , SYSTIMESTAMP , #{recruitStartDate} ,  #{recruitEndDate} , SYSTIMESTAMP , 0 , #{hashTag} )
     </insert>
 
-    <!-- 홍보글 수정 -->
     <update id="updatePost" parameterType="com.ex.tjspring.study.dto.StudyPostDto">
         UPDATE STUDY_POST
         SET title = #{title}, content = #{content} , recruit_start_date = #{recruitStartDate} , recruit_end_date = #{recruitEndDate} , hash_tag = #{hashTag} , updated_at = SYSTIMESTAMP
-        WHERE study_post_id = #{id}
+        WHERE study_post_id = #{studyPostId}
     </update>
 
     <delete id="deletePost" parameterType="java.lang.Long">
         DELETE FROM STUDY_POST
-        WHERE study_post_id = #{id}
+        WHERE study_post_id = #{studyPostId}
     </delete>
-
-
 </mapper>

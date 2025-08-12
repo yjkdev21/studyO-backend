@@ -151,4 +151,7 @@ public class GroupService {
         processThumbnailUrls(groups);
         return groups;
     }
+
+
+
 }
