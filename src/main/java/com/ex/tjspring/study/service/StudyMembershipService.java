@@ -23,7 +23,7 @@ public class StudyMembershipService {
 		if (userId == null || groupId == null) {
 			throw new IllegalArgumentException("사용자 ID와 그룹 ID는 필수입니다.");
 		}
-		// 중복 가입 체크 O
+		// 중복 가입 체크
 		StudyMembershipDto existing = getMembershipByUserAndGroup(userId, groupId);
 		if (existing != null) {
 			throw new IllegalArgumentException("이미 해당 그룹에 가입된 유저입니다");
@@ -42,34 +42,34 @@ public class StudyMembershipService {
 		}
 	}
 
-
-
-
-
-	// 사용자와 그룹으로 멤버십 조회
+	// 사용자와 그룹으로 멤버십 조회 O
 	public StudyMembershipDto getMembershipByUserAndGroup(Long userId, Long groupId) {
 		return studyMembershipDao.selectMembershipByUserAndGroup(userId, groupId);
 	}
 
-	// 그룹의 멤버 목록 조회
+	// 그룹의 멤버 목록 조회 O
 	public List<StudyMembershipDto> getGroupMembers(Long groupId) {
 		return studyMembershipDao.selectMembershipsByGroupId(groupId);
 	}
 
-	// 사용자의 그룹 가입이력 조회
-	public List<StudyMembershipDto> getUserMemberships(Long userId) {
-		return studyMembershipDao.selectMembershipsByUserId(userId);
-	}
-
-
-	// 닉네임 수정
+	// 스터디 그룹 내 닉네임 수정 O
 	@Transactional
 	public void updateNickname(Long userId, Long groupId, String nickname) {
+		if (userId == null || userId <= 0) {
+			throw new IllegalArgumentException("유효하지 않은 사용자 ID입니다.");
+		}
+		if (groupId == null || groupId <= 0) {
+			throw new IllegalArgumentException("유효하지 않은 그룹 ID입니다.");
+		}
 		if (nickname == null || nickname.trim().isEmpty()) {
 			throw new IllegalArgumentException("닉네임은 필수입니다.");
 		}
 		if (nickname.length() > 20) {
 			throw new IllegalArgumentException("닉네임은 20자를 초과할 수 없습니다.");
+		}
+		StudyMembershipDto membership = studyMembershipDao.selectMembershipByUserAndGroup(userId, groupId);
+		if (membership == null) {
+			throw new IllegalArgumentException("해당 그룹의 멤버가 아닙니다.");
 		}
 
 		int result = studyMembershipDao.updateNickname(userId, groupId, nickname.trim());

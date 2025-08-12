@@ -9,11 +9,8 @@ import java.util.List;
 
 @Mapper
 public interface StudyMembershipDao {
-	// 멤버십 등록 O
+	// 멤버십 등록
 	int insertMembership(StudyMembershipDto membership);
-
-
-
 
 	// 사용자 ID와 그룹 ID로 멤버십 조회 (중복 체크용)
 	StudyMembershipDto selectMembershipByUserAndGroup(@Param("userId") Long userId,
@@ -22,11 +19,7 @@ public interface StudyMembershipDao {
 	// 그룹 ID로 멤버십 목록 조회(그룹의 멤버 가입이력)
 	List<StudyMembershipDto> selectMembershipsByGroupId(@Param("groupId") Long groupId);
 
-	// 사용자 ID로 멤버십 목록 조회(사용자의 그룹 가입이력)
-	List<StudyMembershipDto> selectMembershipsByUserId(@Param("userId") Long userId);
-
-
-	// 닉네임만 수정
+	// 스터디 그룹 내 닉네임 수정
 	int updateNickname(@Param("userId") Long userId,
 					   @Param("groupId") Long groupId,
 					   @Param("nickname") String nickname);
@@ -34,5 +27,9 @@ public interface StudyMembershipDao {
 	// 그룹 탈퇴 처리
 	int leaveMembership(@Param("userId") Long userId,
 						@Param("groupId") Long groupId);
+
+
+	// 사용자 ID로 멤버십 목록 조회(사용자의 그룹 가입이력)
+	List<StudyMembershipDto> selectMembershipsByUserId(@Param("userId") Long userId);
 
 }
