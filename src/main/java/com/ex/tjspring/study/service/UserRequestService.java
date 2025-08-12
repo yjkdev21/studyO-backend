@@ -5,6 +5,7 @@ import com.ex.tjspring.study.dto.GroupDto;
 import com.ex.tjspring.study.dto.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class UserRequestService {
 
     private final IUserRequestDao dao;
+    private final StudyMembershipService studyMembershipService;
 
 
     // ## 유저가 해당 스터디그룹에 가입신청한 적이 있는 지....
@@ -31,17 +33,14 @@ public class UserRequestService {
     }
 
 
-
-
-
-
-
-
-
-    // GroupId 로 신청목록 가져오기
+    // GroupId 로 신청목록 가져오기 O
     public List<UserRequestDto> selectUserRequestFindByGroupId(Long groupId) {
         return dao.selectUserRequestFindByGroupId(groupId);
     }
+
+
+
+
 
 
     // postId 로 가입신청이 있는 지..
@@ -62,4 +61,31 @@ public class UserRequestService {
     public int deleteUserRequest(Long id) {
         return dao.deleteUserRequest(id);
     }
+
+    // ID로 요청 조회
+    public UserRequestDto getUserRequestById(Long id) {
+        return dao.selectUserRequestById(id);
+    }
+
+    // 가입요청 승인 처리
+    @Transactional
+    public void approveUserRequest(Long requestId) {
+        // 상태를 승인으로 변경
+        dao.processUserRequest(requestId, GroupSubscriptionStatus.APPROVED.name());
+
+        // 가입 요청 정보 조회
+        UserRequestDto request = dao.selectUserRequestById(requestId);
+        if (request == null) {
+            throw new IllegalArgumentException("가입 요청을 찾을 수 없습니다.");
+        }
+        // 멤버십에 추가
+        studyMembershipService.addMembership(request.getUserId(), request.getGroupId());
+    }
+
+    // 가입요청 거절 처리
+    public void rejectUserRequest(Long requestId) {
+        // 상태를 거절로 변경
+        dao.processUserRequest(requestId, GroupSubscriptionStatus.REJECTED.name());
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.ex.tjspring.editorexample.dto;
 
+import com.ex.tjspring.study.dto.StudyPostDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -45,5 +46,18 @@ public class StudyPostInsertDto {
     private String hashTag;
 
     private LocalDateTime createdAt;
-    private List<MultipartFile> attachments; // insert.html의 name="attachments"와 일치
+    private List<MultipartFile> attachments;
+
+    public StudyPostDto toStudyPostDto() {
+        return StudyPostDto.builder()
+                .studyPostId(this.studyPostId)
+                .groupId(this.groupId)
+                .authorId(this.authorId)
+                .title(this.title)
+                .content(this.content)
+                .recruitStartDate(this.recruitStartDate)
+                .recruitEndDate(this.recruitEndDate)
+                .hashTag(this.hashTag)
+                .build();
+    }
 }

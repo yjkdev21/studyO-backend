@@ -94,40 +94,69 @@ public class UserRequestController {
 
     //-------------------------------------------------
 
-    // 가입신청 목록
-    @GetMapping("/{groupId}")
-    public ResponseEntity<Map<String, Object>> selectUserRequestFindByGroupId(@PathVariable Long groupId) {
+    // 가입신청 목록 O
+    @GetMapping("/list/{groupId}")
+    public ResponseEntity<Map<String, Object>> selectUserRequestsByGroupId(@PathVariable Long groupId) {
         List<UserRequestDto> list = userRequestService.selectUserRequestFindByGroupId(groupId);
 
+        Map<String, Object> response = new HashMap<>();
+
         if (list.isEmpty()) {
-            Map<String, Object> result = new HashMap<>();
-            result.put("message", "해당 그룹에 대한 신청 내역이 없습니다.");
-            result.put("list", Collections.emptyList());
-            return ResponseEntity.ok(result);
+            response.put("message", "해당 그룹에 대한 신청 내역이 없습니다.");
         } else {
-            // 신청 내역이 있는 경우
-            Map<String, Object> result = new HashMap<>();
-            result.put("list", list);
-            return ResponseEntity.ok(result);
+            response.put("message", "신청 내역 조회 성공");
         }
+        response.put("list", list);
+        return ResponseEntity.ok(response);
     }
 
-
-    // 가입요청 수정
-    @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateUserRequest(@PathVariable Long id, @Valid @RequestBody UserRequestDto userRequestDto) {
-        // DTO의 ID와 PathVariable의 ID가 일치하는지 확인
-        if (!id.equals(userRequestDto.getId())) {
-            return ResponseEntity.badRequest().body("URL의 ID와 요청 본문의 ID가 일치하지 않습니다.");
-        }
-
+    // 가입신청 승인 처리 O
+    @PostMapping("/approve/{id}")
+    public ResponseEntity<Map<String, Object>> approveUserRequest(@PathVariable Long id) {
+        Map<String, Object> result = new HashMap<>();
         try {
-            userRequestService.updateUserRequest(userRequestDto);
-            return ResponseEntity.ok("가입요청이 성공적으로 수정되었습니다.");
+            userRequestService.approveUserRequest(id);
+            result.put("message", "가입 요청이 승인되었습니다.");
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("가입요청 수정에 실패했습니다: " + e.getMessage());
+            result.put("error", "승인 처리 중 오류: " + e.getMessage());
+            return ResponseEntity.status(500).body(result);
         }
     }
+
+    // 가입신청 거절 처리
+    @PostMapping("/reject/{id}")
+    public ResponseEntity<Map<String, Object>> rejectUserRequest(@PathVariable Long id) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            userRequestService.rejectUserRequest(id);
+            result.put("message", "가입 요청이 거절되었습니다.");
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            result.put("error", "거절 처리 중 오류: " + e.getMessage());
+            return ResponseEntity.status(500).body(result);
+        }
+    }
+
+
+
+
+
+//    // 가입요청 수정
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<String> updateUserRequest(@PathVariable Long id, @Valid @RequestBody UserRequestDto userRequestDto) {
+//        // DTO의 ID와 PathVariable의 ID가 일치하는지 확인
+//        if (!id.equals(userRequestDto.getId())) {
+//            return ResponseEntity.badRequest().body("URL의 ID와 요청 본문의 ID가 일치하지 않습니다.");
+//        }
+//
+//        try {
+//            userRequestService.updateUserRequest(userRequestDto);
+//            return ResponseEntity.ok("가입요청이 성공적으로 수정되었습니다.");
+//        } catch (Exception e) {
+//            return ResponseEntity.internalServerError().body("가입요청 수정에 실패했습니다: " + e.getMessage());
+//        }
+//    }
 
     // 가입요청 삭제
     @DeleteMapping("/{id}")

@@ -38,4 +38,8 @@ public class UserRequestDto {
 
     @Size(max = 500)
     private String rejectionReason;
+
+    // 신청자 정보 불러오기 (닉네임, 프로필이미지)
+    private String nickname;
+    private String profileImage;
 }
