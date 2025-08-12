@@ -133,11 +133,12 @@ public class GroupController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<Map<String, Object>> update(
             @PathVariable Long id,
-            @Validated @RequestBody GroupDto groupDto,
-            BindingResult bindingResult) {
+            @RequestPart("groupDto") @Validated GroupDto groupDto,
+            BindingResult bindingResult,
+            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnailFile) {
 
         Map<String, Object> response = new HashMap<>();
 
@@ -146,6 +147,21 @@ public class GroupController {
                 response.put("success", false);
                 response.put("message", "필수 필드를 모두 입력해주세요.");
                 return ResponseEntity.badRequest().body(response);
+            }
+
+            // 이미지가 있으면 S3에 업로드 후 groupDto에 저장
+            if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
+                String storedFileName = s3Service.upload(S3DirKey.STUDYGROUPIMG, thumbnailFile);
+                groupDto.setThumbnail(storedFileName);
+                String thumbnailFullPath = s3Service.getFileFullPath(S3DirKey.STUDYGROUPIMG, storedFileName);
+                groupDto.setThumbnailFullPath(thumbnailFullPath);
+            } else {
+                // 만약 기존 이미지 유지할 경우, 클라이언트가 null이나 빈문자열을 보낼 수 있으니 예외 처리
+                if (groupDto.getThumbnail() == null || groupDto.getThumbnail().isEmpty()) {
+                    groupDto.setThumbnail(null);  // 기본 이미지 사용을 위해 null로 세팅
+                    groupDto.setThumbnailFullPath(null);
+                }
+                // 기존 DB 이미지 유지하고 싶으면, service단에서 기존값 유지하도록 로직 추가 필요
             }
 
             groupDto.setGroupId(id);
@@ -168,6 +184,7 @@ public class GroupController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
