@@ -63,6 +63,7 @@ public class AuthController {
 					user.getNickname(),
 					user.getProfileImage(),
 					user.getIntroduction(),
+					user.getGlobalRole(),
 					user.getCreatedAt()
 			);
 
@@ -177,6 +178,7 @@ public class AuthController {
 					user.getNickname(),
 					user.getProfileImage(),
 					user.getIntroduction(),
+					user.getGlobalRole(),
 					user.getCreatedAt()
 			);
 
