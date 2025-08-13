@@ -23,6 +23,8 @@ public interface IStudyPostDao {
 
     Long insertPost(StudyPostDto dto);
 
+    int increasePostViewCnt(Long StudyPostId);
+
     void updatePost(StudyPostDto dto);
 
     void deletePost(Long studyPostId);

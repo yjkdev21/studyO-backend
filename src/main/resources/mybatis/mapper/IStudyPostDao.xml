@@ -120,6 +120,12 @@
         WHERE study_post_id = #{studyPostId}
     </update>
 
+    <update id="increasePostViewCnt" parameterType="java.lang.Long">
+        UPDATE STUDY_POST
+        SET view_count = NVL(view_count, 0) + 1
+        WHERE study_post_id = #{studyPostId}
+    </update>
+
     <delete id="deletePost" parameterType="java.lang.Long">
         DELETE FROM STUDY_POST
         WHERE study_post_id = #{studyPostId}
