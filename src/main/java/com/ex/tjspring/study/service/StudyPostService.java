@@ -48,13 +48,7 @@ public class StudyPostService {
         return dao.selectPostFindByGroupId(groupId);
     }
 
-    /**
-     * 홍보글 등록 및 첨부파일 처리를 트랜잭션으로 묶습니다.
-     * 게시글 insert 후, DTO에 할당된 ID를 사용하여 첨부파일을 처리합니다.
-     * @param insertDto 게시글 정보
-     * @return 새로 생성된 게시글 ID
-     * @throws IOException
-     */
+
     @Transactional
     public Long insertPostWithFiles(StudyPostInsertDto insertDto) throws IOException {
         StudyPostDto postDto = new StudyPostDto();
@@ -135,6 +129,11 @@ public class StudyPostService {
         }
         // 게시글 삭제 (첨부파일 메타데이터는 FK cascade에 의해 자동 삭제됩니다.)
         dao.deletePost(viewDto.getStudyPostId());
+    }
+
+
+    public boolean increasePostViewCnt(Long StudyPostId) {
+        return dao.increasePostViewCnt(StudyPostId) > 0;
     }
 
     // 홍보글 insert
