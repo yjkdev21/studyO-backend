@@ -14,5 +14,6 @@ public class LoginResponseDto {
     private String nickname;
     private String profileImage;
     private String introduction;
+    private String globalRole;
     private Date createdAt;
 }
