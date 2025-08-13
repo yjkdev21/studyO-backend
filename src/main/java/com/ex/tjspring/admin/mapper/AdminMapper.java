@@ -11,4 +11,5 @@ import java.util.List;
 public interface AdminMapper {
     List<UserModel> findAllUsers();
     List<UserModel> searchUsers(@Param("searchKeyword") String searchKeyword);
+
 }
