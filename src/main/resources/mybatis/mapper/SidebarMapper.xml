@@ -5,12 +5,12 @@
 <mapper namespace="com.ex.tjspring.study.dao.SidebarDao">
     <select id="getStudyInfo" resultType="com.ex.tjspring.study.dto.SidebarDto">
         SELECT
-            id,
+            group_id AS id,
             group_name As name,
             category,
             contact
         FROM study_groups
-        WHERE id = #{groupId}
+        WHERE group_id = #{groupId}
 
     </select>
 </mapper>

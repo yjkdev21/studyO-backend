@@ -91,7 +91,9 @@
         SET
             dashboard_post_title = #{dashboardPostTitle},
             dashboard_post_text = #{dashboardPostText},
+            <if test="isNotice != null and isNotice != ''">
             is_notice = #{isNotice},
+            </if>
             updated_at = SYSDATE
         WHERE id = #{id}
             AND user_id = #{userId}
