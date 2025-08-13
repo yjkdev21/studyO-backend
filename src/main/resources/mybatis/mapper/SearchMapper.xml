@@ -164,7 +164,7 @@
         WHERE (p.RECRUIT_END_DATE IS NULL OR p.RECRUIT_END_DATE > SYSDATE)
         ORDER BY NVL(bc.bookmarkCount, 0) DESC, p.CREATED_AT DESC
         )
-        WHERE ROWNUM <![CDATA[<=]]> 3
+        WHERE ROWNUM <![CDATA[<=]]> 6
     </select>
 
     <!-- 마감임박 스터디 조회 (마감일 3일 전) - 오라클 11g용 -->
@@ -198,10 +198,11 @@
         LEFT JOIN USERS u ON p.AUTHOR_ID = u.ID
         WHERE p.RECRUIT_END_DATE IS NOT NULL
         AND p.RECRUIT_END_DATE > SYSDATE
-        AND p.RECRUIT_END_DATE <![CDATA[<=]]> SYSDATE + 15
+        AND p.RECRUIT_END_DATE <![CDATA[<=]]> SYSDATE + 8
+
         ORDER BY p.RECRUIT_END_DATE ASC
         )
-        WHERE ROWNUM <![CDATA[<=]]> 3
+        WHERE ROWNUM <![CDATA[<=]]> 6
     </select>
 
 </mapper>
