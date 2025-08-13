@@ -15,6 +15,23 @@
         <result property="introduction" column="INTRODUCTION" />
     </resultMap>
 
+    <resultMap id="StudyGroupResultMap" type="com.ex.tjspring.admin.model.StudyGroupModel">
+        <id property="groupId" column="GROUP_ID" />
+        <result property="groupName" column="GROUP_NAME" />
+        <result property="category" column="CATEGORY" />
+        <result property="maxMembers" column="MAX_MEMBERS" />
+        <result property="studyMode" column="STUDY_MODE" />
+        <result property="region" column="REGION" />
+        <result property="contact" column="CONTACT" />
+        <result property="groupIntroduction" column="GROUP_INTRODUCTION" />
+        <result property="groupOwnerId" column="GROUP_OWNER_ID" />
+        <result property="createdAt" column="CREATED_AT" />
+        <result property="thumbnail" column="THUMBNAIL" />
+        <result property="currentMembers" column="CURRENT_MEMBERS" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+
+
     <select id="findAllUsers" resultMap="UserResultMap">
         SELECT
         ID,
@@ -46,4 +63,49 @@
         OR NICKNAME LIKE '%' || #{searchKeyword} || '%'
         ORDER BY CREATED_AT DESC
     </select>
+    <select id="findUserByUserId" parameterType="String" resultMap="UserResultMap">
+        SELECT
+        ID,
+        USER_ID,
+        EMAIL,
+        NICKNAME,
+        IS_DELETED,
+        CREATED_AT,
+        GLOBAL_ROLE,
+        PROFILE_IMAGE,
+        INTRODUCTION
+        FROM USERS
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="findUserStudyGroups" parameterType="String" resultMap="StudyGroupResultMap">
+        SELECT
+        sg.GROUP_ID,
+        sg.GROUP_NAME,
+        sg.CATEGORY,
+        sg.MAX_MEMBERS,
+        sg.STUDY_MODE,
+        sg.CREATED_AT,
+        sg.REGION,
+        sg.CONTACT,
+        sg.GROUP_INTRODUCTION,
+        sg.GROUP_OWNER_ID,
+        sg.THUMBNAIL,
+        (SELECT COUNT(sm2.ID) FROM STUDY_MEMBERSHIP sm2 WHERE sm2.GROUP_ID = sg.GROUP_ID) AS CURRENT_MEMBERS,
+        CASE
+        WHEN sg.MAX_MEMBERS > (SELECT COUNT(sm2.ID) FROM STUDY_MEMBERSHIP sm2 WHERE sm2.GROUP_ID = sg.GROUP_ID) THEN '모집중'
+        ELSE '진행중'
+        END AS STATUS
+        FROM STUDY_MEMBERSHIP sm
+        JOIN USERS u ON sm.USER_ID = u.ID
+        JOIN STUDY_GROUPS sg ON sm.GROUP_ID = sg.GROUP_ID
+        WHERE u.USER_ID = #{userId}
+        ORDER BY sg.CREATED_AT DESC
+    </select>
+
+    <update id="deleteUser" parameterType="String">
+        UPDATE USERS
+        SET IS_DELETED = 'Y'
+        WHERE USER_ID = #{userId}
+    </update>
 </mapper>

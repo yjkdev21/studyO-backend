@@ -4,6 +4,7 @@ package com.ex.tjspring.admin.model;
 import lombok.Data;
 import java.util.Date;
 
+
 @Data
 public class StudyGroupModel {
     private Long groupId;
