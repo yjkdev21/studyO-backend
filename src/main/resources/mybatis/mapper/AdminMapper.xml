@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.tjspring.admin.mapper.AdminMapper">
+
+    <resultMap id="UserResultMap" type="com.ex.tjspring.admin.model.UserModel">
+        <id property="id" column="ID" />
+        <result property="userId" column="USER_ID" />
+        <result property="email" column="EMAIL" />
+        <result property="nickname" column="NICKNAME" />
+        <result property="isDeleted" column="IS_DELETED" />
+        <result property="createdAt" column="CREATED_AT" />
+        <result property="globalRole" column="GLOBAL_ROLE" />
+        <result property="profileImage" column="PROFILE_IMAGE" />
+        <result property="introduction" column="INTRODUCTION" />
+    </resultMap>
+
+    <select id="findAllUsers" resultMap="UserResultMap">
+        SELECT
+        ID,
+        USER_ID,
+        EMAIL,
+        NICKNAME,
+        IS_DELETED,
+        CREATED_AT,
+        GLOBAL_ROLE,
+        PROFILE_IMAGE,
+        INTRODUCTION
+        FROM USERS
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <select id="searchUsers" parameterType="String" resultMap="UserResultMap">
+        SELECT
+        ID,
+        USER_ID,
+        EMAIL,
+        NICKNAME,
+        IS_DELETED,
+        CREATED_AT,
+        GLOBAL_ROLE,
+        PROFILE_IMAGE,
+        INTRODUCTION
+        FROM USERS
+        WHERE USER_ID LIKE '%' || #{searchKeyword} || '%'
+        OR NICKNAME LIKE '%' || #{searchKeyword} || '%'
+        ORDER BY CREATED_AT DESC
+    </select>
+</mapper>
