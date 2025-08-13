@@ -19,4 +19,10 @@ public interface AdminMapper {
 
     // 회원 탈퇴 처리 메서드
     void deleteUser(@Param("userId") String userId);
+
+
+    // 스터디 그룹 관련 메서드 추가
+    List<StudyGroupModel> findAllStudyGroups();
+    List<StudyGroupModel> searchStudyGroups(@Param("searchKeyword") String searchKeyword);
+    void deleteStudyGroup(@Param("groupId") Long groupId);
 }

@@ -11,4 +11,10 @@ public interface AdminService {
     UserModel getUserDetails(String userId);
     List<StudyGroupModel> getUserStudyGroups(String userId);
     void deleteUser(String userId);
+
+
+    // 스터디 그룹 관련 메서드 추가
+    List<StudyGroupModel> getAllStudyGroups();
+    List<StudyGroupModel> searchStudyGroups(String searchKeyword);
+    void deleteStudyGroup(Long groupId);
 }

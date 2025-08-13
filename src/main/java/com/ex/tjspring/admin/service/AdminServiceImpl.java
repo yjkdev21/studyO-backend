@@ -37,4 +37,20 @@ public class AdminServiceImpl implements AdminService {
     public void deleteUser(String userId) {
         adminMapper.deleteUser(userId);
     }
+
+
+    @Override
+    public List<StudyGroupModel> getAllStudyGroups() {
+        return adminMapper.findAllStudyGroups();
+    }
+
+    @Override
+    public List<StudyGroupModel> searchStudyGroups(String searchKeyword) {
+        return adminMapper.searchStudyGroups(searchKeyword);
+    }
+
+    @Override
+    public void deleteStudyGroup(Long groupId) {
+        adminMapper.deleteStudyGroup(groupId);
+    }
 }

@@ -49,4 +49,26 @@ public class AdminController {
         adminService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
+
+
+    // 스터디 그룹 목록 조회
+    @GetMapping("/groups")
+    public ResponseEntity<List<StudyGroupModel>> getAllStudyGroups() {
+        List<StudyGroupModel> groups = adminService.getAllStudyGroups();
+        return ResponseEntity.ok(groups);
+    }
+
+    // 스터디 그룹 검색
+    @GetMapping("/groups/search")
+    public ResponseEntity<List<StudyGroupModel>> searchStudyGroups(@RequestParam("searchKeyword") String searchKeyword) {
+        List<StudyGroupModel> groups = adminService.searchStudyGroups(searchKeyword);
+        return ResponseEntity.ok(groups);
+    }
+
+    // 스터디 그룹 삭제
+    @DeleteMapping("/groups/{groupId}")
+    public ResponseEntity<Void> deleteStudyGroup(@PathVariable("groupId") Long groupId) {
+        adminService.deleteStudyGroup(groupId);
+        return ResponseEntity.noContent().build();
+    }
 }
