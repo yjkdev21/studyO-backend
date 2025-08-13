@@ -4,6 +4,7 @@ import com.ex.tjspring.study.dto.GroupDto;
 import com.ex.tjspring.study.dto.StudyMembershipDto;
 import com.ex.tjspring.study.service.GroupService;
 import com.ex.tjspring.study.service.StudyMembershipService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/study")
+@RequestMapping("/api/study-dashboard")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@Slf4j
 public class StudyController {
     @Autowired
     private GroupService groupService;
