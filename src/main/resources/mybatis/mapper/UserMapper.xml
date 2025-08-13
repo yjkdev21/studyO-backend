@@ -14,6 +14,7 @@
         <result property="globalRole" column="global_role"/>
         <result property="profileImage" column="profile_image"/>
         <result property="introduction" column="introduction"/>
+        <result property="userLevel" column="user_level"/>
     </resultMap>
 
     <!--  insertUser - 사용자 생성  -->
@@ -45,12 +46,15 @@
         SELECT * FROM users WHERE nickname = #{nickname}
     </select>
 
+    <!-- updateUser - 사용자 정보 업데이트 (중복 제거 및 통합) -->
     <update id="updateUser" parameterType="com.ex.tjspring.user.model.User">
         UPDATE users
         SET
         nickname = #{nickname},
-        introduction = #{introduction},
-        profile_image = #{profileImage, jdbcType=VARCHAR}
+        introduction = #{introduction}
+        <if test="profileImage != null">
+            , profile_image = #{profileImage, jdbcType=VARCHAR}
+        </if>
         <if test="password != null and password != ''">
             , password = #{password}
         </if>
@@ -63,4 +67,5 @@
         SET is_deleted = 'Y'
         WHERE id = #{id}
     </update>
+
 </mapper>
