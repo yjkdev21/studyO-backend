@@ -233,6 +233,23 @@ public class GroupController {
         }
     }
 
+    @GetMapping("/{groupId}/members")
+    public ResponseEntity<Map<String, Object>> getStudyGroupMemberCount(@PathVariable Long groupId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            int memberCount = groupService.getMemberCountByGroupId(groupId);
+            response.put("success", true);
+            response.put("memberCount", memberCount);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("스터디 그룹 멤버 수 조회 중 오류 발생: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("message", "멤버 수 조회 실패");
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+
 
 
 

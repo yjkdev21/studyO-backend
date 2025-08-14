@@ -136,6 +136,11 @@ public class GroupService {
         return dao.existsByGroupName(groupName) > 0;
     }
 
+
+    public int getMemberCountByGroupId(Long groupId) {
+        return dao.countMembersByGroupId(groupId);
+    }
+
     // ========== 새로 추가되는 메서드들 ==========
 
     public List<GroupDto> getStudyGroupsByUserId(Long userId) {

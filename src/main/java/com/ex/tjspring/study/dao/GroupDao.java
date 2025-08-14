@@ -29,6 +29,8 @@ public interface GroupDao {
 
     int existsByGroupName(String groupName);
 
+    int countMembersByGroupId(@Param("groupId") Long groupId);
+
     // 새로 추가되는 메서드들
     List<GroupDto> findByUserId(@Param("userId") Long userId);
 
