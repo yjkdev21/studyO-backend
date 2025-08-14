@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ex.tjspring.study.dao.IStudyPostDao">
 
+    <!-- StudyPostViewDto ResultMap -->
     <resultMap id="PostViewDtoResultMap" type="com.ex.tjspring.study.dto.StudyPostViewDto">
         <id property="studyPostId" column="study_post_id"/>
         <result property="title" column="title"/>
@@ -27,38 +29,23 @@
         </collection>
     </resultMap>
 
+    <!-- 결과 매핑 -->
     <resultMap id="GroupNickDtoMap" type="com.ex.tjspring.study.dto.GroupNickDto">
-        <id property="groupId" column="GROUP_ID"/>
-        <result property="groupName" column="GROUP_NAME"/>
-        <result property="category" column="CATEGORY"/>
-        <result property="maxMembers" column="MAX_MEMBERS"/>
-        <result property="studyMode" column="STUDY_MODE"/>
-        <result property="region" column="REGION"/>
-        <result property="contact" column="CONTACT"/>
-        <result property="groupIntroduction" column="GROUP_INTRODUCTION"/>
-        <result property="groupOwnerId" column="GROUP_OWNER_ID"/>
-        <result property="createdAt" column="CREATED_AT"/>
-        <result property="thumbnail" column="THUMBNAIL"/>
-        <result property="membershipStatus" column="MEMBERSHIP_STATUS"/>
+        <id property="groupId" column="group_id"/>
+        <result property="groupName" column="group_name"/>
+        <result property="category" column="category"/>
+        <result property="maxMembers" column="max_members"/>
+        <result property="studyMode" column="study_mode"/>
+        <result property="region" column="region"/>
+        <result property="contact" column="contact"/>
+        <result property="groupIntroduction" column="group_introduction"/>
+        <result property="groupOwnerId" column="group_owner_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="nickName" column="nickname"/>
     </resultMap>
 
-    <select id="selectGroupsFindByUserId" resultMap="GroupNickDtoMap">
-        SELECT s.group_id,
-                   s.group_name,
-                   s.category,
-                   s.max_members,
-                   s.study_mode,
-                   s.region,
-                   s.contact,
-                   s.group_introduction,
-                   s.group_owner_id,
-                   s.created_at,
-                   s.thumbnail,
-                   m.nickname
-        FROM STUDY_GROUPS s JOIN STUDY_MEMBERSHIP m ON s.group_owner_id = m.user_id
-        WHERE s.group_owner_id = #{userId}
-    </select>
-
+    <!-- 그룹 ID 기준 조회 -->
     <select id="selectGroupsFindByGroupId" resultMap="GroupNickDtoMap">
         SELECT s.group_id,
                    s.group_name,
@@ -71,15 +58,41 @@
                    s.group_owner_id,
                    s.created_at,
                    s.thumbnail,
-                   m.nickname
-        FROM STUDY_GROUPS s JOIN STUDY_MEMBERSHIP m ON s.group_owner_id = m.user_id
+                   (SELECT m.nickname
+                    FROM STUDY_MEMBERSHIP m
+                    WHERE m.user_id = s.group_owner_id
+                          AND ROWNUM = 1) AS nickname
+        FROM STUDY_GROUPS s
         WHERE s.group_id = #{groupId}
     </select>
 
+    <!-- 유저 ID 기준 조회 -->
+    <select id="selectGroupsFindByUserId" resultMap="GroupNickDtoMap">
+        SELECT s.group_id,
+                   s.group_name,
+                   s.category,
+                   s.max_members,
+                   s.study_mode,
+                   s.region,
+                   s.contact,
+                   s.group_introduction,
+                   s.group_owner_id,
+                   s.created_at,
+                   s.thumbnail,
+                   (SELECT m.nickname
+                    FROM STUDY_MEMBERSHIP m
+                    WHERE m.user_id = s.group_owner_id
+                          AND ROWNUM = 1) AS nickname
+        FROM STUDY_GROUPS s
+        WHERE s.group_owner_id = #{userId}
+    </select>
+
+    <!-- 게시글 존재 여부 -->
     <select id="existsPostByGroupId" parameterType="java.lang.Long" resultType="int">
         SELECT COUNT(*) FROM STUDY_POST WHERE group_id = #{groupId}
     </select>
 
+    <!-- 게시글 조회 (첨부파일 포함) -->
     <select id="selectPostFindByGroupId" resultMap="PostViewDtoResultMap" parameterType="java.lang.Long">
         SELECT
             e.study_post_id,
@@ -103,13 +116,16 @@
             u.profile_image
         FROM STUDY_POST e
              LEFT JOIN ATTACHMENTS a ON e.study_post_id = a.post_id
-             LEFT JOIN USERS u ON e.author_id = u.id  WHERE e.group_id = #{groupId}
+             LEFT JOIN USERS u ON e.author_id = u.id
+        WHERE e.group_id = #{groupId}
     </select>
 
+    <!-- 북마크 수 조회 -->
     <select id="selectFindByGroupIdBookmarkCnt" parameterType="java.lang.Long" resultType="int">
         SELECT COUNT(*) FROM USER_BOOKMARK WHERE group_id = #{groupId}
     </select>
 
+    <!-- 게시글 등록 -->
     <insert id="insertPost" parameterType="com.ex.tjspring.study.dto.StudyPostDto">
         <selectKey keyProperty="studyPostId" resultType="java.lang.Long" order="BEFORE">
             SELECT SEQ_STUDY_POST_ID.NEXTVAL FROM DUAL
@@ -118,20 +134,24 @@
         VALUES (#{studyPostId}, #{title}, #{content}, #{groupId} ,#{authorId} , SYSTIMESTAMP , #{recruitStartDate} ,  #{recruitEndDate} , SYSTIMESTAMP , 0 , #{hashTag} )
     </insert>
 
+    <!-- 게시글 수정 -->
     <update id="updatePost" parameterType="com.ex.tjspring.study.dto.StudyPostDto">
         UPDATE STUDY_POST
         SET title = #{title}, content = #{content} , recruit_start_date = #{recruitStartDate} , recruit_end_date = #{recruitEndDate} , hash_tag = #{hashTag} , updated_at = SYSTIMESTAMP
         WHERE study_post_id = #{studyPostId}
     </update>
 
+    <!-- 조회수 증가 -->
     <update id="increasePostViewCnt" parameterType="java.lang.Long">
         UPDATE STUDY_POST
         SET view_count = NVL(view_count, 0) + 1
         WHERE study_post_id = #{studyPostId}
     </update>
 
+    <!-- 게시글 삭제 -->
     <delete id="deletePost" parameterType="java.lang.Long">
         DELETE FROM STUDY_POST
         WHERE study_post_id = #{studyPostId}
     </delete>
+
 </mapper>
