@@ -22,20 +22,14 @@ public class UserEditServiceImpl implements UserEditService {
     public boolean updateUserInfo(UserUpdateRequest dto) {
         try {
             User existingUser = userMapper.findById(dto.getId());
-            if (existingUser == null) {
-                return false;
-            }
+            if (existingUser == null) return false;
 
-            // 기존 로직 유지 - 이미지는 URL로 직접 처리
             existingUser.setNickname(dto.getNickname());
             existingUser.setIntroduction(dto.getIntroduction());
 
-            // profileImage가 비어있거나 null이면 기존값 유지 (기존 로직)
             if (dto.getProfileImage() != null && !dto.getProfileImage().trim().isEmpty()) {
                 existingUser.setProfileImage(dto.getProfileImage());
             }
-
-            // password도 마찬가지 (기존 로직)
             if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
             }
@@ -43,7 +37,7 @@ public class UserEditServiceImpl implements UserEditService {
             userMapper.updateUser(existingUser);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("사용자 정보 수정 실패", e);
             return false;
         }
     }
@@ -52,28 +46,23 @@ public class UserEditServiceImpl implements UserEditService {
     public boolean updateUserInfoWithImage(UserUpdateRequest dto) {
         try {
             User existingUser = userMapper.findById(dto.getId());
-            if (existingUser == null) {
-                return false;
-            }
+            if (existingUser == null) return false;
 
             existingUser.setNickname(dto.getNickname());
             existingUser.setIntroduction(dto.getIntroduction());
 
-            // 새로운 이미지 처리 로직 (파일 업로드용)
             if (dto.getProfileImage() != null) {
                 existingUser.setProfileImage(dto.getProfileImage());
             }
-
             if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
             }
 
             userMapper.updateUser(existingUser);
-            log.info("사용자 프로필 수정 완료 - ID: {}, 닉네임: {}", dto.getId(), dto.getNickname());
+            log.info("프로필 수정 완료 - ID: {}, 닉네임: {}", dto.getId(), dto.getNickname());
             return true;
-
         } catch (Exception e) {
-            log.error("사용자 프로필 수정 중 오류: {}", e.getMessage(), e);
+            log.error("프로필 수정 실패", e);
             return false;
         }
     }
@@ -82,21 +71,17 @@ public class UserEditServiceImpl implements UserEditService {
     public UserUpdateRequest getUserProfile(Long userId) {
         try {
             User user = userMapper.findById(userId);
-            if (user == null) {
-                return null;
-            }
+            if (user == null) return null;
 
             UserUpdateRequest dto = new UserUpdateRequest();
             dto.setId(user.getId());
             dto.setNickname(user.getNickname());
             dto.setIntroduction(user.getIntroduction());
-            dto.setProfileImage(user.getProfileImage());
-            // password는 보안상 반환하지 않음
+            dto.setProfileImage(user.getProfileImage()); // 비밀번호는 반환하지 않음
 
             return dto;
-
         } catch (Exception e) {
-            log.error("사용자 프로필 조회 중 오류: {}", e.getMessage(), e);
+            log.error("프로필 조회 실패", e);
             return null;
         }
     }

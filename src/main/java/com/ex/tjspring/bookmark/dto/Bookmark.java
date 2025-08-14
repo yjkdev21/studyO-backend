@@ -24,12 +24,12 @@ public class Bookmark {
     private String groupName;
     private String groupIntroduction;
     private Long groupOwnerId;
-    private String ownerNickname;  // 그룹장 닉네임 (MyPage에서 사용)
+    private String ownerNickname;
     private LocalDateTime studyCreatedAt;
     private Integer maxMembers;
     private String studyMode;
     private String region;
     private String contact;
     private String thumbnail;
-    private String thumbnailFullPath;  // S3 전체 URL (추가)
+    private String thumbnailFullPath;
 }
