@@ -75,12 +75,14 @@ public class StudyPostController {
         log.info("####### post #######");
         Map<String, Object> map = new HashMap<>();
 
-        GroupNickDto groupDto = studyPostService.selectGroupsFindByGroupId(groupId);
         log.info( "groupId = {}" , groupId );
+        GroupNickDto groupDto = studyPostService.selectGroupsFindByGroupId(groupId);
+
         if (groupDto == null) {
             return ResponseEntity.notFound().build();
         }
 
+        log.info( "groupDto put = {}" , groupId );
         map.put("groupDto", groupDto);
 
         StudyPostViewDto studyPostViewDto = studyPostService.selectPostFindByGroupId(groupId);
@@ -88,8 +90,8 @@ public class StudyPostController {
             return ResponseEntity.ok(map);
         }
         String profileImage = studyPostViewDto.getProfileImage();
-        //log.info("####### profileImage = {} " ,profileImage);
-        //log.info("####### getAuthorId = {} " ,studyPostViewDto.getAuthorId());
+        log.info("####### profileImage = {} " ,profileImage);
+        log.info("####### getAuthorId = {} " ,studyPostViewDto.getAuthorId());
         //if (profileImage.isEmpty()) {
         if (profileImage == null || profileImage.isEmpty() || profileImage.contains("profile") ) {
             studyPostViewDto.setProfileImage("/images/default-profile.png");
