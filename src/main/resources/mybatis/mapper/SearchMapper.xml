@@ -117,7 +117,7 @@
         <if test="search != null and search != ''">
             AND (
             LOWER(p.TITLE) LIKE '%' || LOWER(#{search}) || '%'
-            OR LOWER(p.CONTENT) LIKE '%' || LOWER(#{search}) || '%'
+            OR LOWER(p.HASH_TAG) LIKE '%' || LOWER(#{search}) || '%'
             )
         </if>
         <if test="recruitingOnly != null and recruitingOnly == 1">
