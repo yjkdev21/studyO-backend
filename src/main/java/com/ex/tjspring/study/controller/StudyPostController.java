@@ -178,4 +178,10 @@ public class StudyPostController {
     }
 
 
+    @GetMapping("/bookmark-count/{groupId}")
+    public int selectFindByGroupIdBookmarkCnt(@PathVariable Long groupId) {
+        return studyPostService.selectFindByGroupIdBookmarkCnt(groupId);
+    }
+
+
 }
