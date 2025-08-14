@@ -46,7 +46,7 @@ public class StudyPostController {
         //log.info( "userId = {}" , userId );
         if (list == null || list.isEmpty()) {
             Map<String, Object> map = new HashMap<>();
-            map.put("list", Collections.emptyList()); // Collections.emptyList()로 빈 리스트 반환
+            map.put("groupList", Collections.emptyList()); // Collections.emptyList()로 빈 리스트 반환
             return ResponseEntity.ok(map);
         }
 
@@ -166,5 +166,16 @@ public class StudyPostController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @PutMapping("/increment-view/{studyPostId}")
+    public ResponseEntity<String> increasePostViewCnt(@PathVariable Long studyPostId) {
+        boolean success = studyPostService.increasePostViewCnt(studyPostId);
+        if (success) {
+            return ResponseEntity.ok("View count incremented.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Study post not found.");
+        }
+    }
+
 
 }
