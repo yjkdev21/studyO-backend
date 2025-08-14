@@ -154,6 +154,11 @@ public class StudyPostService {
         dao.deletePost(studyPostId);
     }
 
+
+    public int selectFindByGroupIdBookmarkCnt(Long groupId) {
+        return dao.selectFindByGroupIdBookmarkCnt(groupId);
+    }
+
     // 첨부파일 추가 S3 upload
     private void handleFileUpload(Long postId, List<MultipartFile> attachments) throws IOException {
         if (attachments != null && !attachments.isEmpty()) {

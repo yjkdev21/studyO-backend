@@ -106,6 +106,10 @@
              LEFT JOIN USERS u ON e.author_id = u.id  WHERE e.group_id = #{groupId}
     </select>
 
+    <select id="selectFindByGroupIdBookmarkCnt" parameterType="java.lang.Long" resultType="int">
+        SELECT COUNT(*) FROM USER_BOOKMARK WHERE group_id = #{groupId}
+    </select>
+
     <insert id="insertPost" parameterType="com.ex.tjspring.study.dto.StudyPostDto">
         <selectKey keyProperty="studyPostId" resultType="java.lang.Long" order="BEFORE">
             SELECT SEQ_STUDY_POST_ID.NEXTVAL FROM DUAL
