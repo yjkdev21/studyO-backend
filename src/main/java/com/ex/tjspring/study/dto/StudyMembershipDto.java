@@ -32,4 +32,5 @@ public class StudyMembershipDto {
 
 	@Size(max = 20)
 	private String nickname;
+	private String profileImage;
 }
