@@ -138,7 +138,8 @@ public class GroupController {
             @PathVariable Long id,
             @RequestPart("groupDto") @Validated GroupDto groupDto,
             BindingResult bindingResult,
-            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnailFile) {
+            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnailFile,
+            @RequestParam(value = "deleteImage", required = false) String deleteImage) {
 
         Map<String, Object> response = new HashMap<>();
 
@@ -151,17 +152,19 @@ public class GroupController {
 
             // 이미지가 있으면 S3에 업로드 후 groupDto에 저장
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
+                // 다른 이미지로 변경하면 → 새 이미지 저장
                 String storedFileName = s3Service.upload(S3DirKey.STUDYGROUPIMG, thumbnailFile);
                 groupDto.setThumbnail(storedFileName);
                 String thumbnailFullPath = s3Service.getFileFullPath(S3DirKey.STUDYGROUPIMG, storedFileName);
                 groupDto.setThumbnailFullPath(thumbnailFullPath);
+            } else if ("true".equals(deleteImage)) {
+                // 이미지를 삭제하고 새로 추가 안하면 → 기본이미지
+                groupDto.setThumbnail("default");
+                groupDto.setThumbnailFullPath(null);
             } else {
-                // 만약 기존 이미지 유지할 경우, 클라이언트가 null이나 빈문자열을 보낼 수 있으니 예외 처리
-                if (groupDto.getThumbnail() == null || groupDto.getThumbnail().isEmpty()) {
-                    groupDto.setThumbnail(null);  // 기본 이미지 사용을 위해 null로 세팅
-                    groupDto.setThumbnailFullPath(null);
-                }
-                // 기존 DB 이미지 유지하고 싶으면, service단에서 기존값 유지하도록 로직 추가 필요
+                // 기존 이미지 그대로 두면 → 기존 이미지 유지
+                groupDto.setThumbnail(null);  // service에서 기존값 유지하도록
+                groupDto.setThumbnailFullPath(null);
             }
 
             groupDto.setGroupId(id);
@@ -229,6 +232,28 @@ public class GroupController {
             log.error("스터디 그룹 이름 중복 확인 중 오류 발생: {}", e.getMessage(), e);
             response.put("success", false);
             response.put("message", "중복 확인 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    @GetMapping("/check-nickname/{nickname}")
+    public ResponseEntity<Map<String, Object>> checkNicknameDuplicate(@PathVariable String nickname) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            boolean isDuplicate = groupService.existsByNickname(nickname);
+
+            response.put("success", true);
+            response.put("isDuplicate", isDuplicate);
+            response.put("message", isDuplicate ?
+                    "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다.");
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("닉네임 중복 확인 중 오류 발생: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("message", "닉네임 중복 확인 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(response);
         }
     }

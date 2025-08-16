@@ -110,10 +110,8 @@
         SET GROUP_NAME = #{groupName},
         MAX_MEMBERS = #{maxMembers},
         CONTACT = #{contact},
-        GROUP_INTRODUCTION = #{groupIntroduction}
-        <if test="thumbnail != null and thumbnail != ''">
-            , THUMBNAIL = #{thumbnail}
-        </if>
+        GROUP_INTRODUCTION = #{groupIntroduction},
+        THUMBNAIL = #{thumbnail}
         WHERE GROUP_ID = #{groupId}
     </update>
 
@@ -130,8 +128,17 @@
         WHERE GROUP_ID = #{id}
     </delete>
 
+<!-- 그룹명 중복검사   -->
     <select id="existsByGroupName" parameterType="String" resultType="int">
         SELECT COUNT(*) FROM STUDY_GROUPS WHERE GROUP_NAME = #{groupName}
+    </select>
+
+    <!--닉네임 중복검사-->
+    <select id="existsByNickname" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM STUDY_MEMBERSHIP
+        WHERE NICKNAME = #{nickname}
+        AND MEMBERSHIP_STATUS = 'ACTIVE'
     </select>
 
     <select id="countMembersByGroupId" parameterType="long" resultType="int">

@@ -27,7 +27,11 @@ public interface GroupDao {
 
     GroupDto selectGroupById(Long id);
 
+    //그룹명 중복검사
     int existsByGroupName(String groupName);
+
+    //닉네임 중복검사
+    int existsByNickname(String nickname);
 
     int countMembersByGroupId(@Param("groupId") Long groupId);
 

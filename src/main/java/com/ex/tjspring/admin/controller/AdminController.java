@@ -71,4 +71,6 @@ public class AdminController {
         adminService.deleteStudyGroup(groupId);
         return ResponseEntity.noContent().build();
     }
+
+
 }

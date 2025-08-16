@@ -132,10 +132,16 @@ public class GroupService {
         log.info("그룹 삭제 완료 - ID: {}", id);
     }
 
+    //그룹명 중복검사
     public boolean existsByGroupName(String groupName) {
+
         return dao.existsByGroupName(groupName) > 0;
     }
 
+    //닉네임 중복검사
+    public boolean existsByNickname(String nickname) {
+        return dao.existsByNickname(nickname) > 0;
+    }
 
     public int getMemberCountByGroupId(Long groupId) {
         return dao.countMembersByGroupId(groupId);
