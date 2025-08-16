@@ -22,16 +22,6 @@ public class CalendarServiceImpl {
         return calendarDao.getCalendarById(id);
     }
 
-    // 일정 등록 (권한 체크)
-//   public void calendarInsert(CalendarDto dto, Long loginUserId) {
-//        int adminCount = calendarDao.countStudyAdmin(loginUserId, dto.getGroupId());
-//        if (adminCount == 0) {
-//            throw new RuntimeException("일정 등록 권한이 없습니다.");
-//        }
-//       dto.setWriterId(loginUserId);
-//        calendarDao.calendarInsert(dto);
-//   }
-
     public CalendarDto calendarInsert(CalendarDto dto, Long loginUserId) {
         int adminCount = calendarDao.countStudyAdmin(loginUserId, dto.getGroupId());
         if (adminCount == 0) {
@@ -43,16 +33,6 @@ public class CalendarServiceImpl {
         // insert 후 생성된 ID로 완전한 데이터 조회해서 반환
         return calendarDao.getCalendarById(dto.getId());
     }
-
-   // 수정 (권한 체크)
-//    public void calendarUpdate(CalendarDto dto, Long loginUserId) {
-//        int adminCount = calendarDao.countStudyAdmin(loginUserId, dto.getGroupId());
-//        if (adminCount == 0) {
-//            throw new RuntimeException("일정 수정 권한이 없습니다.");
-//        }
-//        dto.setWriterId(loginUserId);
-//        calendarDao.calendarUpdate(dto);
-//    }
 
     public CalendarDto calendarUpdate(CalendarDto dto, Long loginUserId) {
         int adminCount = calendarDao.countStudyAdmin(loginUserId, dto.getGroupId());

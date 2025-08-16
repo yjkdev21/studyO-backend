@@ -24,43 +24,25 @@ public class StudyController {
     @Autowired
     private StudyMembershipService studyMembershipService;
 
+    // 스터디 멤버가 아니면 접근 차단
     @GetMapping("/{groupId}/dashboard-info")
     public ResponseEntity<Map<String, Object>> getDashboardInfo(
             @PathVariable Long groupId,
             @RequestHeader("X-USER-ID") Long userId) {
+
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // 권한체크
-            StudyMembershipDto myMembership = studyMembershipService.getMembershipByUserAndGroup(userId, groupId);
-            if (myMembership == null || !"ACTIVE".equals(myMembership.getMembershipStatus())) {
-                response.put("success", false);
-                response.put("message", "해당 스터디에 접근 권한이 없습니다.");
-                return ResponseEntity.status(403).body(response);
-            }
+            StudyMembershipDto membership = studyMembershipService.getMembershipByUserAndGroup(userId, groupId);
+            boolean isMember = (membership != null && "ACTIVE".equals(membership.getMembershipStatus()));
 
-            // 데이터 조회
-            GroupDto studyInfo = groupService.selectGroupById(groupId);
-            List<StudyMembershipDto> members = studyMembershipService.getGroupMembers(groupId);
-
-            // 현재 멤버 수 계산 (활성 멤버만)
-            long currentMembers = members.stream()
-                    .filter(member -> "ACTIVE".equals(member.getMembershipStatus()))
-                    .count();
-
-            // 응당 데이터 구성
-            response.put("success", true);
-            response.put("studyInfo", studyInfo);
-            response.put("membershipInfo", myMembership);
-            response.put("members", members);
-            response.put("currentMembers", currentMembers);
-
+            response.put("success", isMember);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            log.error("멤버십 확인 중 오류 발생: groupId={}, userId={}", groupId, userId, e);
             response.put("success", false);
-            response.put("message", "서버 오류가 발생했습니다.");
-            return ResponseEntity.internalServerError().body(response);
+            return ResponseEntity.ok(response);
         }
     }
 

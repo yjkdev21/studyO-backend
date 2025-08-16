@@ -45,19 +45,6 @@
             AND deleted_yn = 'N'
     </select>
 
-    <!--  일정 등록  -->
-<!--    <insert id="calendarInsert" parameterType="com.ex.tjspring.study.dto.CalendarDto"-->
-<!--            useGeneratedKeys="true" keyProperty="id">-->
-<!--        INSERT INTO calendar(-->
-<!--            group_id, title, content, start_date, end_date,-->
-<!--            bg_color, text_color, writer_id, created_at, deleted_yn)-->
-<!--        VALUES (-->
-<!--            #{groupId}, #{title}, #{content},-->
-<!--            TO_DATE(#{startDate}, 'YYYY-MM-DD'),-->
-<!--            TO_DATE(#{endDate}, 'YYYY-MM-DD'),-->
-<!--            #{bgColor}, #{textColor}, #{writerId}, sysdate, 'N'-->
-<!--        )-->
-<!--    </insert>-->
     <insert id="calendarInsert" parameterType="com.ex.tjspring.study.dto.CalendarDto">
         <selectKey keyProperty="id" resultType="Long" order="BEFORE">
             SELECT SEQ_CALENDAR_ID.NEXTVAL FROM dual
