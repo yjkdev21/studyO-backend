@@ -46,6 +46,20 @@
         SELECT * FROM users WHERE nickname = #{nickname}
     </select>
 
+    <!-- 비밀번호 찾기용 - userId와 email로 사용자 조회 -->
+    <select id="findByUserIdAndEmail" resultMap="userResultMap">
+        SELECT *
+        FROM USERS
+        WHERE USER_ID = #{userId} AND EMAIL = #{email} AND IS_DELETED = 'N'
+    </select>
+
+    <!-- 비밀번호 업데이트 -->
+    <update id="updatePasswordById">
+        UPDATE USERS
+        SET PASSWORD = #{password}
+        WHERE ID = #{id} AND IS_DELETED = 'N'
+    </update>
+
     <!-- updateUser - 사용자 정보 업데이트 (중복 제거 및 통합) -->
     <update id="updateUser" parameterType="com.ex.tjspring.user.model.User">
         UPDATE users
