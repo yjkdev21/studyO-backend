@@ -1,23 +1,23 @@
 package com.ex.tjspring.auth.service;
 
+import com.ex.tjspring.user.mapper.UserMapper;
 import com.ex.tjspring.user.model.User;
-import com.ex.tjspring.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-// Spring Security 에서 사용자 인증 정보를 제공하는 서비스 - UserService를 활용해 사용자 정보 조회
+// Spring Security 에서 사용자 인증 정보를 제공하는 서비스
 @Service
 @RequiredArgsConstructor
 public class AuthUserDetailsService implements UserDetailsService {
-	private final UserService userService;
+	private final UserMapper userMapper;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// UserService로 사용자 정보 조회
-		User user = userService.findByUserId(username);
+		// UserMapper로 사용자 정보 조회
+		User user = userMapper.findByUserId(username);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username);

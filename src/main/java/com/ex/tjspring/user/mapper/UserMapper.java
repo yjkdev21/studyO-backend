@@ -2,8 +2,7 @@ package com.ex.tjspring.user.mapper;
 
 import com.ex.tjspring.user.model.User;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.Optional;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
@@ -19,6 +18,11 @@ public interface UserMapper {
     User findByEmail(String email);
     // nickname 로 사용자 조회
     User findByNickname(String nickname);
+    // userId + email 로 사용자 조회
+    User findByUserIdAndEmail(@Param("userId") String userId, @Param("email") String email);
+
+	// 비밀번호 변경
+	int updatePasswordById(@Param("id") Long id, @Param("password") String password);
 
     // 사용자 정보 업데이트
     void updateUser(User user);

@@ -17,26 +17,6 @@ public class UserServiceImpl implements UserService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-	public User findById(Long id) {
-		return userMapper.findById(id);
-	}
-
-	@Override
-	public User findByUserId(String userId) {
-		return userMapper.findByUserId(userId);
-	}
-
-	@Override
-	public User findByEmail(String email) {
-		return userMapper.findByEmail(email);
-	}
-
-	@Override
-	public User findByNickname(String nickname) {
-		return userMapper.findByNickname(nickname);
-	}
-
-	@Override
 	public boolean isUserIdExists(String userId) {
 		return userMapper.findByUserId(userId) != null;
 	}
@@ -83,9 +63,9 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	// 아이디 찾기
+	// 이메일로 아이디 찾기 - 탈퇴한 회원 제외
 	@Override
-	public String findUserIdByEmail(String email) {
+	public String getActiveUserId(String email) {
 		User user = userMapper.findByEmail(email);
 		if (user != null && "N".equals(user.getIsDeleted())) {
 			return user.getUserId();
@@ -93,22 +73,42 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	// 비밀번호 찾기
+	// 계정 검증 (비밀번호 찾기 1단계)
 	@Override
-	public boolean resetPassword(String userId, String email, String newPassword) {
-		User user = userMapper.findByUserId(userId);
+	public boolean verifyUserAccount(String userId, String email) {
+		User user = userMapper.findByUserIdAndEmail(userId, email);
 
-		// 사용자가 존재하고 이메일이 일치, 탈퇴하지 않은 경우
-		if(user != null && email.equals(user.getEmail()) && "N".equals(user.getIsDeleted())) {
-			String hashedPassword = passwordEncoder.encode(newPassword);
-			user.setPassword(hashedPassword);
-			userMapper.updateUser(user);
-
-			log.info("비밀번호 변경 완료: userId={}", userId);
-
+		// 사용자가 존재하고 탈퇴하지 않은 경우
+		if(user != null && "N".equals(user.getIsDeleted())) {
+			log.info("계정 검증 성공: userId={}, email={}", userId, email);
 			return true;
 		}
+
+		log.warn("계정 검증 실패: userId={}, email={}", userId, email);
 		return false;
+	}
+
+	@Override
+	public boolean resetPassword(Long id, String newPassword) {
+		try {
+			String hashedPassword = passwordEncoder.encode(newPassword);
+
+			// 디버깅용 로그 추가
+			log.info("비밀번호 변경 시도: userId(PK)={}, hashedPassword 길이={}", id, hashedPassword.length());
+
+			int updatedRows = userMapper.updatePasswordById(id, hashedPassword);
+
+			log.info("업데이트된 행 수: {}", updatedRows);
+
+			if (updatedRows > 0) {
+				log.info("비밀번호 변경 완료: userId(PK)={}", id);
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			log.error("비밀번호 변경 중 오류 발생: userId(PK)={}", id, e);
+			return false;
+		}
 	}
 
 	// 회원 탈퇴
