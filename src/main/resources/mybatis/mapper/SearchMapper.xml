@@ -78,9 +78,8 @@
         p.CONTENT as content,
         p.GROUP_ID as groupId,
         p.AUTHOR_ID as authorId,
-        u.NICKNAME as authorName,  <!-- 작성자 닉네임 추가 -->
-        p.STUDY_MODE as studyMode,
-        p.CREATED_AT as createdAt,
+        u.NICKNAME as authorName,
+        g.study_mode as studyMode,  p.CREATED_AT as createdAt,
         p.RECRUIT_START_DATE as recruitStartDate,
         p.RECRUIT_END_DATE as recruitEndDate,
         p.UPDATED_AT as updatedAt,
@@ -97,14 +96,13 @@
         g.THUMBNAIL as thumbnail
         FROM STUDY_POST p
         INNER JOIN STUDY_GROUPS g ON p.GROUP_ID = g.GROUP_ID
-        LEFT JOIN USERS u ON p.AUTHOR_ID = u.ID  <!-- 작성자 조인 -->
+        LEFT JOIN USERS u ON p.AUTHOR_ID = u.ID
         WHERE 1=1
         <if test="category != null and category != ''">
             AND g.CATEGORY = #{category}
         </if>
         <if test="studyMode != null and studyMode != ''">
-            AND p.STUDY_MODE = #{studyMode}
-        </if>
+            AND g.study_mode = #{studyMode}  </if>
         <if test="region != null and region != ''">
             AND g.REGION LIKE '%' || #{region} || '%'
         </if>
@@ -136,8 +134,7 @@
         p.GROUP_ID as groupId,
         p.AUTHOR_ID as authorId,
         u.NICKNAME as authorName,
-        p.STUDY_MODE as studyMode,
-        p.CREATED_AT as createdAt,
+        g.study_mode as studyMode,  p.CREATED_AT as createdAt,
         p.RECRUIT_START_DATE as recruitStartDate,
         p.RECRUIT_END_DATE as recruitEndDate,
         p.UPDATED_AT as updatedAt,
@@ -166,7 +163,6 @@
         )
         WHERE ROWNUM <![CDATA[<=]]> 6
     </select>
-
     <!-- 마감임박 스터디 조회 (마감일 3일 전) - 오라클 11g용 -->
     <select id="selectUrgentStudies" resultType="com.ex.tjspring.mainsearch.model.StudyPostModel">
         SELECT * FROM (
@@ -177,8 +173,7 @@
         p.GROUP_ID as groupId,
         p.AUTHOR_ID as authorId,
         u.NICKNAME as authorName,
-        p.STUDY_MODE as studyMode,
-        p.CREATED_AT as createdAt,
+        g.study_mode as studyMode,  p.CREATED_AT as createdAt,
         p.RECRUIT_START_DATE as recruitStartDate,
         p.RECRUIT_END_DATE as recruitEndDate,
         p.UPDATED_AT as updatedAt,
