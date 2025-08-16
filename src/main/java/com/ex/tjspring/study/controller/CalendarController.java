@@ -26,29 +26,11 @@ public class CalendarController {
         return calendarService.getCalendarById(id);
     }
 
-    // 일정 등록
-//    @PostMapping
-//    public CalendarDto insertCalendar(@RequestBody CalendarDto dto,
-//                                      @RequestHeader("X-USER-ID") Long userId) {
-//        calendarService.calendarInsert(dto, userId);
-//        // 등록 후 실제 저장된 데이터 조회해서 반환
-//        return calendarService.getCalendarById(dto.getId());
-//    }
-
     @PostMapping
     public CalendarDto insertCalendar(@RequestBody CalendarDto dto,
                                       @RequestHeader("X-USER-ID") Long userId) {
         return calendarService.calendarInsert(dto, userId);
     }
-
-    // 수정
-//    @PutMapping
-//    public CalendarDto updateCalendar(@RequestBody CalendarDto dto,
-//                                      @RequestHeader("X-USER-ID") Long userId) {
-//        calendarService.calendarUpdate(dto, userId);
-//        // 수정 후 실제 데이터 조회해서 반환
-//        return calendarService.getCalendarById(dto.getId());
-//    }
 
     @PutMapping
     public CalendarDto updateCalendar(@RequestBody CalendarDto dto,
