@@ -42,8 +42,9 @@
 
     <!-- 그룹 ID로 멤버십 목록 조회 -->
     <select id="selectMembershipsByGroupId" resultMap="StudyMembershipResultMap">
-        SELECT *
-        FROM study_membership
+        SELECT sm.*, u.profile_image
+        FROM study_membership sm
+        JOIN users u on sm.user_id = u.id
         WHERE group_id = #{groupId}
         ORDER BY member_role, joined_at ASC
     </select>

@@ -28,5 +28,5 @@ public class GroupNickDto {
     private String nickName; // 닉네임 STUDY_MEMBERSHIP
 
     // 추가된 필드: 사용자의 멤버십 상태
-    //private String membershipStatus;
+    private String membershipStatus;
 }

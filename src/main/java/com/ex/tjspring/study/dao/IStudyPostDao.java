@@ -29,4 +29,6 @@ public interface IStudyPostDao {
 
     void deletePost(Long studyPostId);
 
+    int selectFindByGroupIdBookmarkCnt(Long groupId);
+
 }

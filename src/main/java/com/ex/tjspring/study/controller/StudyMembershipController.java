@@ -3,8 +3,8 @@ package com.ex.tjspring.study.controller;
 
 import com.ex.tjspring.study.dto.StudyMembershipDto;
 import com.ex.tjspring.study.service.StudyMembershipService;
+import com.ex.tjspring.user.mapper.UserMapper;
 import com.ex.tjspring.user.model.User;
-import com.ex.tjspring.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class StudyMembershipController {
 
 	private final StudyMembershipService studyMembershipService;
-	private final UserService userService;
+	private final UserMapper userMapper;
 
 	// 스터디 그룹의 멤버 목록 조회
 	@GetMapping("/group/{groupId}")
@@ -54,7 +54,7 @@ public class StudyMembershipController {
 		String userId = auth.getName();
 
 		// User 정보 조회해서 id 얻기
-		User user = userService.findByUserId(userId);
+		User user = userMapper.findByUserId(userId);
 		if (user == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "유효하지 않은 사용자입니다."));
 		}
