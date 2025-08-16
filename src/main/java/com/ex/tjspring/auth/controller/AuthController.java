@@ -2,6 +2,7 @@ package com.ex.tjspring.auth.controller;
 
 import com.ex.tjspring.auth.dto.LoginRequestDto;
 import com.ex.tjspring.auth.dto.LoginResponseDto;
+import com.ex.tjspring.user.mapper.UserMapper;
 import com.ex.tjspring.user.model.User;
 import com.ex.tjspring.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
 	private final AuthenticationManager authenticationManager;  // Spring Security 인증 매니저
+	private final UserMapper userMapper;
 	private final UserService userService;
 
 	// 로그인 - Spring Security + 명시적 세션 관리
@@ -51,7 +53,7 @@ public class AuthController {
 			session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
 			// 사용자 정보 조회 (응답용)
-			User user = userService.findByUserId(loginRequest.getUserId());
+			User user = userMapper.findByUserId(loginRequest.getUserId());
 
 			log.info("로그인 성공: userId={}, sessionId={}", user.getUserId(), session.getId());
 
@@ -77,7 +79,7 @@ public class AuthController {
 			log.warn("로그인 실패 : 잘못된 인증 정보 - userId={}", loginRequest.getUserId());
 
 			// 탈퇴한 사용자인지 확인
-			User user = userService.findByUserId(loginRequest.getUserId());
+			User user = userMapper.findByUserId(loginRequest.getUserId());
 			if (user != null && "Y".equals(user.getIsDeleted())) {
 				return ResponseEntity
 						.status(HttpStatus.UNAUTHORIZED)
@@ -158,7 +160,7 @@ public class AuthController {
 			log.info("인증된 사용자: {}", userId);
 
 			// 최신 사용자 정보 조회
-			User user = userService.findByUserId(userId);
+			User user = userMapper.findByUserId(userId);
 			if (user == null) {
 				SecurityContextHolder.clearContext(); // 유효하지 않은 인증 정보 제거
 				log.warn("유효하지 않은 사용자 인증 정보 제거: userId={}", userId);
@@ -215,7 +217,8 @@ public class AuthController {
 						));
 			}
 
-			String userId = userService.findUserIdByEmail(email);
+			String userId = userService.getActiveUserId(email);
+
 			if (userId != null) {
 				return ResponseEntity.ok(Map.of(
 						"success", true,
@@ -238,9 +241,48 @@ public class AuthController {
 		}
 	}
 
-	// 비밀번호 찾기 - 비밀번호 변경
-	@PostMapping("/find-password")
-	public ResponseEntity<?> findAccountPassword(@RequestBody Map<String, String> request) {
+	// 비밀번호 찾기 - 1단계: 계정 검증
+	@PostMapping("/verify-account")
+	public ResponseEntity<?> verifyAccount(@RequestBody Map<String, String> request) {
+		try {
+			String userId = request.get("userId");
+			String email = request.get("email");
+
+			if (userId == null || email == null ||
+					userId.trim().isEmpty() || email.trim().isEmpty()) {
+				return ResponseEntity.badRequest()
+						.body(Map.of(
+								"success", false,
+								"message", "아이디와 이메일을 모두 입력해주세요"
+						));
+			}
+
+			boolean isValid = userService.verifyUserAccount(userId, email);
+
+			if (isValid) {
+				return ResponseEntity.ok(Map.of(
+						"success", true,
+						"message", "계정이 확인되었습니다. 새 비밀번호를 입력해주세요."
+				));
+			} else {
+				return ResponseEntity.ok(Map.of(
+						"success", false,
+						"message", "아이디와 이메일 정보가 일치하지 않거나 존재하지 않는 계정입니다."
+				));
+			}
+		} catch (Exception e) {
+			log.error("계정 검증 중 오류 발생", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Map.of(
+							"success", false,
+							"message", "계정 검증 중 오류가 발생했습니다."
+					));
+		}
+	}
+
+	// 비밀번호 찾기 - 2단계: 비밀번호 재설정
+	@PostMapping("/reset-password")
+	public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
 		try {
 			String userId = request.get("userId");
 			String email = request.get("email");
@@ -264,13 +306,24 @@ public class AuthController {
 						));
 			}
 
-			boolean isReset = userService.resetPassword(userId, email, newPassword);
+			// 계정 검증 후 비밀번호 변경
+			User user = userMapper.findByUserIdAndEmail(userId, email);
 
-			if (isReset) {
-				return ResponseEntity.ok(Map.of(
-						"success", true,
-						"message", "비밀번호가 성공적으로 변경되었습니다."
-				));
+			if (user != null && user.getId() != null) {
+				boolean isReset = userService.resetPassword(user.getId(), newPassword);
+
+				if (isReset) {
+					return ResponseEntity.ok(Map.of(
+							"success", true,
+							"message", "비밀번호가 성공적으로 변경되었습니다."
+					));
+				} else {
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+							.body(Map.of(
+									"success", false,
+									"message", "비밀번호 변경 중 오류가 발생했습니다."
+							));
+				}
 			} else {
 				return ResponseEntity.ok(Map.of(
 						"success", false,
