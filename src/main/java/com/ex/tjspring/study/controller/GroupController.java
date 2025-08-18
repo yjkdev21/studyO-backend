@@ -6,23 +6,15 @@ import com.ex.tjspring.study.dto.GroupDto;
 import com.ex.tjspring.study.service.GroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestPart;
 
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -119,6 +111,16 @@ public class GroupController {
                 group.setThumbnailFullPath(s3Service.getFileFullPath(S3DirKey.STUDYGROUPIMG, thumbnail));
             }
 
+            //프로필 이미지
+            String ownerProfileImage = group.getOwnerProfileImage();
+            if (ownerProfileImage == null || ownerProfileImage.isEmpty() || ownerProfileImage.contains("default")) {
+                group.setOwnerProfileImageFullPath("/images/default-profile.png");
+            } else {
+                group.setOwnerProfileImageFullPath(
+                        s3Service.getFileFullPath(S3DirKey.MYPROFILEIMG, ownerProfileImage)
+                );
+            }
+
             response.put("success", true);
             response.put("data", group);
 
@@ -136,37 +138,73 @@ public class GroupController {
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<Map<String, Object>> update(
             @PathVariable Long id,
-            @RequestPart("groupDto") @Validated GroupDto groupDto,
-            BindingResult bindingResult,
-            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnailFile,
-            @RequestParam(value = "deleteImage", required = false) String deleteImage) {
+            @RequestPart("groupDto") GroupDto groupDto,
+            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnailFile) {
 
         Map<String, Object> response = new HashMap<>();
 
         try {
-            if (bindingResult.hasErrors()) {
+            // 기존 그룹 정보 조회
+            GroupDto existingGroup = groupService.selectGroupById(id);
+            if (existingGroup == null) {
                 response.put("success", false);
-                response.put("message", "필수 필드를 모두 입력해주세요.");
-                return ResponseEntity.badRequest().body(response);
+                response.put("message", "존재하지 않는 그룹입니다.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
 
-            // 이미지가 있으면 S3에 업로드 후 groupDto에 저장
+            String oldThumbnail = existingGroup.getThumbnail();
+
+            // 새 이미지 파일이 있는 경우
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
-                // 다른 이미지로 변경하면 → 새 이미지 저장
+                // 새 이미지 S3에 업로드
                 String storedFileName = s3Service.upload(S3DirKey.STUDYGROUPIMG, thumbnailFile);
                 groupDto.setThumbnail(storedFileName);
                 String thumbnailFullPath = s3Service.getFileFullPath(S3DirKey.STUDYGROUPIMG, storedFileName);
                 groupDto.setThumbnailFullPath(thumbnailFullPath);
-            } else if ("true".equals(deleteImage)) {
-                // 이미지를 삭제하고 새로 추가 안하면 → 기본이미지
-                groupDto.setThumbnail("default");
-                groupDto.setThumbnailFullPath(null);
-            } else {
-                // 기존 이미지 그대로 두면 → 기존 이미지 유지
-                groupDto.setThumbnail(null);  // service에서 기존값 유지하도록
-                groupDto.setThumbnailFullPath(null);
+
+                // 기존 이미지가 있고 기본 이미지가 아닌 경우 S3에서 삭제
+                if (oldThumbnail != null &&
+                        !oldThumbnail.isEmpty() &&
+                        !oldThumbnail.contains("default")) {
+                    try {
+                        s3Service.delete(S3DirKey.STUDYGROUPIMG, oldThumbnail);
+                    } catch (Exception e) {
+                        log.warn("기존 썸네일 삭제 실패: {} - {}", oldThumbnail, e.getMessage());
+                    }
+                }
+            }
+            // 이미지 삭제 요청인 경우
+            else if ("default".equals(groupDto.getThumbnail())) {
+                // 기본 이미지로 설정
+                groupDto.setThumbnail("default-thumbnail.png");
+                groupDto.setThumbnailFullPath("/images/default-thumbnail.png");
+
+                // 기존 이미지가 있고 기본 이미지가 아닌 경우 S3에서 삭제
+                if (oldThumbnail != null &&
+                        !oldThumbnail.isEmpty() &&
+                        !oldThumbnail.contains("default")) {
+                    try {
+                        s3Service.delete(S3DirKey.STUDYGROUPIMG, oldThumbnail);
+                    } catch (Exception e) {
+                        log.warn("기존 썸네일 삭제 실패: {} - {}", oldThumbnail, e.getMessage());
+                    }
+                }
+            }
+            // 기존 이미지 유지
+            else {
+                groupDto.setThumbnail(oldThumbnail);
+
+                if (oldThumbnail != null &&
+                        !oldThumbnail.isEmpty() &&
+                        !oldThumbnail.contains("default")) {
+                    String thumbnailFullPath = s3Service.getFileFullPath(S3DirKey.STUDYGROUPIMG, oldThumbnail);
+                    groupDto.setThumbnailFullPath(thumbnailFullPath);
+                } else {
+                    groupDto.setThumbnailFullPath("/images/default-thumbnail.png");
+                }
             }
 
+            // 그룹 정보 업데이트
             groupDto.setGroupId(id);
             groupService.update(groupDto);
 
@@ -174,20 +212,13 @@ public class GroupController {
             response.put("message", "스터디 그룹이 성공적으로 수정되었습니다.");
             return ResponseEntity.ok(response);
 
-        } catch (IllegalArgumentException e) {
-            log.warn("스터디 그룹 수정 실패: {}", e.getMessage());
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-
         } catch (Exception e) {
-            log.error("스터디 그룹 수정 중 오류 발생: {}", e.getMessage(), e);
+            log.error("스터디 그룹 수정 오류: {}", e.getMessage(), e);
             response.put("success", false);
-            response.put("message", "스터디 그룹 수정 중 오류가 발생했습니다.");
+            response.put("message", "스터디 그룹 수정 중 오류가 발생했습니다: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
@@ -232,28 +263,6 @@ public class GroupController {
             log.error("스터디 그룹 이름 중복 확인 중 오류 발생: {}", e.getMessage(), e);
             response.put("success", false);
             response.put("message", "중복 확인 중 오류가 발생했습니다.");
-            return ResponseEntity.internalServerError().body(response);
-        }
-    }
-
-    @GetMapping("/check-nickname/{nickname}")
-    public ResponseEntity<Map<String, Object>> checkNicknameDuplicate(@PathVariable String nickname) {
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            boolean isDuplicate = groupService.existsByNickname(nickname);
-
-            response.put("success", true);
-            response.put("isDuplicate", isDuplicate);
-            response.put("message", isDuplicate ?
-                    "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다.");
-
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            log.error("닉네임 중복 확인 중 오류 발생: {}", e.getMessage(), e);
-            response.put("success", false);
-            response.put("message", "닉네임 중복 확인 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(response);
         }
     }

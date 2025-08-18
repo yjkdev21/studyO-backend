@@ -93,11 +93,11 @@ public class GroupService {
         return groups;
     }
 
+    @Transactional
     public void update(GroupDto groupDto) {
         log.info("그룹 수정 시작 - ID: {}", groupDto.getGroupId());
 
-        GroupDto existingGroup = dao.selectGroupById(groupDto.getGroupId()); // 썸네일 처리 없이 원본 데이터 조회
-
+        GroupDto existingGroup = dao.selectGroupById(groupDto.getGroupId());
         if (existingGroup == null) {
             throw new IllegalArgumentException("존재하지 않는 그룹입니다.");
         }
@@ -108,15 +108,19 @@ public class GroupService {
             throw new IllegalArgumentException("이미 존재하는 그룹명입니다.");
         }
 
+        // 썸네일이 null이면 기존 값 유지
+        if (groupDto.getThumbnail() == null) {
+            groupDto.setThumbnail(existingGroup.getThumbnail());
+        }
+
         // 1. 그룹 정보 업데이트
         dao.update(groupDto);
         log.info("그룹 정보 수정 완료 - ID: {}", groupDto.getGroupId());
 
-        // 2. 닉네임이 있는 경우 멤버십 테이블의 닉네임도 업데이트
+        // 2. 닉네임 업데이트
         if (groupDto.getNickname() != null && !groupDto.getNickname().trim().isEmpty()) {
             dao.updateNickname(groupDto);
-            log.info("멤버십 닉네임 수정 완료 - 그룹ID: {}, 사용자ID: {}, 새 닉네임: {}",
-                    groupDto.getGroupId(), groupDto.getGroupOwnerId(), groupDto.getNickname());
+            log.info("멤버십 닉네임 수정 완료");
         }
     }
 
@@ -132,16 +136,10 @@ public class GroupService {
         log.info("그룹 삭제 완료 - ID: {}", id);
     }
 
-    //그룹명 중복검사
     public boolean existsByGroupName(String groupName) {
-
         return dao.existsByGroupName(groupName) > 0;
     }
 
-    //닉네임 중복검사
-    public boolean existsByNickname(String nickname) {
-        return dao.existsByNickname(nickname) > 0;
-    }
 
     public int getMemberCountByGroupId(Long groupId) {
         return dao.countMembersByGroupId(groupId);
