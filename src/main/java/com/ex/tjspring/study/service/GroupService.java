@@ -124,22 +124,43 @@ public class GroupService {
         }
     }
 
+    @Transactional
     public void delete(Long id) {
         log.info("그룹 삭제 시작 - ID: {}", id);
 
-        GroupDto existingGroup = dao.selectGroupById(id); // 썸네일 처리 없이 원본 데이터 조회
+        GroupDto existingGroup = dao.selectGroupById(id);
         if (existingGroup == null) {
             throw new IllegalArgumentException("존재하지 않는 그룹입니다.");
         }
 
-        dao.delete(id);
-        log.info("그룹 삭제 완료 - ID: {}", id);
+        // 멤버 수 체크 - 1명(방장만)일 때만 삭제 가능
+        int memberCount = getMemberCountByGroupId(id);
+        log.info("그룹 ID: {}, 현재 멤버 수: {}", id, memberCount);
+
+        if (memberCount > 1) {
+            log.warn("삭제 불가 - 그룹에 다른 멤버가 있음. 그룹 ID: {}, 멤버 수: {}", id, memberCount);
+            throw new IllegalArgumentException("현재 멤버가 있어서 삭제할 수 없습니다. 다른 멤버들이 모두 나간 후 삭제해주세요.");
+        }
+
+        // 방장만 있을 때(멤버 1명)만 삭제 진행
+        try {
+            // 1. 멤버십 테이블에서 먼저 삭제 (FK 제약조건 때문에)
+            dao.deleteMembershipsByGroupId(id);
+            log.info("그룹 멤버십 삭제 완료 - 그룹 ID: {}", id);
+
+            // 2. 그룹 테이블에서 삭제
+            dao.delete(id);
+            log.info("그룹 삭제 완료 - ID: {}", id);
+
+        } catch (Exception e) {
+            log.error("그룹 삭제 중 오류 발생 - 그룹 ID: {}, 오류: {}", id, e.getMessage(), e);
+            throw new RuntimeException("그룹 삭제 중 오류가 발생했습니다.", e);
+        }
     }
 
     public boolean existsByGroupName(String groupName) {
         return dao.existsByGroupName(groupName) > 0;
     }
-
 
     public int getMemberCountByGroupId(Long groupId) {
         return dao.countMembersByGroupId(groupId);
