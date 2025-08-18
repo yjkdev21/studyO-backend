@@ -22,7 +22,7 @@ public class WebConfig {
                                 "https://www.studyo.kro.kr",
                                 "http://15.164.165.161",
                                 "http://15.164.165.161:8081",
-                                "http://15.164.165.161:80",
+                                "http://15.164.165.161:80"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
