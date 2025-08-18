@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @ToString
 public class GroupDto {
     private Long groupId;
-    @Size(max =6, message = "6글자 이내로 입력해주세요.")
+    @Size(max =20, message = "20글자 이내로 입력해주세요.")
     private String groupName;
     @Size(max =6, message = "6글자 이내로 입력해주세요.")
     private String nickname;

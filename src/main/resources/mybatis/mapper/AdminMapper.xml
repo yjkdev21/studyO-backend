@@ -32,120 +32,120 @@
     </resultMap>
 
 
-    <select id="findAllUsers" resultMap="UserResultMap">
-        SELECT
-        ID,
-        USER_ID,
-        EMAIL,
-        NICKNAME,
-        IS_DELETED,
-        CREATED_AT,
-        GLOBAL_ROLE,
-        PROFILE_IMAGE,
-        INTRODUCTION
-        FROM USERS
-        ORDER BY CREATED_AT DESC
-    </select>
+<!--    <select id="findAllUsers" resultMap="UserResultMap">-->
+<!--        SELECT-->
+<!--        ID,-->
+<!--        USER_ID,-->
+<!--        EMAIL,-->
+<!--        NICKNAME,-->
+<!--        IS_DELETED,-->
+<!--        CREATED_AT,-->
+<!--        GLOBAL_ROLE,-->
+<!--        PROFILE_IMAGE,-->
+<!--        INTRODUCTION-->
+<!--        FROM USERS-->
+<!--        ORDER BY CREATED_AT DESC-->
+<!--    </select>-->
 
-    <select id="searchUsers" parameterType="String" resultMap="UserResultMap">
-        SELECT
-        ID,
-        USER_ID,
-        EMAIL,
-        NICKNAME,
-        IS_DELETED,
-        CREATED_AT,
-        GLOBAL_ROLE,
-        PROFILE_IMAGE,
-        INTRODUCTION
-        FROM USERS
-        WHERE USER_ID LIKE '%' || #{searchKeyword} || '%'
-        OR NICKNAME LIKE '%' || #{searchKeyword} || '%'
-        ORDER BY CREATED_AT DESC
-    </select>
-    <select id="findUserByUserId" parameterType="String" resultMap="UserResultMap">
-        SELECT
-        ID,
-        USER_ID,
-        EMAIL,
-        NICKNAME,
-        IS_DELETED,
-        CREATED_AT,
-        GLOBAL_ROLE,
-        PROFILE_IMAGE,
-        INTRODUCTION
-        FROM USERS
-        WHERE USER_ID = #{userId}
-    </select>
+<!--    <select id="searchUsers" parameterType="String" resultMap="UserResultMap">-->
+<!--        SELECT-->
+<!--        ID,-->
+<!--        USER_ID,-->
+<!--        EMAIL,-->
+<!--        NICKNAME,-->
+<!--        IS_DELETED,-->
+<!--        CREATED_AT,-->
+<!--        GLOBAL_ROLE,-->
+<!--        PROFILE_IMAGE,-->
+<!--        INTRODUCTION-->
+<!--        FROM USERS-->
+<!--        WHERE USER_ID LIKE '%' || #{searchKeyword} || '%'-->
+<!--        OR NICKNAME LIKE '%' || #{searchKeyword} || '%'-->
+<!--        ORDER BY CREATED_AT DESC-->
+<!--    </select>-->
+<!--    <select id="findUserByUserId" parameterType="String" resultMap="UserResultMap">-->
+<!--        SELECT-->
+<!--        ID,-->
+<!--        USER_ID,-->
+<!--        EMAIL,-->
+<!--        NICKNAME,-->
+<!--        IS_DELETED,-->
+<!--        CREATED_AT,-->
+<!--        GLOBAL_ROLE,-->
+<!--        PROFILE_IMAGE,-->
+<!--        INTRODUCTION-->
+<!--        FROM USERS-->
+<!--        WHERE USER_ID = #{userId}-->
+<!--    </select>-->
 
-    <select id="findUserStudyGroups" parameterType="String" resultMap="StudyGroupResultMap">
-        SELECT
-        sg.GROUP_ID,
-        sg.GROUP_NAME,
-        sg.CATEGORY,
-        sg.MAX_MEMBERS,
-        sg.STUDY_MODE,
-        sg.CREATED_AT,
-        sg.REGION,
-        sg.CONTACT,
-        sg.GROUP_INTRODUCTION,
-        sg.GROUP_OWNER_ID,
-        sg.THUMBNAIL,
-        (SELECT COUNT(sm2.ID) FROM STUDY_MEMBERSHIP sm2 WHERE sm2.GROUP_ID = sg.GROUP_ID) AS CURRENT_MEMBERS,
-        CASE
-        WHEN sg.MAX_MEMBERS > (SELECT COUNT(sm2.ID) FROM STUDY_MEMBERSHIP sm2 WHERE sm2.GROUP_ID = sg.GROUP_ID) THEN '모집중'
-        ELSE '진행중'
-        END AS STATUS
-        FROM STUDY_MEMBERSHIP sm
-        JOIN USERS u ON sm.USER_ID = u.ID
-        JOIN STUDY_GROUPS sg ON sm.GROUP_ID = sg.GROUP_ID
-        WHERE u.USER_ID = #{userId}
-        ORDER BY sg.CREATED_AT DESC
-    </select>
+<!--    <select id="findUserStudyGroups" parameterType="String" resultMap="StudyGroupResultMap">-->
+<!--        SELECT-->
+<!--        sg.GROUP_ID,-->
+<!--        sg.GROUP_NAME,-->
+<!--        sg.CATEGORY,-->
+<!--        sg.MAX_MEMBERS,-->
+<!--        sg.STUDY_MODE,-->
+<!--        sg.CREATED_AT,-->
+<!--        sg.REGION,-->
+<!--        sg.CONTACT,-->
+<!--        sg.GROUP_INTRODUCTION,-->
+<!--        sg.GROUP_OWNER_ID,-->
+<!--        sg.THUMBNAIL,-->
+<!--        (SELECT COUNT(sm2.ID) FROM STUDY_MEMBERSHIP sm2 WHERE sm2.GROUP_ID = sg.GROUP_ID) AS CURRENT_MEMBERS,-->
+<!--        CASE-->
+<!--        WHEN sg.MAX_MEMBERS > (SELECT COUNT(sm2.ID) FROM STUDY_MEMBERSHIP sm2 WHERE sm2.GROUP_ID = sg.GROUP_ID) THEN '모집중'-->
+<!--        ELSE '진행중'-->
+<!--        END AS STATUS-->
+<!--        FROM STUDY_MEMBERSHIP sm-->
+<!--        JOIN USERS u ON sm.USER_ID = u.ID-->
+<!--        JOIN STUDY_GROUPS sg ON sm.GROUP_ID = sg.GROUP_ID-->
+<!--        WHERE u.USER_ID = #{userId}-->
+<!--        ORDER BY sg.CREATED_AT DESC-->
+<!--    </select>-->
 
-    <update id="deleteUser" parameterType="String">
-        UPDATE USERS
-        SET IS_DELETED = 'Y'
-        WHERE USER_ID = #{userId}
-    </update>
+<!--    <update id="deleteUser" parameterType="String">-->
+<!--        UPDATE USERS-->
+<!--        SET IS_DELETED = 'Y'-->
+<!--        WHERE USER_ID = #{userId}-->
+<!--    </update>-->
 
-    <select id="findAllStudyGroups" resultMap="StudyGroupResultMap">
-        SELECT
-        sg.GROUP_ID,
-        sg.GROUP_NAME,
-        sg.CATEGORY,
-        sg.MAX_MEMBERS,
-        sg.STUDY_MODE,
-        sg.CREATED_AT,
-        (SELECT COUNT(sm.ID) FROM STUDY_MEMBERSHIP sm WHERE sm.GROUP_ID = sg.GROUP_ID) AS CURRENT_MEMBERS,
-        CASE
-        WHEN sg.MAX_MEMBERS > (SELECT COUNT(sm.ID) FROM STUDY_MEMBERSHIP sm WHERE sm.GROUP_ID = sg.GROUP_ID) THEN '모집중'
-        ELSE '진행중'
-        END AS STATUS
-        FROM STUDY_GROUPS sg
-        ORDER BY CREATED_AT DESC
-    </select>
+<!--    <select id="findAllStudyGroups" resultMap="StudyGroupResultMap">-->
+<!--        SELECT-->
+<!--        sg.GROUP_ID,-->
+<!--        sg.GROUP_NAME,-->
+<!--        sg.CATEGORY,-->
+<!--        sg.MAX_MEMBERS,-->
+<!--        sg.STUDY_MODE,-->
+<!--        sg.CREATED_AT,-->
+<!--        (SELECT COUNT(sm.ID) FROM STUDY_MEMBERSHIP sm WHERE sm.GROUP_ID = sg.GROUP_ID) AS CURRENT_MEMBERS,-->
+<!--        CASE-->
+<!--        WHEN sg.MAX_MEMBERS > (SELECT COUNT(sm.ID) FROM STUDY_MEMBERSHIP sm WHERE sm.GROUP_ID = sg.GROUP_ID) THEN '모집중'-->
+<!--        ELSE '진행중'-->
+<!--        END AS STATUS-->
+<!--        FROM STUDY_GROUPS sg-->
+<!--        ORDER BY CREATED_AT DESC-->
+<!--    </select>-->
 
-    <select id="searchStudyGroups" parameterType="String" resultMap="StudyGroupResultMap">
-        SELECT
-        sg.GROUP_ID,
-        sg.GROUP_NAME,
-        sg.CATEGORY,
-        sg.MAX_MEMBERS,
-        sg.STUDY_MODE,
-        sg.CREATED_AT,
-        (SELECT COUNT(sm.ID) FROM STUDY_MEMBERSHIP sm WHERE sm.GROUP_ID = sg.GROUP_ID) AS CURRENT_MEMBERS,
-        CASE
-        WHEN sg.MAX_MEMBERS > (SELECT COUNT(sm.ID) FROM STUDY_MEMBERSHIP sm WHERE sm.GROUP_ID = sg.GROUP_ID) THEN '모집중'
-        ELSE '진행중'
-        END AS STATUS
-        FROM STUDY_GROUPS sg
-        WHERE sg.GROUP_NAME LIKE '%' || #{searchKeyword} || '%'
-        OR sg.CATEGORY LIKE '%' || #{searchKeyword} || '%'
-        ORDER BY CREATED_AT DESC
-    </select>
+<!--    <select id="searchStudyGroups" parameterType="String" resultMap="StudyGroupResultMap">-->
+<!--        SELECT-->
+<!--        sg.GROUP_ID,-->
+<!--        sg.GROUP_NAME,-->
+<!--        sg.CATEGORY,-->
+<!--        sg.MAX_MEMBERS,-->
+<!--        sg.STUDY_MODE,-->
+<!--        sg.CREATED_AT,-->
+<!--        (SELECT COUNT(sm.ID) FROM STUDY_MEMBERSHIP sm WHERE sm.GROUP_ID = sg.GROUP_ID) AS CURRENT_MEMBERS,-->
+<!--        CASE-->
+<!--        WHEN sg.MAX_MEMBERS > (SELECT COUNT(sm.ID) FROM STUDY_MEMBERSHIP sm WHERE sm.GROUP_ID = sg.GROUP_ID) THEN '모집중'-->
+<!--        ELSE '진행중'-->
+<!--        END AS STATUS-->
+<!--        FROM STUDY_GROUPS sg-->
+<!--        WHERE sg.GROUP_NAME LIKE '%' || #{searchKeyword} || '%'-->
+<!--        OR sg.CATEGORY LIKE '%' || #{searchKeyword} || '%'-->
+<!--        ORDER BY CREATED_AT DESC-->
+<!--    </select>-->
 
-    <delete id="deleteStudyGroup" parameterType="Long">
-        DELETE FROM STUDY_GROUPS WHERE GROUP_ID = #{groupId}
-    </delete>
+<!--    <delete id="deleteStudyGroup" parameterType="Long">-->
+<!--        DELETE FROM STUDY_GROUPS WHERE GROUP_ID = #{groupId}-->
+<!--    </delete>-->
 </mapper>

@@ -121,6 +121,9 @@ public class GroupController {
                 );
             }
 
+            int memberCount = groupService.getMemberCountByGroupId(groupId);
+            response.put("memberCount", memberCount);
+
             response.put("success", true);
             response.put("data", group);
 
@@ -225,6 +228,19 @@ public class GroupController {
         Map<String, Object> response = new HashMap<>();
 
         try {
+            // 삭제 전 멤버 수 한 번 더 확인
+            int memberCount = groupService.getMemberCountByGroupId(id);
+            log.info("삭제 요청받음 - 그룹 ID: {}, 현재 멤버 수: {}", id, memberCount);
+
+            // 멤버가 1명 초과일 때 삭제 불가
+            if (memberCount > 1) {
+                log.warn("삭제 거부 - 멤버 수 초과: {}", memberCount);
+                response.put("success", false);
+                response.put("message", "현재 " + memberCount + "명의 멤버가 있어서 삭제할 수 없습니다. 다른 멤버들이 모두 나간 후 삭제해주세요.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // 실제 삭제 수행
             groupService.delete(id);
 
             response.put("success", true);
@@ -232,13 +248,13 @@ public class GroupController {
             return ResponseEntity.ok(response);
 
         } catch (IllegalArgumentException e) {
-            log.warn("스터디 그룹 삭제 실패: {}", e.getMessage());
+            log.warn("스터디 그룹 삭제 실패 (검증 오류): {}", e.getMessage());
             response.put("success", false);
             response.put("message", e.getMessage());
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(response);
 
         } catch (Exception e) {
-            log.error("스터디 그룹 삭제 중 오류 발생: {}", e.getMessage(), e);
+            log.error("스터디 그룹 삭제 중 시스템 오류 발생: {}", e.getMessage(), e);
             response.put("success", false);
             response.put("message", "스터디 그룹 삭제 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(response);
