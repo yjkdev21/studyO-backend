@@ -41,8 +41,7 @@ public class StudyMembershipController {
 	// 스터디 내 닉네임 수정
 	@PutMapping("/nickname")
 	public ResponseEntity<Map<String, String>> updateNickname(
-			@RequestBody Map<String, String> requestBody,
-			HttpSession session) {
+			@RequestBody Map<String, String> requestBody, HttpSession session) {
 
 		// SecurityContext에서 인증 정보 가져오기
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -88,6 +87,11 @@ public class StudyMembershipController {
 			return ResponseEntity.badRequest()
 					.body(Map.of("error", "닉네임은 필수입니다."));
 		}
+		// 닉네임 중복 여부
+		if (studyMembershipService.isNicknameExistsInGroup(groupId, nickname, currentUserId)) {
+			return ResponseEntity.badRequest()
+					.body(Map.of("error", "같은 스터디에 동일한 닉네임이 있습니다."));
+		}
 
 		try {
 			studyMembershipService.updateNickname(currentUserId, groupId, nickname);
@@ -98,6 +102,70 @@ public class StudyMembershipController {
 					.body(Map.of("error", e.getMessage()));
 
 		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(Map.of("error", "서버 내부 오류가 발생했습니다."));
+		}
+	}
+
+	@DeleteMapping("/leave")
+	public ResponseEntity<Map<String, String>> leaveGroup(
+			@RequestBody Map<String, String> requestBody, HttpSession session) {
+
+		// 디버깅 로그 추가
+		System.out.println("=== 탈퇴 요청 디버그 ===");
+		System.out.println("requestBody: " + requestBody);
+		System.out.println("requestBody.get(\"groupId\"): " + requestBody.get("groupId"));
+
+		// SecurityContext에서 인증 정보 가져오기
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인이 필요합니다."));
+		}
+
+		// 인증된 사용자의 userId 가져오기
+		String userId = auth.getName();
+
+		// User 정보 조회해서 id 얻기
+		User user = userMapper.findByUserId(userId);
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("error", "유효하지 않은 사용자입니다."));
+		}
+
+		Long currentUserId = user.getId();
+
+		// 요청 바디에서 그룹 ID 가져오기
+		String groupIdStr = requestBody.get("groupId");
+
+		// 그룹 ID 검증
+		if (groupIdStr == null || groupIdStr.trim().isEmpty()) {
+			return ResponseEntity.badRequest()
+					.body(Map.of("error", "그룹 ID는 필수입니다."));
+		}
+
+		Long groupId;
+
+		try {
+			groupId = Long.parseLong(groupIdStr);
+			if (groupId <= 0) {
+				return ResponseEntity.badRequest()
+						.body(Map.of("error", "유효하지 않은 그룹 ID입니다."));
+			}
+		} catch (NumberFormatException e) {
+			return ResponseEntity.badRequest()
+					.body(Map.of("error", "그룹 ID는 숫자여야 합니다."));
+		}
+		try {
+			studyMembershipService.leaveMembership(currentUserId, groupId);
+			return ResponseEntity.ok(Map.of("message", "그룹에서 성공적으로 탈퇴했습니다."));
+
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest()
+					.body(Map.of("error", e.getMessage()));
+
+		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(Map.of("error", "서버 내부 오류가 발생했습니다."));
 		}
