@@ -18,8 +18,22 @@ public class UserRequestService {
 
 
     // ## 유저가 해당 스터디그룹에 가입신청한 적이 있는 지....
-    public boolean checkUserStatusForApplication(Long groupId, Long userId, Long studyPostId) {
-        return dao.checkUserStatusForApplication(groupId, userId, studyPostId) < 1;
+    @Transactional
+    public String checkUserStatusForApplication(Long groupId, Long userId, Long studyPostId  ) {
+        String result = "joinAble";
+        if( dao.checkUserStatusForApplication(groupId, userId, studyPostId) > 0 ){
+            if(!canMaxMemberJoinStudy(groupId)){
+                result = "모집 정원이 마감되었습니다."; // 모집정원 초과 확인
+            }
+            return result; // 가입가능..
+        } else {
+            return "이미 가입신청한 스터디 그룹입니다.";
+        }
+    }
+
+    // ## 가입인원 초과 확인 - 가입가능 true
+    public boolean canMaxMemberJoinStudy(Long groupId) {
+        return dao.canMaxMemberJoinStudy(groupId) > 0;
     }
 
     // ## 가입신청할 스터디 그룹정보 가져오기..
