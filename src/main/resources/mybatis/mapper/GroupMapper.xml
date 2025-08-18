@@ -19,6 +19,7 @@
         <result property="nickname" column="NICKNAME"/>
         <result property="memberRole" column="MEMBER_ROLE"/>
         <result property="ownerNickname" column="OWNER_NICKNAME"/>
+        <result property="ownerProfileImage" column="OWNER_PROFILE_IMAGE"/>
     </resultMap>
 
     <!-- User 테이블에서 닉네임 조회 -->
@@ -93,7 +94,8 @@
         sm.MEMBERSHIP_STATUS,
         sm.NICKNAME,
         sm.MEMBER_ROLE,
-        owner_sm.NICKNAME as OWNER_NICKNAME
+        owner_sm.NICKNAME as OWNER_NICKNAME,
+        u.PROFILE_IMAGE as OWNER_PROFILE_IMAGE
         FROM STUDY_GROUPS sg
         LEFT JOIN STUDY_MEMBERSHIP sm
         ON sg.GROUP_ID = sm.GROUP_ID
@@ -102,6 +104,8 @@
         ON sg.GROUP_ID = owner_sm.GROUP_ID
         AND sg.GROUP_OWNER_ID = owner_sm.USER_ID
         AND owner_sm.MEMBERSHIP_STATUS = 'ACTIVE'
+        LEFT JOIN USERS u
+        ON sg.GROUP_OWNER_ID = u.ID
         WHERE sg.GROUP_ID = #{id}
     </select>
 
@@ -128,17 +132,8 @@
         WHERE GROUP_ID = #{id}
     </delete>
 
-<!-- 그룹명 중복검사   -->
     <select id="existsByGroupName" parameterType="String" resultType="int">
         SELECT COUNT(*) FROM STUDY_GROUPS WHERE GROUP_NAME = #{groupName}
-    </select>
-
-    <!--닉네임 중복검사-->
-    <select id="existsByNickname" parameterType="String" resultType="int">
-        SELECT COUNT(*)
-        FROM STUDY_MEMBERSHIP
-        WHERE NICKNAME = #{nickname}
-        AND MEMBERSHIP_STATUS = 'ACTIVE'
     </select>
 
     <select id="countMembersByGroupId" parameterType="long" resultType="int">

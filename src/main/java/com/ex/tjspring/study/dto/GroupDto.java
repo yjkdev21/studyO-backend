@@ -35,4 +35,8 @@ public class GroupDto {
 
     // 그룹장의 닉네임 (STUDY_MEMBERSHIP 테이블에서 조회)
     private String ownerNickname;
+
+    private String ownerProfileImage;
+    private String ownerProfileImageFullPath;
+
 }
