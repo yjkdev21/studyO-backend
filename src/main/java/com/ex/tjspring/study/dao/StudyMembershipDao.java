@@ -24,6 +24,13 @@ public interface StudyMembershipDao {
 					   @Param("groupId") Long groupId,
 					   @Param("nickname") String nickname);
 
+	// 스터디 내 동일 닉네임 여부
+	int existsNicknameInGroup (
+			@Param("groupId") Long groupId,
+			@Param("nickname") String nickname,
+			@Param("excludeUserId") Long userId
+	);
+
 	// 그룹 탈퇴 처리
 	int leaveMembership(@Param("userId") Long userId,
 						@Param("groupId") Long groupId);
