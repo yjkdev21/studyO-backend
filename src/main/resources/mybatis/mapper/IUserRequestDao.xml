@@ -48,6 +48,27 @@
                     )
     </select>
 
+
+
+    <!-- ## 스터디 가입 가능 여부 확인 가입인원 초과 -->
+    <select id="canMaxMemberJoinStudy" parameterType="long" resultType="int">
+        SELECT CASE
+               WHEN g.max_members > NVL(m.active_count, 0)
+               THEN 1  -- 가입 가능
+               ELSE 0  -- 가입 불가
+               END AS can_join
+        FROM study_groups g
+             LEFT JOIN (
+                       SELECT group_id, COUNT(*) AS active_count
+                       FROM study_membership
+                       WHERE membership_status = 'ACTIVE'
+                       GROUP BY group_id
+                       ) m
+             ON g.group_id = m.group_id
+        WHERE g.group_id = #{groupId}
+    </select>
+
+
     <!-- ## 스터디 그룹 정보 가져오기 o -->
     <select id="selectStudyGroupFindByGroupId" parameterType="java.lang.Long" resultMap="GroupDtoResultMap">
         SELECT

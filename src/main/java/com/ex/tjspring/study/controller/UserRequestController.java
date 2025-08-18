@@ -36,8 +36,17 @@ public class UserRequestController {
                                                                               @PathVariable Long studyPostId) {
         Map<String, Object> result = new HashMap<>();
         try {
-            boolean exists = userRequestService.checkUserStatusForApplication(groupId, userId,studyPostId);
-            result.put("exists", exists);
+            String resultMsg = userRequestService.checkUserStatusForApplication(groupId, userId,studyPostId);
+            if (resultMsg.equals("joinAble")) {
+                // 가입가능
+                result.put("joinAble" , true);
+            } else{
+                // 가입불가
+                result.put("joinAble" , false);
+                result.put("errorMessage" , resultMsg);
+
+            }
+
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             log.info("####:= {}" , e.getMessage());
@@ -45,6 +54,24 @@ public class UserRequestController {
             return ResponseEntity.status(500).body(result);
         }
     }
+
+    // ### 스터디 가입인원 허용 초과 했는 지 확인
+    @GetMapping("/allowMaxMember/{groupId}")
+    public ResponseEntity<Map<String, Object>> checkUserStatusForApplication(@PathVariable Long groupId ) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            boolean accessAble = userRequestService.canMaxMemberJoinStudy(groupId);
+            result.put("accessAble", accessAble); // true 가입가능
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.info("####:= {}" , e.getMessage());
+            result.put("error", "오류가 발생했습니다: " + e.getMessage());
+            return ResponseEntity.status(500).body(result);
+        }
+    }
+
+
+
 
     // ## 가입신청할 스터디 그룹정보 가져오기..
     @GetMapping("/group/{groupId}")

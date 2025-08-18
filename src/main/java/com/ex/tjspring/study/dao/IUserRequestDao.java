@@ -16,6 +16,8 @@ public interface IUserRequestDao {
 									  @Param("userId") Long userId,
 									  @Param("studyPostId") Long studyPostId);
 
+    int canMaxMemberJoinStudy(Long groupId);
+
 	// ## 가입신청할 스터디 그룹정보 가져오기..
 	GroupDto selectStudyGroupFindByGroupId(Long groupId);
 
