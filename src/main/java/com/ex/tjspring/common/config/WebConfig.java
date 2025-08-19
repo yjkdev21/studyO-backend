@@ -20,9 +20,14 @@ public class WebConfig {
                                 "https://hyunsuplee.github.io",
                                 "http://www.studyo.kro.kr",
                                 "https://www.studyo.kro.kr",
+                                "http://www.studyo.r-e.kr",
+                                "https://www.studyo.r-e.kr",
                                 "http://15.164.165.161",
                                 "http://15.164.165.161:8081",
-                                "http://15.164.165.161:80"
+                                "http://15.164.165.161:80",
+                                "https://15.164.165.161",
+                                "https://15.164.165.161:8081",
+                                "https://15.164.165.161:80"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
