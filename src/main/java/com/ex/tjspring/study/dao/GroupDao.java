@@ -24,7 +24,7 @@ public interface GroupDao {
     void updateNickname(GroupDto groupDto);
 
     void delete(Long id);
-    void deleteMembershipsByGroupId(@Param("groupId") Long groupId);
+    void deleteMembershipsByGroupId(Long groupId);
 
     GroupDto selectGroupById(Long id);
 

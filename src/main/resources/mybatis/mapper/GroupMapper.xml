@@ -132,6 +132,12 @@
         WHERE GROUP_ID = #{id}
     </delete>
 
+    <!-- 그룹의 모든 멤버십 삭제 -->
+    <delete id="deleteMembershipsByGroupId" parameterType="java.lang.Long">
+        DELETE FROM STUDY_MEMBERSHIP
+        WHERE GROUP_ID = #{groupId}
+    </delete>
+
     <select id="existsByGroupName" parameterType="String" resultType="int">
         SELECT COUNT(*) FROM STUDY_GROUPS WHERE GROUP_NAME = #{groupName}
     </select>
