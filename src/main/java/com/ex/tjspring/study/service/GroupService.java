@@ -22,7 +22,7 @@ public class GroupService {
     @Autowired
     private S3Service s3Service;
 
-    // 썸네일 URL 처리 메서드 (private)
+    // 단일 썸네일 URL 처리
     private void processThumbnailUrl(GroupDto group) {
         String thumbnail = group.getThumbnail();
         if (thumbnail == null || thumbnail.isEmpty() || thumbnail.contains("default")) {
@@ -41,11 +41,7 @@ public class GroupService {
         }
     }
 
-    public String getUserNickname(Long userId) {
-        log.info("사용자 {}의 닉네임 조회", userId);
-        return dao.selectUserNickname(userId);
-    }
-
+    // 그룹 생성
     public void insert(GroupDto groupDto) {
         log.info("그룹 생성 시작: {}", groupDto.getGroupName());
 
@@ -56,6 +52,7 @@ public class GroupService {
         dao.insert(groupDto);
     }
 
+    // 그룹 생성 및 멤버십 등록
     @Transactional
     public Long insertWithMembership(GroupDto groupDto) {
         log.info("그룹 생성 및 멤버십 등록 시작: {}", groupDto.getGroupName());
@@ -78,6 +75,13 @@ public class GroupService {
         return groupDto.getGroupId();
     }
 
+    // 사용자 닉네임 조회
+    public String getUserNickname(Long userId) {
+        log.info("사용자 {}의 닉네임 조회", userId);
+        return dao.selectUserNickname(userId);
+    }
+
+    // ID로 특정 그룹 조회
     public GroupDto selectGroupById(Long id) {
         GroupDto group = dao.selectGroupById(id);
         if (group != null) {
@@ -86,6 +90,7 @@ public class GroupService {
         return group;
     }
 
+    // 모든 그룹 조회
     public List<GroupDto> selectAllGroups() {
         log.info("전체 그룹 조회");
         List<GroupDto> groups = dao.selectAllGroups();
@@ -93,6 +98,23 @@ public class GroupService {
         return groups;
     }
 
+    // 사용자 ID로 참여 그룹 조회
+    public List<GroupDto> getStudyGroupsByUserId(Long userId) {
+        log.info("사용자 {}의 참여 그룹 조회", userId);
+        List<GroupDto> groups = dao.findByUserId(userId);
+        processThumbnailUrls(groups);
+        return groups;
+    }
+
+    // 사용자 ID로 활성 그룹 조회
+    public List<GroupDto> getActiveStudyGroupsByUserId(Long userId) {
+        log.info("사용자 {}의 활성 그룹 조회", userId);
+        List<GroupDto> groups = dao.findActiveByUserId(userId);
+        processThumbnailUrls(groups);
+        return groups;
+    }
+
+    // 그룹 정보 수정
     @Transactional
     public void update(GroupDto groupDto) {
         log.info("그룹 수정 시작 - ID: {}", groupDto.getGroupId());
@@ -124,6 +146,7 @@ public class GroupService {
         }
     }
 
+    // 그룹 삭제
     @Transactional
     public void delete(Long id) {
         log.info("그룹 삭제 시작 - ID: {}", id);
@@ -158,28 +181,16 @@ public class GroupService {
         }
     }
 
+    // 그룹명 중복 확인
     public boolean existsByGroupName(String groupName) {
+
         return dao.existsByGroupName(groupName) > 0;
     }
 
+    // 그룹 멤버 수 조회
     public int getMemberCountByGroupId(Long groupId) {
+
         return dao.countMembersByGroupId(groupId);
-    }
-
-    // ========== 새로 추가되는 메서드들 ==========
-
-    public List<GroupDto> getStudyGroupsByUserId(Long userId) {
-        log.info("사용자 {}의 참여 그룹 조회", userId);
-        List<GroupDto> groups = dao.findByUserId(userId);
-        processThumbnailUrls(groups);
-        return groups;
-    }
-
-    public List<GroupDto> getActiveStudyGroupsByUserId(Long userId) {
-        log.info("사용자 {}의 활성 그룹 조회", userId);
-        List<GroupDto> groups = dao.findActiveByUserId(userId);
-        processThumbnailUrls(groups);
-        return groups;
     }
 
 
