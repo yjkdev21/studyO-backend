@@ -27,8 +27,7 @@ public class GroupController {
     @Autowired
     private S3Service s3Service;
 
-
-    // ========== 새로 추가: 사용자 닉네임 조회 ==========
+    // 사용자 닉네임 조회
     @GetMapping("/user/{userId}/nickname")
     public ResponseEntity<Map<String, Object>> getUserNickname(@PathVariable Long userId) {
         Map<String, Object> response = new HashMap<>();
@@ -55,6 +54,7 @@ public class GroupController {
         }
     }
 
+    // 스터디 그룹 생성
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Map<String, Object>> createGroup(
             @RequestPart("groupDto") GroupDto groupDto,
@@ -92,7 +92,7 @@ public class GroupController {
         }
     }
 
-
+    // 스터디 그룹 조회
     @GetMapping("/{groupId}")
     public ResponseEntity<Map<String, Object>> getGroup(@PathVariable Long groupId) {
         Map<String, Object> response = new HashMap<>();
@@ -137,7 +137,7 @@ public class GroupController {
         }
     }
 
-
+    // 스터디 그룹 수정
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<Map<String, Object>> update(
             @PathVariable Long id,
@@ -223,6 +223,7 @@ public class GroupController {
         }
     }
 
+    // 스터디 그룹 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
@@ -261,6 +262,7 @@ public class GroupController {
         }
     }
 
+    // 스터디 그룹 이름 중복 검사
     @GetMapping("/check-name/{groupName}")
     public ResponseEntity<Map<String, Object>> checkGroupNameDuplicate(@PathVariable String groupName) {
         Map<String, Object> response = new HashMap<>();
@@ -283,6 +285,7 @@ public class GroupController {
         }
     }
 
+    // 스터디 그룹 내 멤버 수 조회
     @GetMapping("/{groupId}/members")
     public ResponseEntity<Map<String, Object>> getStudyGroupMemberCount(@PathVariable Long groupId) {
         Map<String, Object> response = new HashMap<>();
@@ -300,11 +303,8 @@ public class GroupController {
     }
 
 
-
-
-
-    // ========== 사용자 참여 그룹 조회 기능 ==========
-
+    //다른페이지 사용코드
+    // 사용자 참여 그룹 조회 기능
     @GetMapping("/user/{userId}")
     public ResponseEntity<Map<String, Object>> getStudyGroupsByUserId(@PathVariable Long userId) {
         Map<String, Object> response = new HashMap<>();
@@ -325,6 +325,7 @@ public class GroupController {
         }
     }
 
+    // 사용자가 현재 활성 참여 중인 그룹 조회
     @GetMapping("/user/{userId}/active")
     public ResponseEntity<Map<String, Object>> getActiveStudyGroupsByUserId(@PathVariable Long userId) {
         Map<String, Object> response = new HashMap<>();
