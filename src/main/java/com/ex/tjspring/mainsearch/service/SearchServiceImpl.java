@@ -34,7 +34,7 @@ public class SearchServiceImpl implements SearchService {
         return searchMapper.getBookmarkViewList();
     }
 
-    // 🔥 새로 추가: 인기 스터디 구현
+
     @Override
     public List<StudyPostModel> getPopularStudies() {
         System.out.println("getPopularStudies 호출");
@@ -43,7 +43,7 @@ public class SearchServiceImpl implements SearchService {
         return result;
     }
 
-    // 🔥 새로 추가: 마감임박 스터디 구현
+
     @Override
     public List<StudyPostModel> getUrgentStudies() {
         System.out.println("getUrgentStudies 호출");

@@ -19,7 +19,7 @@ public class StudyPostModel {
     private Integer viewCount;        // VIEW_COUNT
     private String hashTag;           // HASH_TAG
 
-    // 조인된 스터디 그룹 정보 (선택적)
+
     private String groupName;
     private String category;
     private Integer maxMembers;
@@ -29,5 +29,5 @@ public class StudyPostModel {
     private Long groupOwnerId;
     private Date groupCreatedAt;
     private String thumbnail;
-    private String authorName; // 작성자 닉네임
+    private String authorName;
 }
