@@ -124,7 +124,7 @@
         ORDER BY p.CREATED_AT DESC
     </select>
 
-    <!-- 인기 스터디 조회 (북마크 많은 순) - 오라클 11g용 -->
+
     <select id="selectPopularStudies" resultType="com.ex.tjspring.mainsearch.model.StudyPostModel">
         SELECT * FROM (
         SELECT
@@ -163,7 +163,7 @@
         )
         WHERE ROWNUM <![CDATA[<=]]> 6
     </select>
-    <!-- 마감임박 스터디 조회 (마감일 3일 전) - 오라클 11g용 -->
+
     <select id="selectUrgentStudies" resultType="com.ex.tjspring.mainsearch.model.StudyPostModel">
         SELECT * FROM (
         SELECT

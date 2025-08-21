@@ -19,6 +19,6 @@ public class StudyGroupModel {
     private Date createdAt;           // CREATED_AT
     private String thumbnail;         // THUMBNAIL
 
-    private Integer viewCount;        // VIEW_COUNT (스터디 그룹 전체 조회수 - 추가 정보)
-    private Integer bookmarkCount;    // BOOKMARK_COUNT (추가 정보)
+    private Integer viewCount;        // VIEW_COUNT
+    private Integer bookmarkCount;    // BOOKMARK_COUNT
 }
