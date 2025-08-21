@@ -27,9 +27,7 @@ public class BookmarkController {
 
     private static final Logger logger = LoggerFactory.getLogger(BookmarkController.class);
 
-    /**
-     * 특정 사용자의 북마크 목록 조회 (이미지 URL 포함)
-     */
+    // 특정 사용자의 북마크 목록 조회 (이미지 URL 포함)
     @GetMapping("/user/{userId}")
     public ResponseEntity<Map<String, Object>> getBookmarksByUserId(
             @PathVariable Long userId
