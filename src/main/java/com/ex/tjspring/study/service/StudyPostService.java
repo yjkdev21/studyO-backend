@@ -80,9 +80,7 @@ public class StudyPostService {
     }
 
     /**
-     * 홍보글 수정 및 첨부파일 업데이트를 트랜잭션으로 묶습니다.
-     * @param updateDto 수정 정보
-     * @throws IOException
+     * 홍보글 수정 및 첨부파일 업데이트를 트랜잭션으로
      */
     @Transactional
     public void updatePostWithFiles(StudyPostUpdateDto updateDto) throws IOException {
@@ -110,8 +108,7 @@ public class StudyPostService {
     }
 
     /**
-     * 홍보글 삭제 및 관련 파일 삭제를 트랜잭션으로 묶습니다.
-     * @param viewDto 삭제할 게시글 정보
+     * 홍보글 삭제 및 관련 파일 삭제를 트랜잭션으로
      */
     @Transactional
     public void deletePostWithFiles(StudyPostViewDto viewDto) {
