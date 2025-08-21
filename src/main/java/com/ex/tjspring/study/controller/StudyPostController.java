@@ -42,7 +42,6 @@ public class StudyPostController {
     public ResponseEntity<Map<String, Object>> selectStudyGroupsFindByUserId(@PathVariable Long userId) {
         List<GroupNickDto> list = studyPostService.selectGroupsFindByUserId(userId);
 
-        System.out.println("################## user study groups #################");
         //log.info( "userId = {}" , userId );
         if (list == null || list.isEmpty()) {
             Map<String, Object> map = new HashMap<>();
@@ -59,7 +58,7 @@ public class StudyPostController {
     @GetMapping("/post/{groupId}/exist")
     public ResponseEntity<Map<String, Boolean>> existsPostByGroupId(@PathVariable("groupId") Long groupId) {
 
-        log.info("####### exist #######");
+        // log.info("####### exist #######");
         boolean exists = studyPostService.existsPostByGroupId(groupId);
 
         Map<String, Boolean> response = new HashMap<>();
@@ -72,17 +71,17 @@ public class StudyPostController {
     @GetMapping("/post/{groupId}")
     public ResponseEntity<Map<String,Object>> selectPostFindByGroupId(@PathVariable Long groupId) {
 
-        log.info("####### post #######");
+        // log.info("####### post #######");
         Map<String, Object> map = new HashMap<>();
 
-        log.info( "groupId = {}" , groupId );
+        // log.info( "groupId = {}" , groupId );
         GroupNickDto groupDto = studyPostService.selectGroupsFindByGroupId(groupId);
 
         if (groupDto == null) {
             return ResponseEntity.notFound().build();
         }
 
-        log.info( "groupDto put = {}" , groupId );
+        // log.info( "groupDto put = {}" , groupId );
         map.put("groupDto", groupDto);
 
         StudyPostViewDto studyPostViewDto = studyPostService.selectPostFindByGroupId(groupId);
@@ -90,8 +89,8 @@ public class StudyPostController {
             return ResponseEntity.ok(map);
         }
         String profileImage = studyPostViewDto.getProfileImage();
-        log.info("####### profileImage = {} " ,profileImage);
-        log.info("####### getAuthorId = {} " ,studyPostViewDto.getAuthorId());
+        // log.info("####### profileImage = {} " ,profileImage);
+        // log.info("####### getAuthorId = {} " ,studyPostViewDto.getAuthorId());
         //if (profileImage.isEmpty()) {
         if (profileImage == null || profileImage.isEmpty() || profileImage.contains("profile") ) {
             studyPostViewDto.setProfileImage("/images/default-profile.png");
@@ -120,7 +119,7 @@ public class StudyPostController {
 
         try {
             Long newPostId = studyPostService.insertPostWithFiles(dto);
-            log.info("#### 게시글 등록 완료. newPostId: {}", newPostId);
+            // log.info("#### 게시글 등록 완료. newPostId: {}", newPostId);
             return ResponseEntity.ok(newPostId);
 
         } catch (Exception e) {
@@ -136,7 +135,7 @@ public class StudyPostController {
     @PostMapping("/post/edit")
     public ResponseEntity<?> updatePost(@ModelAttribute StudyPostUpdateDto updateDto) throws IOException {
 
-        //log.info("@@@ ExEditorEditDto = {} ", updateDto);
+        // log.info("@@@ ExEditorEditDto = {} ", updateDto);
 
         if (updateDto.getStudyPostId() == null) {
             return ResponseEntity.badRequest().body("ID는 필수입니다.");
