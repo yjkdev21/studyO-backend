@@ -231,6 +231,3 @@ cd tjspring
 ⓒ [김환희](https://github.com/rlaksl) · [김예지](https://github.com/yjkdev21) · [백유선](https://github.com/yuseon4455)
   
 </div>
-
-\<img width="100%" alt="코드 컨벤션" src="[https://github.com/user-attachments/assets/0dc218c0-369f-45d2-8c6d-cdedc81169b4](https://github.com/user-attachments/assets/0dc218c0-369f-45d2-8c6d-cdedc81169b4)"\>
-\<img width="100%" alt="깃플로우" src="[https://github.com/user-attachments/assets/2a4d1332-acc2-4292-9815-d122f5aea77c](https://github.com/user-attachments/assets/2a4d1332-acc2-4292-9815-d122f5aea77c)"\>
