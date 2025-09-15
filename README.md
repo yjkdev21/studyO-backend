@@ -1,16 +1,3 @@
-# tjspring
-더존-스프링-타임리프-프로젝트
-
-# Oracle DB 접속정보 설정
-1. 인텔리제이 우상단 configuration Edit
-<img width="498" height="188" alt="Image" src="https://github.com/user-attachments/assets/81fed385-43e5-4eb5-8fda-89bf02cf435f" />
-
-
-# Oracle 환경변수 설정
-2. Environment variables 환경변수에 DB 정보 설정해 주세욥 ^^
-<img width="801" height="684" alt="Image" src="https://github.com/user-attachments/assets/725f3413-e863-4f60-8651-6843199e91a9" />
-
-
 <img width="100%" alt="image" src="https://github.com/user-attachments/assets/a9ea4511-2574-4ccd-a30b-593815f8be62" />
 
 
@@ -161,13 +148,22 @@ npm install
 npm run dev
 ```
 
+#### Oracle DB 접속정보 설정
+1. 인텔리제이 우상단 configuration Edit
+<img width="498" height="188" alt="Image" src="https://github.com/user-attachments/assets/81fed385-43e5-4eb5-8fda-89bf02cf435f" />
+
+
+#### Oracle 환경변수 설정
+2. Environment variables 환경변수에 DB 정보 설정
+<img width="801" height="684" alt="Image" src="https://github.com/user-attachments/assets/725f3413-e863-4f60-8651-6843199e91a9" />
+
+
 #### Backend 실행
 ```bash
 # 레포지토리 클론
 git clone https://github.com/hyunsupLee/tjspring.git
 cd tjspring
 ```
-
 
 <br/>
 
