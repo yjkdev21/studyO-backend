@@ -10,313 +10,231 @@
 2. Environment variables 환경변수에 DB 정보 설정해 주세욥 ^^
 <img width="801" height="684" alt="Image" src="https://github.com/user-attachments/assets/725f3413-e863-4f60-8651-6843199e91a9" />
 
-아까 만들어 드렸던 README가 보기 안 좋았던 점 죄송합니다. GitHub에서 깔끔하고 보기 좋게 보이도록 마크다운 스타일을 적용하여 다시 만들어 드립니다. 아래 내용을 복사해서 README 파일에 붙여넣으시면 됩니다.
 
------
+<img width="100%" alt="image" src="https://github.com/user-attachments/assets/a9ea4511-2574-4ccd-a30b-593815f8be62" />
 
-\<div align="center"\>
-\<a href="[https://club-project-one.vercel.app/](https://club-project-one.vercel.app/)" target="\_blank"\>
-\<img src="[https://github.com/user-attachments/assets/daa622b9-7c69-4786-8db3-4996b7f140be](https://github.com/user-attachments/assets/daa622b9-7c69-4786-8db3-4996b7f140be)" alt="배너" width="100%"/\>
-\</a\>
-\</div\>
 
------
+## 🚀 프로젝트 개요
 
-## 0\. Getting Started (시작하기)
+StudyO는 **스터디(Study)와 스튜디오(Studio)를 결합한 올인원 협업 플랫폼**입니다.  
+스터디 모집부터 활동, 팀 프로젝트까지 복잡한 과정을 손쉽게 관리하고 팀워크를 완성할 수 있습니다.
 
-```bash
-$ npm start
+- **프로젝트명**: StudyO - 모든 스터디의 시작
+- **개발기간**: 2025.07.14 - 2025.08.20 (5주)
+- **팀구성**: 6명 (풀스택 6명)
+- **배포 URL**: [www.studyo.r-e.kr/](https://www.studyo.r-e.kr/) _(2025년 10월까지 운영 예정)_
+- **시연 영상**: [youtu.be/YQAbBxCMgDo](https://youtu.be/YQAbBxCMgDo)
+
+<br/>
+
+## 👥 팀 소개
+
+| 김환희(팀장) | 김예지 | 백유선 | 윤고은 | 이재우 | 이현섭 |
+|:----------:|:------:|:------:|:------:|:------:|:------:|
+| UI/UX 디자인<br/>스터디 그룹 관리<br/>FullCalendar 연동 | UI/UX 디자인<br/>로그인 인증<br/>계정 관리<br/>멤버 승인/관리 | UI/UX 디자인<br/>스터디 그룹 CRUD<br/>AWS S3 연동<br/>썸네일 관리 | 회원가입 시스템<br/>필터링 기능<br/>추천 시스템 | 마이페이지<br/>프로필 수정<br/>공용 컴포넌트 | AWS 인프라<br/>CI/CD 구축<br/>홍보글 CRUD |
+
+<br/>
+
+## ✨ 주요 기능
+
+### 📚 스터디 관리
+- **스터디 모집**: 지역과 주제별 필터를 통한 효율적인 스터디 탐색
+- **그룹 관리**: 스터디장 권한 기반 멤버 승인/거절 시스템
+- **일정 관리**: FullCalendar를 활용한 직관적인 캘린더 인터페이스
+
+### 👤 사용자 경험
+- **간편한 시작**: 쉬운 가입과 로그인 과정
+- **개인화**: 마이페이지에서 프로필 관리 및 활동 현황 확인
+- **실시간 소통**: 스터디 후 팀 프로젝트로 자연스러운 전환
+
+### 🎯 협업 도구
+- **파일 관리**: AWS S3 기반 안전한 파일 업로드/다운로드
+- **진행 관리**: 개인 할 일 관리 및 진척 상황 확인
+- **홍보 시스템**: 풍부한 텍스트 에디터를 통한 스터디 홍보
+
+<br/>
+
+## 🛠 기술 스택
+
+### Environment
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white)
+![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white)
+
+### Frontend
+![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
+
+### Backend
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![MyBatis](https://img.shields.io/badge/MyBatis-271E1C?style=for-the-badge&logo=mybatis&logoColor=white)
+![Lombok](https://img.shields.io/badge/Lombok-BC4521?style=for-the-badge&logo=lombok&logoColor=white)
+
+### Database
+![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-4479A1?style=for-the-badge&logo=sql&logoColor=white)
+
+### Infrastructure
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Amazon EC2](https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white)
+![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white)
+
+### Design & Cooperation
+![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
+<br/>
+
+## 🏗 시스템 아키텍처
+
+```
+┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+│             │    │              │    │             │
+│   React     │◄──►│ Spring Boot  │◄──►│ Oracle 11g  │
+│  Frontend   │    │   Backend    │    │  Database   │
+│             │    │              │    │             │
+└─────────────┘    └──────────────┘    └─────────────┘
+       │                   │                   
+       │                   │                   
+       ▼                   ▼                   
+┌─────────────┐    ┌──────────────┐           
+│             │    │              │           
+│   AWS S3    │    │   AWS EC2    │           
+│File Storage │    │    Server    │           
+│             │    │              │           
+└─────────────┘    └──────────────┘           
 ```
 
-[**서비스 링크**](https://club-project-one.vercel.app/)
+<br/>
 
------
+## 📂 프로젝트 구조
 
-## 1\. Project Overview (프로젝트 개요)
-
-  - **프로젝트 이름**: 모여봐요 동아리숲\!
-  - **프로젝트 설명**: 전국 대학 동아리 일정관리 및 홍보 커뮤니티
-
------
-
-## 2\. Team Members (팀원 및 팀 소개)
-
-| 이동규 | 신유승 | 김나연 | 이승준 |
-|:------:|:------:|:------:|:------:|
-| \<img src="https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da" alt="이동규" width="150"\> | \<img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="150"\> | \<img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="150"\> | \<img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="이승준" width="150"\> |
-| **PL** | **FE** | **FE** | **FE** |
-| [GitHub](https://github.com/LDK1009) | [GitHub](https://github.com/SinYusi) | [GitHub](https://github.com/nay3on) | [GitHub](https://github.com/conconcc) |
-
------
-
-## 3\. Key Features (주요 기능)
-
-  - **회원가입**: 회원가입 시 DB에 유저 정보가 등록됩니다.
-  - **로그인**: 사용자 인증 정보를 통해 로그인합니다.
-  - **내 동아리 일정관리**: 캘린더 UI를 통해 동아리 관련 일정을 추가하거나 삭제할 수 있으며, 체크박스를 통해 완료된 일정을 표시할 수 있습니다.
-  - **동아리 찾기**: 대학 내 동아리를 검색하고, 해당 동아리가 업로드한 홍보글을 볼 수 있습니다.
-  - **동아리 홍보**: 홍보글 등록을 통해 동아리를 홍보할 수 있습니다.
-  - **동아리 만들기**: 새로운 동아리를 만들고 관리할 수 있습니다.
-  - **동아리 프로필**: 동아리 홍보글에서 동아리 이름을 클릭하면 해당 동아리 프로필로 이동하며, 동아리 소개, 활동 사진 갤러리, 홍보글 기록관 등을 확인할 수 있습니다.
-
------
-
-## 4\. Tasks & Responsibilities (작업 및 역할 분담)
-
-| 이름 | 프로필 | 담당 업무 |
-|:---:|:---:|:---|
-| **이동규** | \<img src="[https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da](https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da)" alt="이동규" width="100"\> | \<ul\>\<li\>프로젝트 계획 및 관리\</li\>\<li\>팀 리딩 및 커뮤니케이션\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
-| **신유승** | \<img src="[https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e](https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e)" alt="신유승" width="100"\> | \<ul\>\<li\>메인 페이지 개발\</li\>\<li\>동아리 만들기 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
-| **김나연** | \<img src="[https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e](https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e)" alt="김나연" width="100"\> | \<ul\>\<li\>홈 페이지 개발\</li\>\<li\>로그인 페이지 개발\</li\>\<li\>동아리 찾기 페이지 개발\</li\>\<li\>동아리 프로필 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
-| **이승준** | \<img src="[https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638](https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638)" alt="이승준" width="100"\> | \<ul\>\<li\>회원가입 페이지 개발\</li\>\<li\>마이 프로필 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
-
------
-
-## 5\. Technology Stack (기술 스택)
-
-### 5.1 Language
-
-| 언어 | 아이콘 |
-|:---:|:---:|
-| **HTML5** | \<img src="[https://github.com/user-attachments/assets/2e122e74-a28b-4ce7-aff6-382959216d31](https://github.com/user-attachments/assets/2e122e74-a28b-4ce7-aff6-382959216d31)" alt="HTML5" width="100"\> |
-| **CSS3** | \<img src="[https://github.com/user-attachments/assets/c531b03d-55a3-40bf-9195-9ff8c4688f13](https://github.com/user-attachments/assets/c531b03d-55a3-40bf-9195-9ff8c4688f13)" alt="CSS3" width="100"\> |
-| **Javascript** | \<img src="[https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1](https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1)" alt="Javascript" width="100"\> |
-
-\<br/\>
-
-### 5.2 Frontend
-
-| 기술 | 아이콘 | 버전 |
-|:---:|:---:|:---:|
-| **React** | \<img src="[https://github.com/user-attachments/assets/e3b49dbb-981b-4804-acf9-012c854a2fd2](https://github.com/user-attachments/assets/e3b49dbb-981b-4804-acf9-012c854a2fd2)" alt="React" width="100"\> | 18.3.1 |
-| **Styled-components** | \<img src="[https://github.com/user-attachments/assets/c9b26078-5d79-40cc-b120-69d9b3882786](https://github.com/user-attachments/assets/c9b26078-5d79-40cc-b120-69d9b3882786)" alt="StyledComponents" width="100"\>| 6.1.12 |
-| **MaterialUI** | \<img src="[https://github.com/user-attachments/assets/75a46fa7-ebc0-4a9d-b648-c589f87c4b55](https://github.com/user-attachments/assets/75a46fa7-ebc0-4a9d-b648-c589f87c4b55)" alt="MUI" width="100"\> | 5.0.0 |
-| **Day.js** | \<img src="[https://github.com/user-attachments/assets/3632d7d6-8d43-4dd5-ba7a-501a2bc3a3e4](https://github.com/user-attachments/assets/3632d7d6-8d43-4dd5-ba7a-501a2bc3a3e4)" alt="DayJs" width="100"\> | 1.11.12 |
-
-\<br/\>
-
-### 5.3 Backend
-
-| 기술 | 아이콘 | 버전 |
-|:---:|:---:|:---:|
-| **Firebase** | \<img src="[https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1](https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1)" alt="Firebase" width="100"\> | 10.12.5 |
-
-\<br/\>
-
-### 5.4 Cooperation
-
-| 기술 | 아이콘 |
-|:---:|:---:|
-| **Git** | \<img src="[https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6](https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6)" alt="Git" width="100"\> |
-| **GitKraken** | \<img src="[https://github.com/user-attachments/assets/32c615cb-7bc0-45cd-91ea-0d1450bfc8a9](https://github.com/user-attachments/assets/32c615cb-7bc0-45cd-91ea-0d1450bfc8a9)" alt="GitKraken" width="100"\> |
-| **Notion** | \<img src="[https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a](https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a)" alt="Notion" width="100"\> |
-
------
-
-## 6\. Project Structure (프로젝트 구조)
-
-```plaintext
-project/
+### Frontend (React)
+```
+react-study-o/
 ├── public/
-│   ├── index.html           # HTML 템플릿 파일
-│   └── favicon.ico          # 아이콘 파일
+│   ├── index.html
+│   └── favicon.ico
 ├── src/
-│   ├── assets/              # 이미지, 폰트 등 정적 파일
-│   ├── components/          # 재사용 가능한 UI 컴포넌트
-│   ├── hooks/               # 커스텀 훅 모음
-│   ├── pages/               # 각 페이지별 컴포넌트
-│   ├── App.js               # 메인 애플리케이션 컴포넌트
-│   ├── index.js             # 엔트리 포인트 파일
-│   ├── index.css            # 전역 CSS 파일
-│   └── firebaseConfig.js    # Firebase 인스턴스 초기화 파일
-├── package-lock.json        # 정확한 종속성 버전이 기록된 파일로, 일관된 빌드를 보장
-├── package.json             # 프로젝트 종속성 및 스크립트 정의
-├── .gitignore               # Git 무시 파일 목록
-└── README.md                # 프로젝트 개요 및 사용법
+│   ├── components/     # 재사용 컴포넌트
+│   ├── pages/         # 페이지 컴포넌트
+│   ├── utils/         # 유틸리티 함수
+│   ├── App.js         # 메인 앱 컴포넌트
+│   └── index.js       # 엔트리 포인트
+├── package.json
+└── README.md
 ```
 
------
-
-## 7\. Development Workflow (개발 워크플로우)
-
-### 브랜치 전략 (Branch Strategy)
-
-우리의 브랜치 전략은 **Git Flow**를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
-
-  - **Main Branch**: 배포 가능한 상태의 코드를 유지합니다. 모든 배포는 이 브랜치에서 이루어집니다.
-  - **{name} Branch**: 팀원 각자의 개발 브랜치입니다. 모든 기능 개발은 이 브랜치에서 이루어집니다.
-
------
-
-## 8\. Coding Convention
-
-### 문장 종료
-
-```javascript
-// 세미콜론(;) 사용
-console.log("Hello World!");
+### Backend (Spring Boot)
+```
+tjspring/
+├── src/main/java/com/tj/spring/
+│   ├── admin/         # 관리자 기능
+│   ├── auth/          # 인증/인가
+│   ├── study/         # 스터디 관련
+│   ├── user/          # 사용자 관리
+│   └── common/        # 공통 기능
+├── src/main/resources/
+│   ├── mybatis/mapper/  # MyBatis 매퍼
+│   ├── static/          # 정적 파일
+│   └── application.properties
+└── pom.xml
 ```
 
-\<br/\>
+<br/>
 
-### 명명 규칙
+## 🚀 시작하기
 
-  - **상수**: 영문 대문자 + 스네이크 케이스
-    ```javascript
-    const NAME_ROLE;
-    ```
-  - **변수 & 함수**: 카멜케이스
-    ```javascript
-    // state
-    const [isLoading, setIsLoading] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [currentUser, setCurrentUser] = useState(null);
+### 설치 및 실행
 
-    // 배열 - 복수형 이름 사용
-    const datas = [];
+#### Frontend 실행
+```bash
+# 레포지토리 클론
+git clone https://github.com/hyunsupLee/react-study-o.git
+cd react-study-o
 
-    // 정규표현식: 'r'로 시작
-    const rName = /.*/;
+# 의존성 설치
+npm install
 
-    // 이벤트 핸들러: 'on'으로 시작
-    const onClick = () => {};
-    const onChange = () => {};
-
-    // 반환 값이 불린인 경우: 'is'로 시작
-    const isLoading = false;
-
-    // Fetch 함수: method(get, post, put, del)로 시작
-    const getEnginList = () => {};
-    ```
-
-\<br/\>
-
-### 블록 구문
-
-  - 한 줄짜리 블록이라도 `{}`를 생략하지 않고, 명확히 줄 바꿈 하여 사용합니다.
-    ```javascript
-    // good
-    if (true) {
-      return 'hello';
-    }
-
-    // bad
-    if (true) return 'hello';
-    ```
-
-\<br/\>
-
-### 함수
-
-  - 함수는 함수 표현식을 사용하며, 화살표 함수를 사용합니다.
-    ```javascript
-    // Good
-    const fnName = () => {};
-
-    // Bad
-    function fnName() {};
-    ```
-
-\<br/\>
-
-### 태그 네이밍
-
-Styled-component 태그 생성 시 아래 규칙을 준수하여 의미 전달을 명확하게 합니다.
-
-  - 전체 영역: `Container`
-  - 영역의 묶음: `{Name}Area`
-  - 의미 없는 태그: `<>`
-    ```javascript
-    <Container>
-      <ContentsArea>
-        <Contents>...</Contents>
-        <Contents>...</Contents>
-      </ContentsArea>
-    </Container>
-    ```
-
-\<br/\>
-
-### 폴더 네이밍
-
-  - 카멜 케이스를 기본으로 하며, 컴포넌트 폴더일 경우에만 파스칼 케이스를 사용합니다.
-      - 카멜 케이스: `camelCase`
-      - 파스칼 케이스: `PascalCase`
-
-\<br/\>
-
-### 파일 네이밍
-
-  - 컴포넌트일 경우에만 `.jsx` 확장자를 사용합니다. (그 외에는 `.js`)
-  - 커스텀 훅을 사용하는 경우: `use + 함수명`
-
------
-
-## 9\. Commit Convention (커밋 컨벤션)
-
-### 기본 구조
-
-```
-type: subject
-
-body
+# 개발 서버 실행
+npm run dev
 ```
 
-\<br/\>
+#### Backend 실행
+```bash
+# 레포지토리 클론
+git clone https://github.com/hyunsupLee/tjspring.git
+cd tjspring
+```
 
-### type 종류
 
-  - `feat`: 새로운 기능 추가
-  - `fix`: 버그 수정
-  - `docs`: 문서 수정
-  - `style`: 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우
-  - `refactor`: 코드 리팩토링
-  - `test`: 테스트 코드, 리팩토링 테스트 코드 추가
-  - `chore`: 빌드 업무 수정, 패키지 매니저 수정
+<br/>
 
-\<br/\>
+## 🎯 핵심 기능 상세
 
-### 커밋 이모지
+### 1. 권한 기반 스터디 관리
+- 스터디장만 캘린더 등록/수정/삭제 권한
+- 멤버 승인/거절 시스템
+- 그룹별 권한 분리
 
-  - **코드 관련**
-      - 📝 코드 작성
-      - 🔥 코드 제거
-      - 🔨 코드 리팩토링
-      - 💄 UI / style 변경
-  - **문서 & 파일**
-      - 📰 새 파일 생성
-      - 🔥 파일 제거
-      - 📚 문서 작성
-  - **버그**
-      - 🐛 버그 리포트
-      - 🚑 버그를 고칠 때
-  - **기타**
-      - 🐎 성능 향상
-      - ✨ 새로운 기능 구현
-      - 💡 새로운 아이디어
-      - 🚀 배포
+### 2. 실시간 파일 관리
+- AWS S3 연동을 통한 안전한 파일 저장
+- 썸네일 자동 생성 및 최적화
+- 파일 업로드/다운로드 진행률 표시
 
-\<br/\>
+### 3. 직관적인 일정 관리
+- FullCalendar 라이브러리 활용
+- 드래그 앤 드롭으로 일정 수정
+- 개인/그룹 일정 통합 관리
 
-### 커밋 예시
+<br/>
 
-  - **ex1**
-    ```
-    ✨Feat: "회원 가입 기능 구현"
+## 📊 개발 프로세스
 
-    SMS, 이메일 중복확인 API 개발
-    ```
-  - **ex2**
-    ```
-    📚chore: styled-components 라이브러리 설치
+### Agile 방법론 적용
+- **4주 스프린트**: 기획 → 개발 → 테스트 → 배포
+- **일일 스탠드업**: 매일 진행 상황 공유
+- **스프린트 리뷰**: 주간 피드백 및 개선사항 도출
 
-    UI 개발을 위한 라이브러리 styled-components 설치
-    ```
+### Git 워크플로우
+- **브랜치 전략**: 개인 브랜치 → Main 브랜치
+- **CI/CD**: GitHub Actions를 통한 자동 배포
 
------
+<br/>
 
-## 10\. Convention Adherence (컨벤션 수행 결과)
+## 🔗 관련 링크
+
+- **서비스 URL**: [StudyO](https://www.studyo.r-e.kr/)
+- **Frontend Repository**: [react-study-o](https://github.com/hyunsupLee/react-study-o)
+- **Backend Repository**: [tjspring](https://github.com/hyunsupLee/tjspring)
+- **프로젝트 피그마**: [StudyO 디자인](https://www.figma.com/studyo-design)
+
+<br/>
+
+## 🎉 프로젝트 성과
+
+### 기술적 성과
+- **풀스택 개발**: 6명 모든 팀원이 각자 담당 기능을 프론트엔드부터 백엔드까지 완전 구현
+- **클라우드 배포**: AWS 인프라를 활용한 실제 서비스 배포
+- **팀 협업**: Git을 활용한 6명 규모의 효율적인 협업 경험
+
+### 사용자 가치
+- **편의성**: 스터디 모집부터 활동까지 원스톱 지원
+- **효율성**: 직관적인 UI/UX로 학습 관리 시간 단축
+- **확장성**: 스터디에서 프로젝트로 자연스러운 전환
+
+---
+
+<div align="center">
+  <strong>StudyO - 모든 스터디의 시작</strong><br/>
+  Study Together, Grow Together <br/>
+       
+---
+
+ⓒ [김환희](https://github.com/rlaksl) · [김예지](https://github.com/yjkdev21) · [백유선](https://github.com/yuseon4455)
+  
+</div>
 
 \<img width="100%" alt="코드 컨벤션" src="[https://github.com/user-attachments/assets/0dc218c0-369f-45d2-8c6d-cdedc81169b4](https://github.com/user-attachments/assets/0dc218c0-369f-45d2-8c6d-cdedc81169b4)"\>
 \<img width="100%" alt="깃플로우" src="[https://github.com/user-attachments/assets/2a4d1332-acc2-4292-9815-d122f5aea77c](https://github.com/user-attachments/assets/2a4d1332-acc2-4292-9815-d122f5aea77c)"\>
