@@ -10,37 +10,36 @@
 2. Environment variables 환경변수에 DB 정보 설정해 주세욥 ^^
 <img width="801" height="684" alt="Image" src="https://github.com/user-attachments/assets/725f3413-e863-4f60-8651-6843199e91a9" />
 
-Sure, here's the README.md content for your GitHub project, based on the structure and content you provided. Just copy and paste this into your `README.md` file.
-
-````markdown
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/b2462e92-3118-49e5-9005-4c07d3071850" alt="StudyO Banner" width="100%">
-  <br/>
-  <a href="https://club-project-one.vercel.app/" target="_blank">
-    <img src="https://github.com/user-attachments/assets/daa622b9-7c69-4786-8db3-4996b7f140be" alt="배너" width="100%"/>
-  </a>
-</div>
-
-<br/>
-<br/>
-
-# 0. Getting Started (시작하기)
-```bash
-$ npm start
-````
-
-[서비스 링크](https://club-project-one.vercel.app/)
+아까 만들어 드렸던 README가 보기 안 좋았던 점 죄송합니다. GitHub에서 깔끔하고 보기 좋게 보이도록 마크다운 스타일을 적용하여 다시 만들어 드립니다. 아래 내용을 복사해서 README 파일에 붙여넣으시면 됩니다.
 
 -----
 
-# 1\. Project Overview (프로젝트 개요)
+\<div align="center"\>
+\<a href="[https://club-project-one.vercel.app/](https://club-project-one.vercel.app/)" target="\_blank"\>
+\<img src="[https://github.com/user-attachments/assets/daa622b9-7c69-4786-8db3-4996b7f140be](https://github.com/user-attachments/assets/daa622b9-7c69-4786-8db3-4996b7f140be)" alt="배너" width="100%"/\>
+\</a\>
+\</div\>
+
+-----
+
+## 0\. Getting Started (시작하기)
+
+```bash
+$ npm start
+```
+
+[**서비스 링크**](https://club-project-one.vercel.app/)
+
+-----
+
+## 1\. Project Overview (프로젝트 개요)
 
   - **프로젝트 이름**: 모여봐요 동아리숲\!
   - **프로젝트 설명**: 전국 대학 동아리 일정관리 및 홍보 커뮤니티
 
 -----
 
-# 2\. Team Members (팀원 및 팀 소개)
+## 2\. Team Members (팀원 및 팀 소개)
 
 | 이동규 | 신유승 | 김나연 | 이승준 |
 |:------:|:------:|:------:|:------:|
@@ -50,7 +49,7 @@ $ npm start
 
 -----
 
-# 3\. Key Features (주요 기능)
+## 3\. Key Features (주요 기능)
 
   - **회원가입**: 회원가입 시 DB에 유저 정보가 등록됩니다.
   - **로그인**: 사용자 인증 정보를 통해 로그인합니다.
@@ -62,59 +61,59 @@ $ npm start
 
 -----
 
-# 4\. Tasks & Responsibilities (작업 및 역할 분담)
+## 4\. Tasks & Responsibilities (작업 및 역할 분담)
 
 | 이름 | 프로필 | 담당 업무 |
 |:---:|:---:|:---|
-| **이동규** | \<img src="https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da" alt="이동규" width="100"\> | \<ul\>\<li\>프로젝트 계획 및 관리\</li\>\<li\>팀 리딩 및 커뮤니케이션\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
-| **신유승** | \<img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="100"\> | \<ul\>\<li\>메인 페이지 개발\</li\>\<li\>동아리 만들기 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
-| **김나연** | \<img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="100"\> | \<ul\>\<li\>홈 페이지 개발\</li\>\<li\>로그인 페이지 개발\</li\>\<li\>동아리 찾기 페이지 개발\</li\>\<li\>동아리 프로필 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
-| **이승준** | \<img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="이승준" width="100"\> | \<ul\>\<li\>회원가입 페이지 개발\</li\>\<li\>마이 프로필 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
+| **이동규** | \<img src="[https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da](https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da)" alt="이동규" width="100"\> | \<ul\>\<li\>프로젝트 계획 및 관리\</li\>\<li\>팀 리딩 및 커뮤니케이션\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
+| **신유승** | \<img src="[https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e](https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e)" alt="신유승" width="100"\> | \<ul\>\<li\>메인 페이지 개발\</li\>\<li\>동아리 만들기 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
+| **김나연** | \<img src="[https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e](https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e)" alt="김나연" width="100"\> | \<ul\>\<li\>홈 페이지 개발\</li\>\<li\>로그인 페이지 개발\</li\>\<li\>동아리 찾기 페이지 개발\</li\>\<li\>동아리 프로필 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
+| **이승준** | \<img src="[https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638](https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638)" alt="이승준" width="100"\> | \<ul\>\<li\>회원가입 페이지 개발\</li\>\<li\>마이 프로필 페이지 개발\</li\>\<li\>커스텀 훅 개발\</li\>\</ul\> |
 
 -----
 
-# 5\. Technology Stack (기술 스택)
+## 5\. Technology Stack (기술 스택)
 
-## 5.1 Language
+### 5.1 Language
 
 | 언어 | 아이콘 |
 |:---:|:---:|
-| **HTML5** | \<img src="https://github.com/user-attachments/assets/2e122e74-a28b-4ce7-aff6-382959216d31" alt="HTML5" width="100"\> |
-| **CSS3** | \<img src="https://github.com/user-attachments/assets/c531b03d-55a3-40bf-9195-9ff8c4688f13" alt="CSS3" width="100"\> |
-| **Javascript** | \<img src="https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1" alt="Javascript" width="100"\> |
+| **HTML5** | \<img src="[https://github.com/user-attachments/assets/2e122e74-a28b-4ce7-aff6-382959216d31](https://github.com/user-attachments/assets/2e122e74-a28b-4ce7-aff6-382959216d31)" alt="HTML5" width="100"\> |
+| **CSS3** | \<img src="[https://github.com/user-attachments/assets/c531b03d-55a3-40bf-9195-9ff8c4688f13](https://github.com/user-attachments/assets/c531b03d-55a3-40bf-9195-9ff8c4688f13)" alt="CSS3" width="100"\> |
+| **Javascript** | \<img src="[https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1](https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1)" alt="Javascript" width="100"\> |
 
 \<br/\>
 
-## 5.2 Frontend
+### 5.2 Frontend
 
 | 기술 | 아이콘 | 버전 |
 |:---:|:---:|:---:|
-| **React** | \<img src="https://github.com/user-attachments/assets/e3b49dbb-981b-4804-acf9-012c854a2fd2" alt="React" width="100"\> | 18.3.1 |
-| **Styled-components** | \<img src="https://github.com/user-attachments/assets/c9b26078-5d79-40cc-b120-69d9b3882786" alt="StyledComponents" width="100"\>| 6.1.12 |
-| **MaterialUI** | \<img src="https://github.com/user-attachments/assets/75a46fa7-ebc0-4a9d-b648-c589f87c4b55" alt="MUI" width="100"\> | 5.0.0 |
-| **Day.js** | \<img src="https://github.com/user-attachments/assets/3632d7d6-8d43-4dd5-ba7a-501a2bc3a3e4" alt="DayJs" width="100"\> | 1.11.12 |
+| **React** | \<img src="[https://github.com/user-attachments/assets/e3b49dbb-981b-4804-acf9-012c854a2fd2](https://github.com/user-attachments/assets/e3b49dbb-981b-4804-acf9-012c854a2fd2)" alt="React" width="100"\> | 18.3.1 |
+| **Styled-components** | \<img src="[https://github.com/user-attachments/assets/c9b26078-5d79-40cc-b120-69d9b3882786](https://github.com/user-attachments/assets/c9b26078-5d79-40cc-b120-69d9b3882786)" alt="StyledComponents" width="100"\>| 6.1.12 |
+| **MaterialUI** | \<img src="[https://github.com/user-attachments/assets/75a46fa7-ebc0-4a9d-b648-c589f87c4b55](https://github.com/user-attachments/assets/75a46fa7-ebc0-4a9d-b648-c589f87c4b55)" alt="MUI" width="100"\> | 5.0.0 |
+| **Day.js** | \<img src="[https://github.com/user-attachments/assets/3632d7d6-8d43-4dd5-ba7a-501a2bc3a3e4](https://github.com/user-attachments/assets/3632d7d6-8d43-4dd5-ba7a-501a2bc3a3e4)" alt="DayJs" width="100"\> | 1.11.12 |
 
 \<br/\>
 
-## 5.3 Backend
+### 5.3 Backend
 
 | 기술 | 아이콘 | 버전 |
 |:---:|:---:|:---:|
-| **Firebase** | \<img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Firebase" width="100"\> | 10.12.5 |
+| **Firebase** | \<img src="[https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1](https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1)" alt="Firebase" width="100"\> | 10.12.5 |
 
 \<br/\>
 
-## 5.4 Cooperation
+### 5.4 Cooperation
 
 | 기술 | 아이콘 |
 |:---:|:---:|
-| **Git** | \<img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="Git" width="100"\> |
-| **GitKraken** | \<img src="https://github.com/user-attachments/assets/32c615cb-7bc0-45cd-91ea-0d1450bfc8a9" alt="GitKraken" width="100"\> |
-| **Notion** | \<img src="https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a" alt="Notion" width="100"\> |
+| **Git** | \<img src="[https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6](https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6)" alt="Git" width="100"\> |
+| **GitKraken** | \<img src="[https://github.com/user-attachments/assets/32c615cb-7bc0-45cd-91ea-0d1450bfc8a9](https://github.com/user-attachments/assets/32c615cb-7bc0-45cd-91ea-0d1450bfc8a9)" alt="GitKraken" width="100"\> |
+| **Notion** | \<img src="[https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a](https://github.com/user-attachments/assets/34141eb9-deca-416a-a83f-ff9543cc2f9a)" alt="Notion" width="100"\> |
 
 -----
 
-# 6\. Project Structure (프로젝트 구조)
+## 6\. Project Structure (프로젝트 구조)
 
 ```plaintext
 project/
@@ -138,20 +137,20 @@ project/
 
 -----
 
-# 7\. Development Workflow (개발 워크플로우)
+## 7\. Development Workflow (개발 워크플로우)
 
-## 브랜치 전략 (Branch Strategy)
+### 브랜치 전략 (Branch Strategy)
 
-우리의 브랜치 전략은 Git Flow를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
+우리의 브랜치 전략은 **Git Flow**를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
 
   - **Main Branch**: 배포 가능한 상태의 코드를 유지합니다. 모든 배포는 이 브랜치에서 이루어집니다.
   - **{name} Branch**: 팀원 각자의 개발 브랜치입니다. 모든 기능 개발은 이 브랜치에서 이루어집니다.
 
 -----
 
-# 8\. Coding Convention
+## 8\. Coding Convention
 
-## 문장 종료
+### 문장 종료
 
 ```javascript
 // 세미콜론(;) 사용
@@ -160,7 +159,7 @@ console.log("Hello World!");
 
 \<br/\>
 
-## 명명 규칙
+### 명명 규칙
 
   - **상수**: 영문 대문자 + 스네이크 케이스
     ```javascript
@@ -188,14 +187,14 @@ console.log("Hello World!");
     const isLoading = false;
 
     // Fetch 함수: method(get, post, put, del)로 시작
-    const getEnginList = () => {...};
+    const getEnginList = () => {};
     ```
 
 \<br/\>
 
-## 블록 구문
+### 블록 구문
 
-  - 한 줄짜리 블록일 경우라도 `{}`를 생략하지 않고, 명확히 줄 바꿈 하여 사용합니다.
+  - 한 줄짜리 블록이라도 `{}`를 생략하지 않고, 명확히 줄 바꿈 하여 사용합니다.
     ```javascript
     // good
     if (true) {
@@ -208,7 +207,7 @@ console.log("Hello World!");
 
 \<br/\>
 
-## 함수
+### 함수
 
   - 함수는 함수 표현식을 사용하며, 화살표 함수를 사용합니다.
     ```javascript
@@ -221,9 +220,10 @@ console.log("Hello World!");
 
 \<br/\>
 
-## 태그 네이밍
+### 태그 네이밍
 
-  - Styled-component 태그 생성 시 아래 네이밍 규칙을 준수하여 의미 전달을 명확하게 합니다.
+Styled-component 태그 생성 시 아래 규칙을 준수하여 의미 전달을 명확하게 합니다.
+
   - 전체 영역: `Container`
   - 영역의 묶음: `{Name}Area`
   - 의미 없는 태그: `<>`
@@ -238,7 +238,7 @@ console.log("Hello World!");
 
 \<br/\>
 
-## 폴더 네이밍
+### 폴더 네이밍
 
   - 카멜 케이스를 기본으로 하며, 컴포넌트 폴더일 경우에만 파스칼 케이스를 사용합니다.
       - 카멜 케이스: `camelCase`
@@ -246,16 +246,16 @@ console.log("Hello World!");
 
 \<br/\>
 
-## 파일 네이밍
+### 파일 네이밍
 
   - 컴포넌트일 경우에만 `.jsx` 확장자를 사용합니다. (그 외에는 `.js`)
   - 커스텀 훅을 사용하는 경우: `use + 함수명`
 
 -----
 
-# 9\. Commit Convention (커밋 컨벤션)
+## 9\. Commit Convention (커밋 컨벤션)
 
-## 기본 구조
+### 기본 구조
 
 ```
 type: subject
@@ -265,7 +265,7 @@ body
 
 \<br/\>
 
-## type 종류
+### type 종류
 
   - `feat`: 새로운 기능 추가
   - `fix`: 버그 수정
@@ -277,7 +277,7 @@ body
 
 \<br/\>
 
-## 커밋 이모지
+### 커밋 이모지
 
   - **코드 관련**
       - 📝 코드 작성
@@ -299,7 +299,7 @@ body
 
 \<br/\>
 
-## 커밋 예시
+### 커밋 예시
 
   - **ex1**
     ```
@@ -316,10 +316,7 @@ body
 
 -----
 
-# 10\. Convention Adherence (컨벤션 수행 결과)
+## 10\. Convention Adherence (컨벤션 수행 결과)
 
-\<img width="100%" alt="코드 컨벤션" src="https://github.com/user-attachments/assets/0dc218c0-369f-45d2-8c6d-cdedc81169b4"\>
-\<img width="100%" alt="깃플로우" src="https://github.com/user-attachments/assets/2a4d1332-acc2-4292-9815-d122f5aea77c"\>
-
-```
-```
+\<img width="100%" alt="코드 컨벤션" src="[https://github.com/user-attachments/assets/0dc218c0-369f-45d2-8c6d-cdedc81169b4](https://github.com/user-attachments/assets/0dc218c0-369f-45d2-8c6d-cdedc81169b4)"\>
+\<img width="100%" alt="깃플로우" src="[https://github.com/user-attachments/assets/2a4d1332-acc2-4292-9815-d122f5aea77c](https://github.com/user-attachments/assets/2a4d1332-acc2-4292-9815-d122f5aea77c)"\>
